@@ -121,7 +121,41 @@ def cmd_server(args: argparse.Namespace) -> int:
 
 
 def cmd_models(args: argparse.Namespace) -> int:
+    from . import catalogue
+
     s = srv.status(args.base_url_host)
+    installed = {m["name"] for m in s.models}
+
+    if args.search:
+        results, note = catalogue.search(args.search)
+        if args.json:
+            emit({"v": V, "query": args.search, "results": results, "note": note})
+        else:
+            for r in results:
+                mark = " (refused: it watermarks its own output)" if r["refused"] else ""
+                print(f"{r['ref']}\t{r['downloads']:>9} downloads{mark}")
+            if note:
+                print(f"\n{note}")
+        return 0 if results else 1
+
+    if args.measure:
+        return _measure(args, installed)
+
+    if args.recommended:
+        rows = catalogue.recommended(installed)
+        if args.json:
+            emit({"v": V, "recommended": rows, "default": srv.DEFAULT_MODEL,
+                  "installed": sorted(installed), "server_reason": s.reason})
+        else:
+            for r in rows:
+                here = "downloaded" if r["installed"] else f"{r['size_gb']:.1f} GB to download"
+                print(f"{r['ref']}  ({r['params']}, {here})")
+                print(f"    {r['good_at']}")
+                print(f"    Watch out: {r['watch_out']}")
+                if r["measured"]:
+                    print(f"    Measured here: {r['measured']}")
+        return 0
+
     if args.json:
         emit({"v": V, "models": s.models, "default": srv.DEFAULT_MODEL, "reason": s.reason})
     elif not s.running:
@@ -130,6 +164,134 @@ def cmd_models(args: argparse.Namespace) -> int:
         for m in s.models:
             print(f"{m['name']}\t{m['size'] / 2**30:.1f} GB")
     return 0 if s.running else 1
+
+
+# Short watermarked passages travel with the package, so a model can be measured on a
+# machine that never generated the benchmark corpus. They are three of the corpus texts,
+# and the ids let the caller check them against data/corpus.jsonl.
+def _samples(limit: int) -> list[dict]:
+    from pathlib import Path
+
+    corpus = Path(__file__).resolve().parent.parent / "data" / "corpus.jsonl"
+    out = []
+    if corpus.is_file():
+        with corpus.open() as f:
+            for line in f:
+                rec = json.loads(line)
+                if rec.get("watermarked"):
+                    out.append(rec)
+                if len(out) >= limit:
+                    break
+    return out
+
+
+def _measure(args: argparse.Namespace, installed: set[str]) -> int:
+    """Run one model over watermarked texts and report what the detector said.
+
+    This is the answer to "is model X any good for this". The catalogue's sentences are
+    opinions; this is the same measurement the README's table came from, run on demand.
+    """
+    from . import catalogue
+    from .cli import get_transform, run_transform
+
+    reporter = Reporter(args.progress)
+    refused = catalogue.refusal(args.measure)
+    if refused:
+        if args.json:
+            emit({"v": V, "ok": False, "model": args.measure, "reason": refused})
+        else:
+            print(f"error: {refused}", file=sys.stderr)
+        return 1
+
+    samples = _samples(args.samples)
+    if not samples:
+        reason = ("There is no benchmark corpus on this machine to measure against. Run "
+                  "`reflip corpus` first, or clone the repository, which ships one.")
+        if args.json:
+            emit({"v": V, "ok": False, "model": args.measure, "reason": reason})
+        else:
+            print(f"error: {reason}", file=sys.stderr)
+        return 1
+
+    tok, cov_note = _tokenizer(args.tokenizer or DEFAULT_COVERAGE_TOKENIZER,
+                              args.tokenizer is not None)
+    scorer = None
+    if tok is not None:
+        from .synthid import Scorer
+
+        scorer = Scorer(tok)
+
+    rows = []
+    fn = get_transform("paraphrase")
+    for i, rec in enumerate(samples, 1):
+        reporter("Measuring", i - 1, len(samples), f"{args.measure} on sample {i} of {len(samples)}")
+        opts = Options(base_url=chat_endpoint(args.base_url_host, None, Options.base_url),
+                       api_key=args.api_key, model=args.measure, temperature=args.temperature,
+                       seed=args.seed, tokenizer=tok, ngram_len=args.ngram_len,
+                       language=rec.get("lang", "en"), workers=snapshot().workers,
+                       min_coverage=0.9 if tok is not None else 0.0, max_passes=3)
+        t0 = time.perf_counter()
+        try:
+            res = run_transform(fn, rec["text"], opts)
+        except Exception as e:  # noqa: BLE001 - one bad model must not lose the rest
+            rows.append({"id": rec["id"], "error": " ".join(str(e).split())[:200]})
+            continue
+        seconds = time.perf_counter() - t0
+        row = {"id": rec["id"], "lang": rec.get("lang"), "seconds": round(seconds, 2),
+               "words": len(__import__("reflip.words", fromlist=["words"]).words(rec["text"])),
+               "edit_ratio": None, "coverage": None, "z_before": rec.get("z"), "z_after": None,
+               "prompt_tokens": res.prompt_tokens, "completion_tokens": res.completion_tokens,
+               "llm_calls": res.llm_calls}
+        from .words import word_edit_ratio
+
+        row["edit_ratio"] = round(word_edit_ratio(rec["text"], res.text), 4)
+        if tok is not None:
+            row["coverage"] = _coverage(tok, rec["text"], res.text, args.ngram_len)
+        if scorer is not None and rec.get("ids"):
+            row["z_before"] = scorer.score_ids(rec["ids"]).z
+            row["z_after"] = scorer.score(res.text).z
+        rows.append(row)
+
+    ok = [r for r in rows if "error" not in r]
+
+    def mean(key):
+        vals = [r[key] for r in ok if r.get(key) is not None]
+        return round(sum(vals) / len(vals), 4) if vals else None
+
+    words_total = sum(r["words"] for r in ok) or 1
+    summary = {
+        "v": V, "ok": bool(ok), "model": args.measure, "samples": len(rows),
+        "errors": len(rows) - len(ok),
+        "z_before": mean("z_before"), "z_after": mean("z_after"),
+        "coverage": mean("coverage"), "edit_ratio": mean("edit_ratio"),
+        "seconds": mean("seconds"),
+        "tokens_per_1k_words": round(1000.0 * sum(r["prompt_tokens"] + r["completion_tokens"]
+                                                  for r in ok) / words_total, 0) if ok else None,
+        "coverage_note": cov_note, "rows": rows,
+        "verdict": None,
+    }
+    if ok:
+        cov, z = summary["coverage"], summary["z_after"]
+        if cov is not None and cov >= 0.95 and (z is None or abs(z) < 4):
+            summary["verdict"] = ("Good for this job on this machine: the detector was left "
+                                  "inside the range of unwatermarked text.")
+        elif cov is not None and cov < 0.9:
+            summary["verdict"] = ("Not good enough on its own: it kept too much of the "
+                                  "original wording, so the detector still has positions to score.")
+        else:
+            summary["verdict"] = "It worked, and the numbers are close enough to the edge to be worth reading."
+    reporter("Done", len(samples), len(samples), "Finished")
+
+    if args.json:
+        emit(summary)
+    else:
+        print(f"{args.measure} over {len(ok)} watermarked texts")
+        print(f"  detector z {summary['z_before']} -> {summary['z_after']}")
+        print(f"  coverage {summary['coverage']}, {summary['edit_ratio']:.0%} of words changed"
+              if summary["edit_ratio"] is not None else "  coverage not measured")
+        print(f"  {summary['seconds']}s per text, {summary['tokens_per_1k_words']:.0f} tokens per 1,000 words")
+        print(f"  {summary['verdict']}")
+    return 0 if ok else 1
 
 
 def cmd_pull(args: argparse.Namespace) -> int:
@@ -277,7 +439,19 @@ def add_parsers(sub, options) -> None:
     s.add_argument("--model", default=srv.DEFAULT_MODEL)
     s.set_defaults(func=cmd_server, **common)
 
-    m = with_host(sub.add_parser("models", help="what the server has downloaded"))
+    m = with_host(sub.add_parser("models", help="what is downloaded, what is worth trying, "
+                                                "and what a model actually does on this machine"))
+    m.add_argument("--recommended", action="store_true", help="the catalogue, with a sentence each")
+    m.add_argument("--search", metavar="QUERY", help="search Hugging Face for models in GGUF form")
+    m.add_argument("--measure", metavar="MODEL", help="run this model over watermarked texts and "
+                                                     "report what the detector said")
+    m.add_argument("--samples", type=int, default=3, help="how many texts to measure over")
+    m.add_argument("--tokenizer", default=None)
+    m.add_argument("--ngram-len", type=int, default=options.ngram_len)
+    m.add_argument("--api-key", default=options.api_key)
+    m.add_argument("--temperature", type=float, default=options.temperature)
+    m.add_argument("--seed", type=int, default=options.seed)
+    m.add_argument("--progress", action="store_true", help="JSON Lines progress on stderr")
     m.set_defaults(func=cmd_models, **common)
 
     p = with_host(sub.add_parser("pull", help="download a model into the server"))

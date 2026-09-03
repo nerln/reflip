@@ -470,3 +470,31 @@ def test_live_ollama_infill(monkeypatch):
     assert res.edits >= res.notes["slots"] // 2, res.notes
     assert res.text != text and skeleton(res.text) == skeleton(text)
     assert res.prompt_tokens > 0
+
+
+class _WordTok:
+    def __call__(self, text, add_special_tokens=False, **kw):
+        import re as _re
+        return {"input_ids": [hash(t) % 50000 for t in _re.findall(r"\w+|[^\w\s]", text)]}
+
+
+def test_paraphrase_reasks_until_coverage(monkeypatch):
+    calls = []
+
+    def complete(self, messages, **kw):
+        calls.append(messages[-1]["content"])
+        block = messages[-1]["content"].split("TEXT:\n", 1)[1]
+        if len(calls) == 1:
+            return json.dumps({"text": block}), dict(USAGE)  # lazy first answer: unchanged
+        return json.dumps({"text": " ".join(w + "x" for w in block.split())}), dict(USAGE)
+
+    monkeypatch.setattr(llm.Chat, "complete", complete)
+    text = "one two three four five six seven eight nine ten eleven twelve"
+    res = llm.paraphrase(text, Options(tokenizer=_WordTok(), min_coverage=0.9, max_passes=3))
+    assert len(calls) == 2 and "previous attempt" in calls[1]
+    assert res.text != text and res.notes["extra_passes"] == 1 and res.notes["low_coverage_blocks"] == 0
+    assert res.notes["min_block_coverage"] >= 0.9
+
+    calls.clear()
+    res = llm.paraphrase(text, Options(tokenizer=None, min_coverage=0.9))
+    assert len(calls) == 1 and res.text == text  # no tokenizer: no check, lazy answer accepted

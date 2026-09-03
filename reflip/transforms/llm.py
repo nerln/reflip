@@ -601,31 +601,71 @@ def _keep_layout(orig: str, new: str) -> tuple[str, bool]:
     return "\n".join(fixed), True
 
 
-def _paraphrase_messages(block: str) -> list[dict]:
+def _paraphrase_messages(block: str, strong: bool = False) -> list[dict]:
     system = ('You rewrite text in your own words. Reply with ONE JSON object {"text": "..."} '
               "containing only the rewritten text, nothing else.")
     user = (
         "Rewrite the following text in your own words, changing the wording throughout (change at "
         "least every third word), while keeping the meaning, tone, length (within 15%), language, "
         "names, numbers, and any markdown structure (bullets, headings, quotes, line breaks, "
-        "emphasis). Keep every line break where it is.\n\nTEXT:\n" + block
+        "emphasis). Keep every line break where it is.\n\n"
     )
-    return [{"role": "system", "content": system}, {"role": "user", "content": user}]
+    if strong:
+        user += (
+            "The previous attempt kept too many of the original word sequences. This time change "
+            "nearly every word and reorder clauses where the meaning allows; keep only names, "
+            "numbers and the meaning.\n\n"
+        )
+    return [{"role": "system", "content": system}, {"role": "user", "content": user + "TEXT:\n" + block}]
 
 
-def _rewrite_block(chat: Chat, block: str, opts: Options, acc: _Usage, stats: dict) -> str:
-    """Rewrite one prose block; on a failed reply the block is returned unchanged."""
-    core = block.strip("\n")
-    lead, trail = block[:block.index(core)], block[block.index(core) + len(core):]
-    messages = _paraphrase_messages(core)
+def _coverage(orig: str, new: str, opts: Options) -> float:
+    """Share of ngram_len-token windows of `new` that contain an edit, under opts.tokenizer."""
+    from ..synthid import intact_fraction
+
+    a = opts.tokenizer(orig, add_special_tokens=False)["input_ids"]
+    b = opts.tokenizer(new, add_special_tokens=False)["input_ids"]
+    return 1.0 - intact_fraction(a, b, opts.ngram_len)
+
+
+def _ask_rewrite(chat: Chat, core: str, opts: Options, acc: _Usage, strong: bool) -> str | None:
+    messages = _paraphrase_messages(core, strong=strong)
     content, usage = chat.complete(messages, json_mode=True, temperature=opts.temperature, seed=opts.seed)
     acc.add(messages, content, usage)
     parsed = _safe_parse(content)
     new = parsed.get("text") if isinstance(parsed, dict) else parsed if isinstance(parsed, str) else None
-    if not isinstance(new, str) or not new.strip():
+    return new if isinstance(new, str) and new.strip() else None
+
+
+def _rewrite_block(chat: Chat, block: str, opts: Options, acc: _Usage, stats: dict) -> str:
+    """Rewrite one prose block; on a failed reply the block is returned unchanged.
+
+    With opts.tokenizer and opts.min_coverage set, the block is checked: if fewer than
+    min_coverage of its ngram windows carry an edit, the model is asked again (up to
+    opts.max_passes attempts, stronger wording) and the best attempt is kept.
+    """
+    core = block.strip("\n")
+    lead, trail = block[:block.index(core)], block[block.index(core) + len(core):]
+    check = opts.tokenizer is not None and opts.min_coverage > 0
+    best, best_cov = None, -1.0
+    for attempt in range(max(1, opts.max_passes) if check else 1):
+        new = _ask_rewrite(chat, core, opts, acc, strong=attempt > 0)
+        if new is None:
+            continue
+        cov = _coverage(core, new, opts) if check else 1.0
+        if cov > best_cov:
+            best, best_cov = new, cov
+        if not check or cov >= opts.min_coverage:
+            break
+        stats["extra_passes"] += 1
+    if best is None:
         stats["blocks_failed"] += 1
         return block
-    new, kept = _keep_layout(core, new.strip("\n").rstrip())
+    if check:
+        stats["min_block_coverage"] = min(stats.get("min_block_coverage", 1.0), round(best_cov, 3))
+        if best_cov < opts.min_coverage:
+            stats["low_coverage_blocks"] += 1
+    new, kept = _keep_layout(core, best.strip("\n").rstrip())
     stats["lines_changed"] += not kept
     return lead + new + trail
 
@@ -635,7 +675,7 @@ def paraphrase(text: str, opts: Options) -> TransformResult:
     """Baseline: ask the model to rewrite every prose block; code and blank lines pass through."""
     chat = _chat(opts)
     acc = _Usage()
-    stats = {"blocks_failed": 0, "lines_changed": 0}
+    stats = {"blocks_failed": 0, "lines_changed": 0, "extra_passes": 0, "low_coverage_blocks": 0}
     out = [_rewrite_block(chat, piece, opts, acc, stats) if rewrite and WORD_RE.search(piece) else piece
            for piece, rewrite in _blocks(text)]
     new_text = "".join(out)

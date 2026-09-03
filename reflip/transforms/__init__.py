@@ -18,7 +18,9 @@ class Options:
     stride: int = 3          # max run of unedited WORDS (infill)
     span: int = 1            # words replaced per slot (infill)
     ngram_len: int = 5       # SynthID context length assumed for token-aware slotting
-    tokenizer: object = None  # optional fast tokenizer for token-aware slotting
+    tokenizer: object = None  # optional fast tokenizer for token-aware slotting and coverage checks
+    min_coverage: float = 0.0  # paraphrase: re-ask while fewer than this share of ngram windows carry an edit
+    max_passes: int = 3        # paraphrase: attempts per block when min_coverage is set
     # rules
     rules: tuple[str, ...] = ()  # empty = all
     language: str = "en"

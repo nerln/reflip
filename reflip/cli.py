@@ -25,7 +25,7 @@ from . import transforms
 from .transforms import Options, Transform, TransformResult
 from .words import word_edit_ratio
 
-DEFAULT_TRANSFORM = "hybrid"
+DEFAULT_TRANSFORM = "paraphrase"
 KNOWN_TRANSFORMS = "{hybrid,infill,paraphrase,rules,unicode}"
 NO_DETECTOR = ("No public detector exists for Claude's key, so a file cannot be checked for the "
                "statistical watermark; use `reflip bench` to measure a transform against the "
@@ -142,7 +142,8 @@ def cmd_run(args: argparse.Namespace) -> int:
         tok = bench.load_tokenizer(args.tokenizer)
     opts = Options(base_url=args.base_url, api_key=args.api_key, model=args.model,
                    temperature=args.temperature, seed=args.seed, stride=args.stride,
-                   span=args.span, ngram_len=args.ngram_len, tokenizer=tok, language=args.lang)
+                   span=args.span, ngram_len=args.ngram_len, tokenizer=tok, language=args.lang,
+                   min_coverage=args.min_coverage if tok is not None else 0.0, max_passes=args.max_passes)
     t0 = time.perf_counter()
     res = run_transform(fn, text, opts)
     seconds = time.perf_counter() - t0
@@ -209,6 +210,9 @@ def build_parser() -> argparse.ArgumentParser:
     run.add_argument("--tokenizer", default=None, help="HF tokenizer name: report window coverage")
     run.add_argument("--tokenaware", action="store_true", help="(implied by --tokenizer) choose slots in token space")
     run.add_argument("--ngram-len", type=int, default=Options.ngram_len)
+    run.add_argument("--min-coverage", type=float, default=0.9,
+                     help="paraphrase: with --tokenizer, re-ask while fewer windows than this carry an edit")
+    run.add_argument("--max-passes", type=int, default=Options.max_passes)
     run.add_argument("--lang", default=Options.language, help="language for the rule pass")
     run.add_argument("-o", "--output", default=None, help="write here instead of stdout")
     run.set_defaults(func=cmd_run)

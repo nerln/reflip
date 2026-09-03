@@ -161,6 +161,8 @@ def options_digest(base: str, opts: Options, tokenizer_name: str | None) -> tupl
         "rules": list(opts.rules),
         "language": opts.language,
         "tokenaware": tokenizer_name if opts.tokenizer is not None else None,
+        "min_coverage": opts.min_coverage,
+        "max_passes": opts.max_passes,
     }
     digest = hashlib.sha1(json.dumps(matter, sort_keys=True).encode("utf-8")).hexdigest()[:12]
     return digest, matter
@@ -506,6 +508,8 @@ def build_parser() -> argparse.ArgumentParser:
     ap.add_argument("--out-dir", default="data/results")
     ap.add_argument("--cache-dir", default="data/cache")
     ap.add_argument("--sweep-stride", default=None, help='e.g. "2,3,4,5,6": adds infill@s rows')
+    ap.add_argument("--min-coverage", type=float, default=0.0, help="paraphrase: re-ask below this window coverage (needs --tokenaware)")
+    ap.add_argument("--max-passes", type=int, default=Options.max_passes)
     ap.add_argument("--no-cache", action="store_true")
     return ap
 
@@ -549,6 +553,7 @@ def main(argv=None) -> int:
                        temperature=args.temperature, seed=args.seed,
                        stride=spec.stride if spec.stride is not None else args.stride,
                        span=args.span, ngram_len=args.ngram_len, tokenizer=tok,
+                       min_coverage=args.min_coverage, max_passes=args.max_passes,
                        language=rec.get("lang", Options.language))
 
     t_all = time.perf_counter()

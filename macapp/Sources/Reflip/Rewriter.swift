@@ -72,15 +72,21 @@ final class Rewriter: ObservableObject {
     private var lastPlain = ""
     private(set) var wasCancelled = false
 
-    func rewrite(text: String, transform: Transform, stride: Int, model: String,
+    func rewrite(text: String, transform: String, stride: Int, model: String,
                  checkCoverage: Bool, onFinish: ((Outcome) -> Void)? = nil) {
         guard !isRunning else { return }
         guard !text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { return }
         // `-` is stdin. The alternative is a temporary file with somebody's draft in it,
         // left in /tmp for the next person with a disk utility.
-        var arguments = ["rewrite", "-", "--transform", transform.rawValue,
+        var arguments = ["rewrite", "-", "--transform", transform,
                          "--json", "--progress"]
-        if transform.takesStride { arguments += ["--stride", String(stride)] }
+        // `--stride` is sent for every transform, not only the ones the picker greys
+        // it in for: reflip's `rewrite` accepts the flag unconditionally and a
+        // transform that does not read it just ignores it. Gating this on
+        // `takesStride` used to mean a stepper a person had actually moved was silently
+        // dropped for any transform this window did not know used it yet, `hybrid`
+        // included the day it was added.
+        arguments += ["--stride", String(stride)]
         if !model.isEmpty { arguments += ["--model", model] }
         if !checkCoverage { arguments.append("--no-coverage") }
         launch(arguments, feeding: text, onFinish: onFinish)

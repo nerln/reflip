@@ -150,6 +150,12 @@ struct Receipt: Decodable, Equatable {
     /// never be drawn as zero: zero means the detector sees every position it saw
     /// before, and that is the one result worth shouting about.
     let coverage: Double?
+    /// reflip's own sentence for why coverage is null: no tokenizer named, transformers
+    /// not installed, or the tokenizer failed to load. Null when coverage was measured.
+    /// The strip used to make up "coverage was not checked" for every one of those cases
+    /// alike, which is exactly the kind of explanation this window is not supposed to
+    /// write for itself.
+    let coverageNote: String?
     let llmCalls: Int
     let promptTokens: Int
     let completionTokens: Int
@@ -160,6 +166,7 @@ struct Receipt: Decodable, Equatable {
     enum CodingKeys: String, CodingKey {
         case transform, model, text, words, edits, coverage, seconds
         case editRatio = "edit_ratio"
+        case coverageNote = "coverage_note"
         case llmCalls = "llm_calls"
         case promptTokens = "prompt_tokens"
         case completionTokens = "completion_tokens"
@@ -177,6 +184,7 @@ struct Receipt: Decodable, Equatable {
         edits = try box.decodeIfPresent(Int.self, forKey: .edits) ?? 0
         editRatio = try box.decodeIfPresent(Double.self, forKey: .editRatio) ?? 0
         coverage = try box.decodeIfPresent(Double.self, forKey: .coverage)
+        coverageNote = try box.decodeIfPresent(String.self, forKey: .coverageNote)
         llmCalls = try box.decodeIfPresent(Int.self, forKey: .llmCalls) ?? 0
         promptTokens = try box.decodeIfPresent(Int.self, forKey: .promptTokens) ?? 0
         completionTokens = try box.decodeIfPresent(Int.self, forKey: .completionTokens) ?? 0
@@ -230,33 +238,93 @@ struct Event: Decodable {
 
 // MARK: - what a person can ask for
 
-/// The four transforms, in the order the README puts them: the one that works, the one
-/// that keeps more of the original, the one that gets part of the way with no model,
-/// and the one that does nothing at all to the watermark.
+/// One transform reflip knows how to apply, named the way the command line names it.
 ///
-/// That last one is here on purpose. It is what most of the "remover" sites do, and a
-/// person who came looking for it should find it, try it, and read the receipt.
-enum Transform: String, CaseIterable, Identifiable {
-    case paraphrase, infill, rules, unicode
+/// This used to be a Swift `enum` with four fixed cases, compiled into the app. The
+/// fifth transform, `hybrid`, was added to reflip and this window did not know it
+/// existed until it was told in words: a tool whose list of transforms lives in the
+/// binary needs a new build to learn about one the command line already knows, which is
+/// the same mistake the model catalogue below exists to avoid. `reflip transforms` is
+/// the list now, asked once when the window opens; the four sentences the README calls
+/// out by name stay here as a lookup, because they are prose written for this window
+/// and not something the command line prints, and anything reflip has that this lookup
+/// does not falls back to its own name, title-cased, rather than disappearing from the
+/// picker or showing raw command-line spelling.
+enum TransformCatalogue {
+    private static let labels: [String: String] = [
+        "paraphrase": "Rewrite every paragraph (best result)",
+        "infill": "Replace one word in every few (keeps more of the original)",
+        "rules": "Word rules only, no model (partial)",
+        "unicode": "Strip invisible characters only (does nothing to the watermark)",
+    ]
 
-    var id: String { rawValue }
-
-    var label: String {
-        switch self {
-        case .paraphrase: return "Rewrite every paragraph (best result)"
-        case .infill: return "Replace one word in every few (keeps more of the original)"
-        case .rules: return "Word rules only, no model (partial)"
-        case .unicode: return "Strip invisible characters only (does nothing to the watermark)"
-        }
+    /// The sentence a person reads before pressing the button.
+    static func label(for name: String) -> String {
+        labels[name] ?? name.replacingOccurrences(of: "_", with: " ").capitalized
     }
 
-    /// Only the slot filler has a stride to set. The stepper stays visible for the
-    /// others and goes grey, because hiding it moved the button out from under the
-    /// pointer every time the transform changed.
-    var takesStride: Bool { self == .infill }
+    /// Whether the stride stepper does anything for this transform. reflip accepts
+    /// `--stride` unconditionally, whether or not a transform reads it, so this decides
+    /// only whether the stepper reads as live or as decoration; a name this window has
+    /// never heard of defaults to "no", the same as `rules` and `unicode` today, because
+    /// a control that looks live but quietly does nothing is worse than one that looks
+    /// grey.
+    static func takesStride(_ name: String) -> Bool {
+        name == "infill" || name == "hybrid"
+    }
 
-    /// Whether this transform needs the model server at all.
-    var needsModel: Bool { self == .paraphrase || self == .infill }
+    /// Whether a rewrite with this transform is expected to need the model server.
+    /// Nothing downstream trusts this for correctness: reflip decides for itself and
+    /// refuses with its own sentence when the server is not ready. It only shapes the
+    /// hint this window shows before that refusal would happen.
+    static func needsModel(_ name: String) -> Bool {
+        name != "rules" && name != "unicode"
+    }
+
+    /// `reflip transforms`, one name per line. Falls back to the four this window has
+    /// always offered if the command could not be asked at all, so a broken path to
+    /// reflip empties the picker rather than the whole window: the strip above already
+    /// says reflip could not be found, and the picker repeating that sentence adds
+    /// nothing.
+    /// `reflip transforms --json`, including the full path and sentence for any of a
+    /// person's own transform files in `~/.reflip/transforms` that failed to load.
+    /// Falls back to the four this window has always offered, with no load errors, if
+    /// the command could not be asked at all or answered with something that would not
+    /// decode: a broken path to reflip empties the picker rather than the whole window,
+    /// and there is nothing to say about files this window was never told about.
+    static func fetch() async -> (names: [String], loadErrors: [String]) {
+        let result = await Cli.run(["transforms", "--json"])
+        guard let body = Cli.lastLine(of: result.out),
+              let parsed = try? JSONDecoder().decode(TransformsResponse.self, from: body),
+              !parsed.transforms.isEmpty
+        else {
+            return (["paraphrase", "infill", "rules", "unicode"], [])
+        }
+        // The same sentence reflip's own plain-text mode prints for one of these
+        // (`cli.py`'s `cmd_transforms`): the full path first, because a person's own
+        // file living in their home directory is not named the way reflip's built-in
+        // transforms are, and "rules did not load" would read as reflip's own transform
+        // being broken rather than a typo in somebody's own script.
+        let errors = parsed.localErrors.map { filename, why in
+            "\(parsed.localDir)/\(filename) did not load. \(why)"
+        }.sorted()
+        return (parsed.transforms, errors)
+    }
+}
+
+/// What `reflip transforms --json` answers.
+struct TransformsResponse: Decodable, Equatable {
+    let transforms: [String]
+    let localDir: String
+    /// File name to the sentence explaining why it did not load. Empty on a machine
+    /// with no transforms of its own, or where every one of them loaded fine.
+    let localErrors: [String: String]
+
+    enum CodingKeys: String, CodingKey {
+        case transforms
+        case localDir = "local_dir"
+        case localErrors = "local_errors"
+    }
 }
 
 // MARK: - the same numbers the terminal prints
@@ -289,5 +357,19 @@ enum Format {
 
     static func count(_ n: Int) -> String {
         n.formatted(.number.grouping(.automatic))
+    }
+
+    /// A detector's z-score, one decimal place. Unlike `seconds`, this can be negative:
+    /// unwatermarked text scores a little below zero, and rounding "-0.28" down to "-0"
+    /// would read as broken math rather than as the good result it is.
+    static func zScore(_ value: Double) -> String {
+        String(format: "%.1f", value)
+    }
+
+    /// The catalogue's own download sizes arrive already in GB, unlike everything else
+    /// in this window, which counts bytes. A second unit through `bytes(_:)` would ask
+    /// it to convert a number that is not one.
+    static func gigabytes(_ value: Double) -> String {
+        String(format: "%.1f GB", value)
     }
 }

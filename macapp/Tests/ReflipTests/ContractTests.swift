@@ -107,6 +107,18 @@ final class ContractTests: XCTestCase {
         XCTAssertEqual(receipt.tokens, 120)
     }
 
+    /// The sentence saying why coverage is null is reflip's, and the strip must show
+    /// that sentence rather than one word made up here for every cause alike.
+    func testCoverageNoteCarriesReflipsOwnReason() throws {
+        let line = """
+        {"v":1,"transform":"paraphrase","model":"qwen3:4b","text":"x","words":10,"edits":7,"edit_ratio":0.7,"coverage":null,"coverage_note":"Coverage was not measured because no tokenizer was named.","llm_calls":1,"prompt_tokens":80,"completion_tokens":40,"seconds":1.2}
+        """
+        let receipt = try JSONDecoder().decode(Receipt.self, from: Data(line.utf8))
+        XCTAssertNil(receipt.coverage)
+        XCTAssertEqual(receipt.coverageNote,
+                       "Coverage was not measured because no tokenizer was named.")
+    }
+
     /// The two transforms that never open a socket have nothing to report about one,
     /// so the counters are absent rather than zero. Requiring them made the two
     /// cheapest transforms the two that failed to decode.
@@ -266,18 +278,175 @@ final class ContractTests: XCTestCase {
         XCTAssertEqual(Format.percent(0.74), "74%")
         XCTAssertEqual(Format.percent(0.035), "4%")
         XCTAssertEqual(Format.seconds(16.42), "16.4")
+        XCTAssertEqual(Format.zScore(18.01), "18.0")
+        // Unwatermarked text can score a little below zero; a z-score is the one figure
+        // in this window that a negative sign is a real, good result rather than a bug.
+        XCTAssertEqual(Format.zScore(-0.288), "-0.3")
+        XCTAssertEqual(Format.gigabytes(2.5), "2.5 GB")
     }
 
     /// The labels are sentences a person reads before pressing the button, so they are
     /// part of the contract rather than decoration.
-    func testOnlyTheSlotFillerHasAStride() {
-        XCTAssertTrue(Transform.infill.takesStride)
-        XCTAssertFalse(Transform.paraphrase.takesStride)
-        XCTAssertFalse(Transform.rules.needsModel)
-        XCTAssertEqual(Transform.allCases.map(\.rawValue),
-                       ["paraphrase", "infill", "rules", "unicode"])
-        XCTAssertEqual(Transform.unicode.label,
+    func testTheFourKnownTransformsHaveTheirOwnSentence() {
+        XCTAssertTrue(TransformCatalogue.takesStride("infill"))
+        XCTAssertTrue(TransformCatalogue.takesStride("hybrid"))
+        XCTAssertFalse(TransformCatalogue.takesStride("paraphrase"))
+        XCTAssertFalse(TransformCatalogue.needsModel("rules"))
+        XCTAssertFalse(TransformCatalogue.needsModel("unicode"))
+        XCTAssertTrue(TransformCatalogue.needsModel("hybrid"))
+        XCTAssertEqual(TransformCatalogue.label(for: "unicode"),
                        "Strip invisible characters only (does nothing to the watermark)")
+        XCTAssertEqual(TransformCatalogue.label(for: "paraphrase"),
+                       "Rewrite every paragraph (best result)")
+    }
+
+    /// A transform this window has never heard of still gets a readable label rather
+    /// than disappearing from the picker or showing raw command-line spelling: this is
+    /// the whole point of reading the list from `reflip transforms` instead of
+    /// compiling it in.
+    func testAnUnknownTransformFallsBackToItsTitleCasedName() {
+        XCTAssertEqual(TransformCatalogue.label(for: "hybrid"), "Hybrid")
+        XCTAssertEqual(TransformCatalogue.label(for: "future_transform"), "Future Transform")
+        XCTAssertFalse(TransformCatalogue.takesStride("future_transform"))
+        XCTAssertTrue(TransformCatalogue.needsModel("future_transform"))
+    }
+
+    // MARK: - `reflip transforms --json`
+
+    /// The shape a real run printed: `reflip transforms --json` on this machine, with
+    /// no transforms of the person's own.
+    func testTransformsResponseIsReadWhole() throws {
+        let line = """
+        {"v": 1, "transforms": ["hybrid", "infill", "paraphrase", "rules", "unicode"], "local_dir": "/Users/eugenionerelli/.reflip/transforms", "local_errors": {}}
+        """
+        let parsed = try JSONDecoder().decode(TransformsResponse.self, from: Data(line.utf8))
+        XCTAssertEqual(parsed.transforms, ["hybrid", "infill", "paraphrase", "rules", "unicode"])
+        XCTAssertEqual(parsed.localDir, "/Users/eugenionerelli/.reflip/transforms")
+        XCTAssertTrue(parsed.localErrors.isEmpty)
+    }
+
+    /// A person's own transform file that did not load: silence about it would look
+    /// exactly like a transform they never wrote, which is why the window is expected
+    /// to compose reflip's own path, file name and sentence into one line rather than
+    /// drop the entry.
+    func testATransformFileThatDidNotLoadCarriesItsOwnSentence() throws {
+        let line = """
+        {"v": 1, "transforms": ["infill", "paraphrase", "rules", "unicode"], "local_dir": "/Users/eugenionerelli/.reflip/transforms", "local_errors": {"my_transform.py": "SyntaxError: invalid syntax (my_transform.py, line 4)"}}
+        """
+        let parsed = try JSONDecoder().decode(TransformsResponse.self, from: Data(line.utf8))
+        XCTAssertEqual(parsed.localErrors["my_transform.py"],
+                       "SyntaxError: invalid syntax (my_transform.py, line 4)")
+        XCTAssertFalse(parsed.transforms.contains("my_transform"))
+    }
+
+    // MARK: - `reflip models --recommended --json`
+
+    func testTheCatalogueIsReadWhole() throws {
+        let line = """
+        {"v":1,"recommended":[{"ref":"qwen3:4b-instruct-2507-q4_K_M","params":"4B","size_gb":2.5,"good_at":"Fluent English at a speed that keeps a rewrite under twenty seconds.","watch_out":"Its Italian is noticeably weaker than its English.","languages":"English well, other European languages adequately","measured":"24 watermarked texts: detector z from 17.6 to 0.28.","watermarks":false,"source":"ollama","tags":["default","fast"],"installed":true},{"ref":"gemma3:4b","params":"4B","size_gb":3.3,"good_at":"Stronger on languages other than English.","watch_out":"Google watermarks the Gemini service, not these open weights.","languages":"Strong multilingual","measured":null,"watermarks":false,"source":"ollama","tags":["multilingual"],"installed":false}],"default":"qwen3:4b-instruct-2507-q4_K_M","installed":["qwen3:4b-instruct-2507-q4_K_M"],"server_reason":null}
+        """
+        let recommended = try JSONDecoder().decode(RecommendedModels.self, from: Data(line.utf8))
+        XCTAssertEqual(recommended.recommended.count, 2)
+        XCTAssertEqual(recommended.defaultModel, "qwen3:4b-instruct-2507-q4_K_M")
+        XCTAssertTrue(recommended.recommended[0].installed)
+        XCTAssertFalse(recommended.recommended[1].installed)
+        XCTAssertEqual(recommended.recommended[0].sizeGB, 2.5, accuracy: 0.0001)
+        XCTAssertEqual(recommended.recommended[0].measured,
+                       "24 watermarked texts: detector z from 17.6 to 0.28.")
+        XCTAssertNil(recommended.recommended[1].measured)
+        XCTAssertNil(recommended.serverReason)
+    }
+
+    /// The server could not be read at all, which the catalogue survives: the rows
+    /// still decode, and the reason is carried rather than dropped.
+    func testTheCatalogueSurvivesAServerThatCouldNotBeRead() throws {
+        let line = """
+        {"v":1,"recommended":[],"default":"qwen3:4b-instruct-2507-q4_K_M","installed":[],"server_reason":"Ollama is not installed on this Mac."}
+        """
+        let recommended = try JSONDecoder().decode(RecommendedModels.self, from: Data(line.utf8))
+        XCTAssertTrue(recommended.recommended.isEmpty)
+        XCTAssertEqual(recommended.serverReason, "Ollama is not installed on this Mac.")
+    }
+
+    // MARK: - `reflip models --search QUERY --json`
+
+    func testSearchResultsAreReadWhole() throws {
+        let line = """
+        {"v":1,"query":"gemma 3","results":[{"ref":"hf.co/MaziyarPanahi/gemma-3-4b-it-GGUF:Q4_K_M","repo":"MaziyarPanahi/gemma-3-4b-it-GGUF","downloads":162779,"likes":20,"gated":false,"page":"https://huggingface.co/MaziyarPanahi/gemma-3-4b-it-GGUF","refused":null},{"ref":"hf.co/AnkitAI/Parable-Qwen3-4B-Claude-Fable-5-GGUF:Q4_K_M","repo":"AnkitAI/Parable-Qwen3-4B-Claude-Fable-5-GGUF","downloads":448624,"likes":15,"gated":false,"page":"https://huggingface.co/AnkitAI/Parable-Qwen3-4B-Claude-Fable-5-GGUF","refused":"Claude models launched since 2 August 2026 watermark their own text."}],"note":"These are search results, not recommendations."}
+        """
+        let search = try JSONDecoder().decode(SearchResults.self, from: Data(line.utf8))
+        XCTAssertEqual(search.query, "gemma 3")
+        XCTAssertEqual(search.results.count, 2)
+        XCTAssertNil(search.results[0].refused)
+        XCTAssertEqual(search.results[1].refused,
+                       "Claude models launched since 2 August 2026 watermark their own text.")
+        XCTAssertEqual(search.note, "These are search results, not recommendations.")
+    }
+
+    /// Hugging Face could not be reached at all: an empty list with a sentence saying
+    /// why, not an error this window has to invent its own words for.
+    func testASearchThatFoundNothingCarriesTheReason() throws {
+        let line = """
+        {"v":1,"query":"gemma 3","results":[],"note":"Hugging Face could not be reached: [Errno 8] nodename nor servname provided, or not known"}
+        """
+        let search = try JSONDecoder().decode(SearchResults.self, from: Data(line.utf8))
+        XCTAssertTrue(search.results.isEmpty)
+        XCTAssertTrue(search.note?.hasPrefix("Hugging Face could not be reached") == true)
+    }
+
+    // MARK: - `reflip models --measure MODEL --json`
+
+    /// The shape a real measurement printed, copied from a live run of `reflip models
+    /// --measure qwen3:4b-instruct-2507-q4_K_M --samples 1 --json` rather than made up.
+    func testAMeasurementIsReadWhole() throws {
+        let line = """
+        {"v": 1, "ok": true, "model": "qwen3:4b-instruct-2507-q4_K_M", "samples": 1, "errors": 0, "z_before": 18.01, "z_after": -0.288, "coverage": 0.9839, "edit_ratio": 0.7983, "seconds": 23.41, "tokens_per_1k_words": 4403.0, "coverage_note": null, "rows": [{"id": "wm-000"}], "verdict": "Good for this job on this machine: the detector was left inside the range of unwatermarked text."}
+        """
+        let measured = try JSONDecoder().decode(MeasureResult.self, from: Data(line.utf8))
+        XCTAssertTrue(measured.ok)
+        XCTAssertEqual(measured.model, "qwen3:4b-instruct-2507-q4_K_M")
+        XCTAssertNil(measured.reason)
+        XCTAssertEqual(measured.samples, 1)
+        XCTAssertEqual(measured.errors, 0)
+        XCTAssertEqual(measured.zBefore ?? 0, 18.01, accuracy: 0.0001)
+        XCTAssertEqual(measured.zAfter ?? 0, -0.288, accuracy: 0.0001)
+        XCTAssertEqual(measured.coverage ?? 0, 0.9839, accuracy: 0.0001)
+        XCTAssertEqual(measured.tokensPer1kWords ?? 0, 4403.0, accuracy: 0.0001)
+        XCTAssertTrue(measured.verdict?.hasPrefix("Good for this job") == true)
+        // `rows` is not decoded: the row in this window shows the aggregate figures
+        // above, not a per-sample breakdown, so a field this struct never reads is not
+        // a field it needs to survive a shape change in.
+    }
+
+    /// A model that watermarks its own output, or a machine with no benchmark corpus:
+    /// the refusal shape carries only three fields, and every figure must come back
+    /// nil rather than the decode failing on the ones that are simply missing.
+    func testARefusedMeasurementCarriesOnlyItsReason() throws {
+        let line = """
+        {"v":1,"ok":false,"model":"claude-3-haiku","reason":"Claude models launched since 2 August 2026 watermark their own text."}
+        """
+        let measured = try JSONDecoder().decode(MeasureResult.self, from: Data(line.utf8))
+        XCTAssertFalse(measured.ok)
+        XCTAssertEqual(measured.model, "claude-3-haiku")
+        XCTAssertEqual(measured.reason,
+                       "Claude models launched since 2 August 2026 watermark their own text.")
+        XCTAssertNil(measured.zBefore)
+        XCTAssertNil(measured.zAfter)
+        XCTAssertNil(measured.coverage)
+        XCTAssertNil(measured.verdict)
+    }
+
+    /// Every sample errored: `ok` is false but there is no `reason`, because nothing
+    /// refused the request, it just did not produce anything usable. The row has to
+    /// show something other than a blank when `reason` is absent too.
+    func testAMeasurementWhereEveryRowFailedIsStillNotOk() throws {
+        let line = """
+        {"v":1,"ok":false,"model":"broken-model","samples":1,"errors":1,"z_before":null,"z_after":null,"coverage":null,"edit_ratio":null,"seconds":null,"tokens_per_1k_words":null,"coverage_note":null,"rows":[{"id":"wm-000","error":"connection refused"}],"verdict":null}
+        """
+        let measured = try JSONDecoder().decode(MeasureResult.self, from: Data(line.utf8))
+        XCTAssertFalse(measured.ok)
+        XCTAssertNil(measured.reason)
+        XCTAssertEqual(measured.errors, 1)
     }
 
     // MARK: - the sample the pictures are taken of

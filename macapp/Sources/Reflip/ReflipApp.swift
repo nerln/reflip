@@ -22,6 +22,10 @@ struct Entry {
 
 struct ReflipApp: App {
     @NSApplicationDelegateAdaptor(AppDelegate.self) private var delegate
+    // Apps get environment actions the same as views do; this is what lets a Commands
+    // button and the server strip's own button open the same window by its id instead
+    // of each keeping a reference to an `NSWindow`.
+    @Environment(\.openWindow) private var openWindow
 
     var body: some Scene {
         WindowGroup("reflip") {
@@ -45,6 +49,9 @@ struct ReflipApp: App {
                 Divider()
                 Button("Refresh the server") { post(.reflipRefresh) }
                     .keyboardShortcut("r", modifiers: .command)
+                Divider()
+                Button("Models...") { openWindow(id: "models") }
+                    .keyboardShortcut("m", modifiers: [.command, .shift])
             }
             // Only when REFLIP_SHOTS says where to put them. An application that offers
             // to photograph itself in the File menu of an ordinary install is answering
@@ -56,6 +63,15 @@ struct ReflipApp: App {
                 }
             }
         }
+
+        // A `Window`, not another `WindowGroup`: exactly one Models window can be open
+        // at a time, and asking for it a second time brings the existing one forward
+        // instead of opening a duplicate that would race the first over the one
+        // download or measurement slot.
+        Window("Models", id: "models") {
+            ModelsWindow()
+        }
+        .defaultSize(width: 820, height: 680)
 
         Settings {
             SettingsView()
@@ -73,11 +89,21 @@ extension Notification.Name {
     static let reflipRewrite = Notification.Name("dev.nerelli.reflip.rewrite")
     static let reflipStop = Notification.Name("dev.nerelli.reflip.stop")
     static let reflipRefresh = Notification.Name("dev.nerelli.reflip.refresh")
+    /// Posted by the Models window with the chosen ref as `object`, when "Use this one"
+    /// is pressed there. The main window listens and updates its own picker; the two
+    /// windows otherwise share no state, so this is how a choice made in one reaches
+    /// the other without a live reference passed between them.
+    static let reflipModelChosen = Notification.Name("dev.nerelli.reflip.modelChosen")
 }
 
 /// Exists for two lines, both about a child process.
 final class AppDelegate: NSObject, NSApplicationDelegate {
-    @MainActor static var onQuit: (() -> Void)?
+    /// Every window with a child process to clean up appends its own closure here on
+    /// appearing, rather than the single slot this used to be: the Models window can be
+    /// open at the same time as the main one, each with its own download or
+    /// measurement in flight, and quitting has to take all of them with it, not just
+    /// whichever window set this last.
+    @MainActor static var onQuitHandlers: [() -> Void] = []
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         // The text goes into the child through a pipe, and Stop kills the child while
@@ -99,10 +125,13 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     func application(_ application: NSApplication, open urls: [URL]) { }
 
     func applicationWillTerminate(_ notification: Notification) {
-        // Quitting has to take the child with it. A terminated app leaves reflip
-        // running with a model resident and no window left to say what is holding two
-        // and a half gigabytes.
-        MainActor.assumeIsolated { AppDelegate.onQuit?() }
+        // Quitting has to take every child with it. A terminated app leaves reflip
+        // running with a model resident and no window left to say what is holding the
+        // memory, whether that download or measurement was started from the main
+        // window or the Models one.
+        MainActor.assumeIsolated {
+            for handler in AppDelegate.onQuitHandlers { handler() }
+        }
     }
 }
 

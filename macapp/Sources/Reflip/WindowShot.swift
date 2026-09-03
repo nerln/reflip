@@ -13,11 +13,46 @@ import SwiftUI
 ///     REFLIP_SHOTS=1 open -W -n --env REFLIP_SHOTS=1 -a Reflip.app --args \
 ///         --sample --shot ../docs/img/window.png --appearance dark
 ///
+/// `--shot-models` photographs the Models window instead of the main one, opening it
+/// the same way the "Models…" button does rather than by any shortcut this file takes
+/// for itself:
+///
+///     REFLIP_SHOTS=1 open -W -n --env REFLIP_SHOTS=1 -a Reflip.app --args \
+///         --sample --shot-models --shot ../docs/img/models.png --appearance dark
+///
 /// With `REFLIP_SHOTS` set to a folder and no `--shot`, the File menu grows an item
 /// instead and the pictures are taken by hand.
 enum Shot {
 
     static var isEnabled: Bool { directory != nil }
+
+    /// Whether this launch asked for a picture of the Models window rather than the
+    /// main one. Read here and acted on in `ContentView`, which is the one place with
+    /// an `openWindow` action to call: this enum has no view to open a window from.
+    static var wantsModelsWindow: Bool {
+        CommandLine.arguments.contains("--shot-models")
+    }
+
+    /// Waits for the Models window to exist, then keys and fronts it explicitly.
+    ///
+    /// `openWindow(id:)` alone was not enough: launched by `open` rather than by a
+    /// person clicking anything, the new window came up visible but the main window
+    /// stayed key, and the picture this whole file exists to take was of the wrong
+    /// window every time. Polled rather than awaited once, because the window does not
+    /// exist the instant `openWindow` returns; it is created a turn or two later.
+    @MainActor
+    static func bringModelsWindowForward() async {
+        guard wantsModelsWindow else { return }
+        for _ in 0..<30 {
+            if let window = NSApp.windows.first(where: { $0.title == "Models" && $0.isVisible }) {
+                window.makeKeyAndOrderFront(nil)
+                trace("brought the Models window forward")
+                return
+            }
+            try? await Task.sleep(nanoseconds: 100_000_000)
+        }
+        trace("the Models window never appeared to bring forward")
+    }
 
     static var directory: URL? {
         guard let raw = ProcessInfo.processInfo.environment["REFLIP_SHOTS"], !raw.isEmpty
@@ -68,9 +103,14 @@ enum Shot {
             // terminal in front of half of it.
             NSApp.activate(ignoringOtherApps: true)
             // Long enough for the first `reflip server status` to answer and for the
-            // sample to have been seeded by the view.
-            try? await Task.sleep(nanoseconds: 1_500_000_000)
-            trace("\(NSApp.windows.filter(\.isVisible).count) window on screen")
+            // sample to have been seeded by the view. The Models window opens its own
+            // two commands on appearing and gets extra time for both to answer, so the
+            // picture is not taken of a window still saying "Asking reflip...".
+            let wait: UInt64 = wantsModelsWindow ? 2_500_000_000 : 1_500_000_000
+            try? await Task.sleep(nanoseconds: wait)
+            let visible = NSApp.windows.filter(\.isVisible)
+            trace("\(visible.count) window on screen: "
+                 + visible.map { $0.title.isEmpty ? "(untitled)" : $0.title }.joined(separator: ", "))
 
             let url = URL(fileURLWithPath: (target as NSString).expandingTildeInPath)
             var ok = false
@@ -150,10 +190,23 @@ enum Shot {
     private static func write(to url: URL) -> Bool {
         // A save panel is a window of its own, and so is a sheet. Photographing the
         // parent alone gives a picture of the window with the panel missing, which is a
-        // picture of a different program. The list is front to back, so sheets first.
-        guard let parent = NSApp.windows.first(where: {
+        // picture of a different program.
+        let regular = NSApp.windows.filter {
             $0.isVisible && $0.sheetParent == nil && $0.className != "NSStatusBarWindow"
-        }) ?? NSApp.keyWindow else { return false }
+        }
+        // `--shot-models` picks its window by title rather than by trusting an order or
+        // a key state. Launched by `open` rather than by a click, this process's own
+        // windows never actually became key here: `NSApp.keyWindow` measured nil at
+        // capture time even right after `makeKeyAndOrderFront`, and `NSApp.windows`
+        // turned out to list windows in creation order rather than front-to-back, so
+        // with two regular windows open the main one was photographed every time
+        // regardless of which was actually on top. Asking by title, once there can be
+        // more than one regular window, is the one thing this file does not have to
+        // guess about.
+        let parent = wantsModelsWindow
+            ? regular.first(where: { $0.title == "Models" })
+            : regular.first
+        guard let parent = parent ?? NSApp.keyWindow else { return false }
         let sheets = NSApp.windows.filter { $0.isVisible && $0.sheetParent === parent }
         var ids = (sheets + [parent]).map { UnsafeRawPointer(bitPattern: UInt($0.windowNumber)) }
         guard let list = CFArrayCreate(nil, &ids, ids.count, nil),

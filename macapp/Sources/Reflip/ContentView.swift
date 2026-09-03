@@ -15,9 +15,20 @@ import SwiftUI
 struct ContentView: View {
     @StateObject private var server = ServerStore()
     @StateObject private var rewriter = Rewriter()
+    @Environment(\.openWindow) private var openWindow
 
     @State private var source = ""
-    @State private var transform: Transform = .paraphrase
+    // The four names this window has always offered, so the picker has something to
+    // show in the instant before `TransformCatalogue.fetch()` answers, and everything
+    // it has ever offered if that command cannot be run at all. `reflip transforms` is
+    // asked once, on appear, and replaces this list with whatever it says, `hybrid`
+    // included: see `TransformCatalogue` for why the list itself is never compiled in.
+    @State private var transformNames = ["paraphrase", "infill", "rules", "unicode"]
+    /// The full path and sentence for any of a person's own transform files in
+    /// `~/.reflip/transforms` that failed to load. Empty on every machine that has none
+    /// of its own, which is almost every machine.
+    @State private var transformLoadErrors: [String] = []
+    @State private var transform = "paraphrase"
     @State private var stride = 3
     @State private var checkCoverage = true
     @State private var model = Cli.model
@@ -41,16 +52,34 @@ struct ContentView: View {
         .frame(minWidth: 620, minHeight: 620)
         .onAppear {
             server.reload()
-            // Quitting has to take the children with it. Held as one closure rather
-            // than two references on the delegate, so that the delegate knows nothing
-            // about either of these objects.
+            // Quitting has to take the children with it. Appended rather than assigned:
+            // the Models window appends its own closure here too when it is open, and
+            // the two must not overwrite each other.
             let engine = rewriter
             let strip = server
-            AppDelegate.onQuit = {
+            AppDelegate.onQuitHandlers.append {
                 engine.terminateChild()
                 strip.terminateChild()
             }
+            Task {
+                let (names, errors) = await TransformCatalogue.fetch()
+                transformNames = names
+                transformLoadErrors = errors
+                // The chosen transform might not be in the fresh list on the very first
+                // launch of a build that renamed one; falling back to the first name
+                // keeps the picker's selection inside its own list of choices.
+                if !names.contains(transform), let first = names.first { transform = first }
+            }
             Shot.arrange(rewriter: rewriter, source: $source)
+            // `--shot-models` asks for a picture of the Models window instead of this
+            // one, opened the same way the strip's own button opens it rather than by
+            // any shortcut around `openWindow`. Bringing it forward is a second step
+            // because opening it left the main window key in a launch started by
+            // `open` rather than by a click.
+            if Shot.wantsModelsWindow {
+                openWindow(id: "models")
+                Task { await Shot.bringModelsWindowForward() }
+            }
         }
         .onReceive(tick) { _ in server.reload() }
         .onReceive(NotificationCenter.default.publisher(
@@ -63,6 +92,12 @@ struct ContentView: View {
         }
         .onReceive(NotificationCenter.default.publisher(for: .reflipStop)) { _ in
             rewriter.cancel()
+        }
+        // The Models window posts this when "Use this one" is pressed there. The two
+        // windows share no live object, so this is the only way a choice made in one
+        // reaches the picker in the other.
+        .onReceive(NotificationCenter.default.publisher(for: .reflipModelChosen)) { note in
+            if let chosen = note.object as? String, !chosen.isEmpty { model = chosen }
         }
         .onChange(of: server.status) { _, fresh in
             // The picker starts on whatever reflip would have chosen for itself.
@@ -106,7 +141,7 @@ struct ContentView: View {
                     .foregroundStyle(.secondary)
                 Button("Paste") { paste() }
             }
-            editor(text: $source)
+            editor(text: $source, placeholder: "Paste or type the text to rewrite here.")
         }
     }
 
@@ -124,7 +159,8 @@ struct ContentView: View {
             // Read-only, and still selectable. A disabled TextEditor cannot be
             // selected at all, and taking the text away is the whole point of the
             // panel: the setter is dropped instead, so typing into it changes nothing.
-            editor(text: Binding(get: { rewriter.text }, set: { _ in }))
+            editor(text: Binding(get: { rewriter.text }, set: { _ in }),
+                  placeholder: "The rewritten text will appear here.")
         }
     }
 
@@ -137,20 +173,32 @@ struct ContentView: View {
     private var controls: some View {
         VStack(alignment: .leading, spacing: 8) {
             Picker("Transform", selection: $transform) {
-                ForEach(Transform.allCases) { option in
-                    Text(option.label).tag(option)
+                ForEach(transformNames, id: \.self) { name in
+                    Text(TransformCatalogue.label(for: name)).tag(name)
                 }
             }
             .labelsHidden()
             .frame(maxWidth: .infinity, alignment: .leading)
 
+            // A file in this person's own `~/.reflip/transforms` that did not load,
+            // reported here because the picker right above it is the one place on
+            // screen already talking about which transforms exist. Silence about it
+            // would look exactly like a transform they never wrote.
+            ForEach(transformLoadErrors, id: \.self) { error in
+                Label(error, systemImage: "exclamationmark.triangle.fill")
+                    .font(.caption)
+                    .foregroundStyle(.orange)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+
             HStack(spacing: 16) {
                 Stepper(value: $stride, in: 2...10) {
                     Text("One edit every \(stride) words")
                         .monospacedDigit()
-                        .foregroundStyle(transform.takesStride ? .primary : .secondary)
+                        .foregroundStyle(TransformCatalogue.takesStride(transform)
+                                         ? .primary : .secondary)
                 }
-                .disabled(!transform.takesStride)
+                .disabled(!TransformCatalogue.takesStride(transform))
                 .fixedSize()
 
                 Toggle("Check the coverage", isOn: $checkCoverage)
@@ -166,21 +214,38 @@ struct ContentView: View {
                         .buttonStyle(.borderedProminent)
                         .keyboardShortcut("r", modifiers: [.command, .shift])
                         .disabled(!canRewrite)
+                        .help(canRewrite ? "Send the text above to reflip and show what "
+                              + "comes back."
+                              : "Paste or type some text above first.")
                 }
             }
         }
     }
 
-    private func editor(text: Binding<String>) -> some View {
-        TextEditor(text: text)
-            .font(.body)
-            .scrollContentBackground(.hidden)
-            .padding(6)
-            .background(RoundedRectangle(cornerRadius: 6)
-                .fill(Color(nsColor: .textBackgroundColor)))
-            .overlay(RoundedRectangle(cornerRadius: 6)
-                .strokeBorder(Color.secondary.opacity(0.25)))
-            .frame(minHeight: 140, maxHeight: .infinity)
+    /// `TextEditor` has no placeholder of its own, so the first thing a first-time user
+    /// saw in either box was a blank rectangle with no hint that anything belonged in
+    /// it. The placeholder is drawn behind the editor rather than as its content, so it
+    /// can never be selected, copied or mistaken for real text.
+    private func editor(text: Binding<String>, placeholder: String) -> some View {
+        ZStack(alignment: .topLeading) {
+            if text.wrappedValue.isEmpty {
+                Text(placeholder)
+                    .font(.body)
+                    .foregroundStyle(.tertiary)
+                    .padding(.horizontal, 11)
+                    .padding(.vertical, 14)
+                    .allowsHitTesting(false)
+            }
+            TextEditor(text: text)
+                .font(.body)
+                .scrollContentBackground(.hidden)
+                .padding(6)
+        }
+        .background(RoundedRectangle(cornerRadius: 6)
+            .fill(Color(nsColor: .textBackgroundColor)))
+        .overlay(RoundedRectangle(cornerRadius: 6)
+            .strokeBorder(Color.secondary.opacity(0.25)))
+        .frame(minHeight: 140, maxHeight: .infinity)
     }
 
     // MARK: - what the window knows about itself

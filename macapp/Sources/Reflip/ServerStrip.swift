@@ -14,6 +14,11 @@ struct ServerStrip: View {
     let onStop: () -> Void
     let onDownload: () -> Void
 
+    /// Opens the Models window by its id. Declared right on this view rather than
+    /// threaded through as another closure parameter, the same as any other SwiftUI
+    /// environment action.
+    @Environment(\.openWindow) private var openWindow
+
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             HStack(alignment: .top, spacing: 10) {
@@ -48,10 +53,28 @@ struct ServerStrip: View {
 
                 Button(buttonLabel) { press() }
                     .disabled(!canPress)
+
+                Button("Models…") { openWindow(id: "models") }
+                    .help("Choose, download and measure the model reflip rewrites with.")
             }
 
             if store.isPulling {
                 PullRow(pull: store.pull) { store.cancelDownload() }
+            }
+
+            // A first-time launch has Ollama installed but nothing downloaded, and the
+            // picker above is empty until something is: this is the one sentence in
+            // the strip that this window writes for itself rather than reading from
+            // reflip, because it points at a feature of the window, not at a fact
+            // reflip has an opinion about.
+            if showsFirstRunHint {
+                HStack(spacing: 8) {
+                    Label("No model is downloaded yet.", systemImage: "arrow.down.circle")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                    Button("Open Models") { openWindow(id: "models") }
+                        .controlSize(.small)
+                }
             }
 
             // reflip's own words for why the machine is not what the free memory
@@ -96,6 +119,14 @@ struct ServerStrip: View {
 
     private var machineReasons: [String] {
         store.status?.machine.reasons ?? []
+    }
+
+    /// Ollama is there and answering, and it has never had a model put into it. Gated
+    /// on `installed` so this is not shown while Ollama itself is missing, which
+    /// already has its own, more urgent sentence above.
+    private var showsFirstRunHint: Bool {
+        guard let status = store.status else { return false }
+        return status.server.installed && status.server.models.isEmpty
     }
 
     /// reflip itself could not be run, so there is no state at all. Kept apart from a

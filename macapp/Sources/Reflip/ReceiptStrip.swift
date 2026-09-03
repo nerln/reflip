@@ -37,16 +37,31 @@ struct ReceiptStrip: View {
     private func figures(_ receipt: Receipt) -> some View {
         HStack(alignment: .firstTextBaseline, spacing: 22) {
             figure(Format.percent(receipt.editRatio), "of the words changed")
+                .help("The share of words in the result that are not the same word "
+                      + "found in the same place in the original text.")
 
             if let coverage = receipt.coverage {
                 figure(Format.percent(coverage), "of the detector windows carry an edit",
                        tint: coverage >= Self.enough ? .green : .orange)
+                    .help("The share of five-token windows a watermark detector checks "
+                          + "that contain at least one edited word. At or above "
+                          + "\(Format.percent(Self.enough)) every position the detector "
+                          + "scores has been touched.")
             } else {
+                // The caption stays short so a long sentence cannot stretch this row;
+                // reflip's own reason for why, when it has one, lives in the tooltip
+                // instead of this window inventing one generic reason for every cause:
+                // no tokenizer named, `transformers` not installed, or `--no-coverage`.
                 figure("not measured", "coverage was not checked", tint: .secondary)
+                    .help(receipt.coverageNote ?? "Coverage was not checked for this "
+                          + "rewrite.")
             }
 
             figure(Format.count(receipt.tokens), "tokens spent")
+                .help("Prompt and completion tokens billed by the model across every "
+                      + "call this rewrite made.")
             figure(Format.seconds(receipt.seconds), "seconds")
+                .help("Wall-clock time this rewrite took, start to finish.")
 
             Spacer(minLength: 12)
 

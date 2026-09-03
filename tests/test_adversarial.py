@@ -133,11 +133,12 @@ def test_rules_never_raises_and_preserves_protected_spans(name):
     text = ADVERSARIAL[name]
     got, counts = apply_rules(text)  # must not raise on any input in the corpus
     assert isinstance(got, str)
-    # rules.py's own _PROTECTED regex covers URLs (and Unix-style paths, not exercised
-    # here); it does not claim Windows-style paths either, so only the URL is checked.
-    token = "https://en.wikipedia.org/wiki/Test_(disambiguation)"
-    if token in text:
-        assert token in got, f"{name}: protected URL lost or altered"
+    # rules.py's own _PROTECTED regex covers URLs and both path shapes (see
+    # test_rules_leave_paths_of_every_shape_alone for the dedicated, denser cases).
+    for token in ("https://en.wikipedia.org/wiki/Test_(disambiguation)",
+                  "C:\\Users\\test\\Documents\\report (draft).docx"):
+        if token in text:
+            assert token in got, f"{name}: protected token lost or altered"
 
 
 @pytest.mark.parametrize("name", list(ADVERSARIAL))

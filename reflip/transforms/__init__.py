@@ -21,6 +21,14 @@ class Options:
     tokenizer: object = None  # optional fast tokenizer for token-aware slotting and coverage checks
     min_coverage: float = 0.0  # paraphrase: re-ask while fewer than this share of ngram windows carry an edit
     max_passes: int = 3        # paraphrase: attempts per block when min_coverage is set
+    # How many requests to keep in flight. The pieces of a text are independent of each
+    # other, and a model server holds several at once, so this is the difference between
+    # a minute and twenty seconds. reflip.mac.snapshot() picks the number from what the
+    # machine has left; one is always safe.
+    workers: int = 1
+    # Called from worker threads as (phase, done, total, message). Whoever passes one is
+    # responsible for its thread safety; the command line's writes to stderr under a lock.
+    on_progress: object = None
     # rules
     rules: tuple[str, ...] = ()  # empty = all
     language: str = "en"

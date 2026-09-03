@@ -1,0 +1,16 @@
+#!/usr/bin/env python3
+"""The `reflip` command, runnable from a clone that was never installed.
+
+The window in macapp/ looks for this file next to the app bundle, so somebody who
+downloaded the repository and built the app gets a working tool without pip.
+"""
+import os
+import sys
+
+ROOT = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
+sys.path.insert(0, ROOT)
+
+from reflip.cli import main  # noqa: E402
+
+if __name__ == "__main__":
+    sys.exit(main())

@@ -32,6 +32,9 @@ is preserved exactly: replacements are applied by offset with ``apply_replacemen
 """
 from __future__ import annotations
 
+import threading
+from concurrent.futures import ThreadPoolExecutor
+
 import bisect
 import difflib
 import json
@@ -178,8 +181,15 @@ class _Usage:
         self.prompt = 0
         self.completion = 0
         self.estimated = False
+        # Requests run on several threads. A token count that is only nearly right is
+        # worse than none, because it goes into a table people compare.
+        self.lock = threading.Lock()
 
     def add(self, messages: list[dict], content: str, usage: dict) -> None:
+        with self.lock:
+            self._add(messages, content, usage)
+
+    def _add(self, messages: list[dict], content: str, usage: dict) -> None:
         self.calls += 1
         p, c = usage.get("prompt_tokens", 0), usage.get("completion_tokens", 0)
         if not p:
@@ -196,6 +206,70 @@ class _Usage:
         if self.estimated:
             res.notes["tokens_estimated"] = True
         return res
+
+
+class _Counters(dict):
+    """A dict whose increments from several threads do not lose counts."""
+
+    def __init__(self, initial: dict) -> None:
+        super().__init__(initial)
+        self._lock = threading.Lock()
+
+    def bump(self, key: str, by: int = 1) -> None:
+        with self._lock:
+            self[key] = self.get(key, 0) + by
+
+    def least(self, key: str, value) -> None:
+        with self._lock:
+            self[key] = value if key not in self else min(self[key], value)
+
+
+class _Progress:
+    """Counts finished pieces and tells the caller, from whichever thread finished one."""
+
+    def __init__(self, opts: Options, phase: str, total: int) -> None:
+        self.fn = opts.on_progress
+        self.phase = phase
+        self.total = total
+        self.done = 0
+        self.lock = threading.Lock()
+        self.announce(0, f"{phase}: 0 of {total}")
+
+    def announce(self, done: int, message: str) -> None:
+        if self.fn:
+            self.fn(self.phase, done, self.total, message)
+
+    def one(self) -> None:
+        with self.lock:
+            self.done += 1
+            done = self.done
+        self.announce(done, f"{self.phase}: {done} of {self.total}")
+
+
+def _map_ordered(fn, items: list, opts: Options, phase: str) -> list:
+    """Run fn over items, at most opts.workers at a time, and return the results in order.
+
+    Threads rather than processes: each of these calls spends its life inside urllib
+    waiting for the model server, so the interpreter lock is released the whole time and
+    a process pool would only add the cost of shipping the text between them.
+    """
+    if not items:
+        return []
+    progress = _Progress(opts, phase, len(items))
+    workers = max(1, min(int(opts.workers or 1), len(items)))
+    if workers == 1:
+        out = []
+        for it in items:
+            out.append(fn(it))
+            progress.one()
+        return out
+    with ThreadPoolExecutor(max_workers=workers, thread_name_prefix="reflip") as pool:
+        futures = [pool.submit(fn, it) for it in items]
+        results = []
+        for f in futures:
+            results.append(f.result())
+            progress.one()
+    return results
 
 
 def _chat(opts: Options) -> Chat:
@@ -524,8 +598,11 @@ def _fill_slots(chat: Chat, text: str, ws: list[Word], slots: list[Slot], opts: 
     fills: dict[int, str] = {}
     chunks = _chunks(text, ws, slots)
     stats["chunks"] = len(chunks)
-    for a, b, cs in chunks:
-        fills.update(_request_fills(chat, _chunk_messages(text, a, b, cs, max_words), by_n, opts, max_words, acc, stats))
+    for got in _map_ordered(
+            lambda c: _request_fills(chat, _chunk_messages(text, c[0], c[1], c[2], max_words),
+                                     by_n, opts, max_words, acc, stats),
+            chunks, opts, "Filling in words"):
+        fills.update(got)
     missing = [s for s in slots if s.n not in fills]
     if missing and _RETRY_UNFILLED:
         stats["retried"] = len(missing)
@@ -657,16 +734,17 @@ def _rewrite_block(chat: Chat, block: str, opts: Options, acc: _Usage, stats: di
             best, best_cov = new, cov
         if not check or cov >= opts.min_coverage:
             break
-        stats["extra_passes"] += 1
+        stats.bump("extra_passes")
     if best is None:
-        stats["blocks_failed"] += 1
+        stats.bump("blocks_failed")
         return block
     if check:
-        stats["min_block_coverage"] = min(stats.get("min_block_coverage", 1.0), round(best_cov, 3))
+        stats.least("min_block_coverage", round(best_cov, 3))
         if best_cov < opts.min_coverage:
-            stats["low_coverage_blocks"] += 1
+            stats.bump("low_coverage_blocks")
     new, kept = _keep_layout(core, best.strip("\n").rstrip())
-    stats["lines_changed"] += not kept
+    if not kept:
+        stats.bump("lines_changed")
     return lead + new + trail
 
 
@@ -675,13 +753,22 @@ def paraphrase(text: str, opts: Options) -> TransformResult:
     """Baseline: ask the model to rewrite every prose block; code and blank lines pass through."""
     chat = _chat(opts)
     acc = _Usage()
-    stats = {"blocks_failed": 0, "lines_changed": 0, "extra_passes": 0, "low_coverage_blocks": 0}
-    out = [_rewrite_block(chat, piece, opts, acc, stats) if rewrite and WORD_RE.search(piece) else piece
-           for piece, rewrite in _blocks(text)]
+    # Counters incremented from worker threads: a plain dict loses counts on +=.
+    stats = _Counters({"blocks_failed": 0, "lines_changed": 0, "extra_passes": 0,
+                       "low_coverage_blocks": 0})
+    pieces = _blocks(text)
+    todo = [i for i, (piece, rewrite) in enumerate(pieces) if rewrite and WORD_RE.search(piece)]
+    rewritten = _map_ordered(lambda i: _rewrite_block(chat, pieces[i][0], opts, acc, stats),
+                             todo, opts, "Rewriting")
+    out = [piece for piece, _ in pieces]
+    for i, piece in zip(todo, rewritten):
+        out[i] = piece
     new_text = "".join(out)
     n_words = len(words(text))
     edits = round(word_edit_ratio(text, new_text) * n_words)
-    return acc.fill(TransformResult(text=new_text, edits=edits, notes={"words": n_words, **stats}))
+    return acc.fill(TransformResult(text=new_text, edits=edits,
+                                    notes={"words": n_words, "workers": max(1, int(opts.workers or 1)),
+                                           **dict(stats)}))
 
 
 # --------------------------------------------------------------------------- hybrid

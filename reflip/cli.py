@@ -224,6 +224,13 @@ def build_parser() -> argparse.ArgumentParser:
     lst = sub.add_parser("transforms", help="list registered transforms")
     lst.set_defaults(func=cmd_transforms)
 
+    # The machine-facing half: server, models, pull, rewrite. They live in agent.py
+    # because their output is a wire format and a list of things a person can do should
+    # not read like one.
+    from .agent import add_parsers
+
+    add_parsers(sub, Options)
+
     # listed for --help only: main() forwards their argv before argparse touches it
     sub.add_parser("bench", help="run the verification bench (see `reflip bench --help`)", add_help=False)
     sub.add_parser("corpus", help="generate the benchmark corpus (see `reflip corpus --help`)", add_help=False)

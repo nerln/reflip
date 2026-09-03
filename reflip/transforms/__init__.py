@@ -73,3 +73,52 @@ def _load_all() -> None:
     from . import unicode as _u  # noqa: F401
     from . import rules as _r  # noqa: F401
     from . import llm as _l  # noqa: F401
+
+    _load_local()
+
+
+LOCAL_ERRORS: dict[str, str] = {}  # file name -> the sentence explaining why it did not load
+_LOADED_LOCAL = False
+
+
+def local_dir():
+    """Where a person's own transforms live: ~/.reflip/transforms, or REFLIP_HOME's."""
+    import os
+    from pathlib import Path
+
+    return Path(os.environ.get("REFLIP_HOME", Path.home() / ".reflip")) / "transforms"
+
+
+def _load_local() -> None:
+    """Import every .py file in the local transforms directory, once.
+
+    This is what keeps the list of transforms out of the binary. A person who wants a
+    rewrite of their own, or a house style enforced before the model ever sees the text,
+    drops a file in that directory with a `@register("name")` function in it and the name
+    appears in `reflip transforms` and in the window's picker without rebuilding either.
+
+    A file that fails to import is recorded and skipped rather than taking the tool down
+    with it: the four transforms that ship here are the ones people rely on, and a typo in
+    somebody's experiment must not stop them working.
+    """
+    global _LOADED_LOCAL
+    if _LOADED_LOCAL:
+        return
+    _LOADED_LOCAL = True
+    import importlib.util
+
+    directory = local_dir()
+    try:
+        files = sorted(p for p in directory.glob("*.py") if not p.name.startswith("_"))
+    except OSError:
+        return
+    for path in files:
+        spec = importlib.util.spec_from_file_location(f"reflip_local_{path.stem}", path)
+        if spec is None or spec.loader is None:
+            LOCAL_ERRORS[path.name] = "That file could not be read as Python."
+            continue
+        module = importlib.util.module_from_spec(spec)
+        try:
+            spec.loader.exec_module(module)
+        except Exception as e:  # noqa: BLE001 - somebody else's file, any failure is theirs
+            LOCAL_ERRORS[path.name] = f"{type(e).__name__}: {' '.join(str(e).split())[:160]}"

@@ -35,7 +35,14 @@ _PROTECTED = re.compile(
     r"|`[^`\n]+`"                       # inline code
     r"|https?://\S+|www\.\S+"           # URLs
     r"|[\w.+-]+@[\w-]+\.[\w.-]+"        # e-mails
-    r"|(?<![\w/])(?:~|\.{1,2})?/[\w.\-]+(?:/[\w.\-]+)+"  # file paths
+    # File paths, in the two shapes people write them. The Unix one has been here from the
+    # start; the Windows one was missing in both this module and llm.py, so a rule could
+    # flip the spelling of a directory name and hand back a path to a file nobody has.
+    # A segment allows one balanced (...) group, and a space directly before one ("report
+    # (draft).docx", the "(x86)" half of "Program Files (x86)"): see llm.py's
+    # _WINDOWS_PATH_RE for why a bare, un-parenthesised space still ends the segment.
+    r"""|(?<![A-Za-z0-9])[A-Za-z]:[\\/](?:[^\s<>\[\]]|(?: +[\w(][^\s<>\[\]/\\:]*){1,3}(?=[\\/])|(?: +[^\s<>\[\]/\\:]*\.[A-Za-z0-9]{1,8})(?![^\s<>\[\]]))*|\\\\[^\s<>\[\]/\\:]+(?:\\(?:[^\s<>\[\]]|(?: +[\w(][^\s<>\[\]/\\:]*){1,3}(?=[\\/])|(?: +[^\s<>\[\]/\\:]*\.[A-Za-z0-9]{1,8})(?![^\s<>\[\]]))*)+"""
+    r"""|(?<![\w/:~.])(?:~|\.{1,2})?/(?:[\w.\-]|\([^\s<>()\[\]]*\)|(?: +[\w(][\w.\-()]*){1,3}(?=/)|(?: +[^\s<>\[\]/\\:]*\.[A-Za-z0-9]{1,8})(?![^\s<>\[\]]))+(?:/(?:[\w.\-]|\([^\s<>()\[\]]*\)|(?: +[\w(][\w.\-()]*){1,3}(?=/)|(?: +[^\s<>\[\]/\\:]*\.[A-Za-z0-9]{1,8})(?![^\s<>\[\]]))+)*/?"""
     , re.S,
 )
 

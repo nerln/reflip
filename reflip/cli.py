@@ -172,8 +172,19 @@ def cmd_transforms(args: argparse.Namespace) -> int:
         names = transforms.names()
     except ImportError as e:
         raise CliError(f"transform modules not importable: {e}") from e
+    if getattr(args, "json", False):
+        import json
+
+        print(json.dumps({"v": 1, "transforms": names,
+                          "local_dir": str(transforms.local_dir()),
+                          "local_errors": transforms.LOCAL_ERRORS}, ensure_ascii=False))
+        return 0
     for name in names:
         print(name)
+    # A file in the local directory that did not import is the person's own, and silence
+    # about it looks exactly like a transform they never wrote.
+    for filename, why in transforms.LOCAL_ERRORS.items():
+        print(f"{transforms.local_dir() / filename} did not load. {why}", file=sys.stderr)
     return 0
 
 
@@ -221,7 +232,8 @@ def build_parser() -> argparse.ArgumentParser:
     check.add_argument("file")
     check.set_defaults(func=cmd_check)
 
-    lst = sub.add_parser("transforms", help="list registered transforms")
+    lst = sub.add_parser("transforms", help="list registered transforms, including your own")
+    lst.add_argument("--json", action="store_true", help="names, the local directory and any file that failed to load")
     lst.set_defaults(func=cmd_transforms)
 
     # The machine-facing half: server, models, pull, rewrite. They live in agent.py

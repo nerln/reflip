@@ -54,13 +54,22 @@ def _content_score(w: Word) -> float:
     return 0.3
 
 
-def choose_slots(ws: list[Word], stride: int, already: set[int] | None = None) -> list[int]:
+def choose_slots(ws: list[Word], stride: int, already: set[int] | None = None,
+                 eligible: set[int] | None = None) -> list[int]:
     """Indices of words to edit so that every run of `stride` consecutive words has one.
 
     Greedy: walk the words; as soon as `stride` words have gone by without an edit, pick
     the best word inside that run (content word first, then the latest one so that edits
     are as sparse as the constraint allows). Words in `already` count as edited (they
     are not returned), which is how the hybrid transform reports what the rules already did.
+
+    `eligible`, when given, restricts a pick to that set of indices when the run has at
+    least one of them; a run made entirely of ineligible words still returns its best word
+    (the caller decides what to do with a pick it cannot use). Without this, a run that
+    mixes a protected word (a URL, a code span) with an ordinary one could pick the
+    protected word on a tie-break by index, discard it downstream as unusable, and leave
+    the ordinary word next to it unedited for no reason: this is the bug that paid for the
+    parameter, found by feeding infill a sentence with an inline code span in it.
     """
     if stride < 1:
         raise ValueError("stride must be >= 1")
@@ -73,19 +82,23 @@ def choose_slots(ws: list[Word], stride: int, already: set[int] | None = None) -
             continue
         if i - last >= stride:
             lo, hi = last + 1, i
-            best = max(range(lo, hi + 1), key=lambda j: (_content_score(ws[j]), j))
+            window = range(lo, hi + 1)
+            cands = [j for j in window if eligible is None or j in eligible] or list(window)
+            best = max(cands, key=lambda j: (_content_score(ws[j]), j))
             chosen.append(best)
             last = best
     return chosen
 
 
 def choose_slots_tokenaware(text: str, ws: list[Word], tokenizer, ngram_len: int,
-                            already: set[int] | None = None) -> list[int]:
+                            already: set[int] | None = None,
+                            eligible: set[int] | None = None) -> list[int]:
     """Like choose_slots, but the constraint is in *tokens* of the given tokenizer:
     every window of ngram_len consecutive tokens must contain a token of an edited word.
 
     Requires a fast tokenizer (offset_mapping). The edited word's FIRST token is taken as
     the edit position, which is conservative (a shorter replacement still covers).
+    `eligible` has the same meaning and the same reason as in choose_slots.
     """
     enc = tokenizer(text, add_special_tokens=False, return_offsets_mapping=True)
     offsets = enc["offset_mapping"]
@@ -116,7 +129,8 @@ def choose_slots_tokenaware(text: str, ws: list[Word], tokenizer, ngram_len: int
             if not cands:
                 # only punctuation/whitespace tokens in the window: extend to the next word
                 continue
-            best = max(cands, key=lambda j: (_content_score(ws[j]), j))
+            use = [c for c in cands if eligible is None or c in eligible] or cands
+            best = max(use, key=lambda j: (_content_score(ws[j]), j))
             if chosen and best == chosen[-1]:
                 continue
             chosen.append(best)

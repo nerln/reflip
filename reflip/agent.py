@@ -359,36 +359,43 @@ def cmd_rewrite(args: argparse.Namespace) -> int:
     from .cli import CliError, get_transform, read_input, run_transform
 
     reporter = Reporter(args.progress)
-    text = read_input(args.file)
-    needs_model = args.transform in ("paraphrase", "infill", "hybrid")
-
-    if needs_model:
-        picture = _picture(args.base_url_host, args.model)
-        if not picture["ready"]:
-            reporter.error(picture["reason"] or "The model server is not ready.")
-            if args.json:
-                emit({"v": V, "ok": False, "reason": picture["reason"], "server": picture["server"]})
-            else:
-                print(f"error: {picture['reason']}", file=sys.stderr)
-            return 1
-
-    workers = args.workers if args.workers else snapshot().workers
-    explicit_tok = args.tokenizer is not None
-    tok_name = args.tokenizer or (None if args.no_coverage else DEFAULT_COVERAGE_TOKENIZER)
-    tok, cov_note = _tokenizer(tok_name, explicit_tok)
-
-    base_url = chat_endpoint(args.base_url_host, args.base_url, Options.base_url)
-    opts = Options(base_url=base_url, api_key=args.api_key, model=args.model,
-                   temperature=args.temperature, seed=args.seed, stride=args.stride,
-                   span=args.span, ngram_len=args.ngram_len, tokenizer=tok,
-                   language=args.lang, workers=workers, on_progress=reporter,
-                   min_coverage=args.min_coverage if tok is not None else 0.0,
-                   max_passes=args.max_passes)
-
-    fn = get_transform(args.transform)
-    reporter("Starting", 0, 1, f"Rewriting with {args.model}" if needs_model else "Applying rules")
-    t0 = time.perf_counter()
     try:
+        # Everything that can fail before there is a result lives in this one try, not
+        # just the transform call: a missing file (read_input) or an unknown transform
+        # name (get_transform) used to raise past this function entirely, which meant
+        # `--json` printed nothing at all to stdout for those two failures, only a bare
+        # line on stderr. A caller parsing stdout as JSON on every --json run, per the
+        # documented contract, got an empty string and an exception of its own instead
+        # of the {"ok": false, "reason": ...} object every other refusal returns.
+        text = read_input(args.file)
+        needs_model = args.transform in ("paraphrase", "infill", "hybrid")
+
+        if needs_model:
+            picture = _picture(args.base_url_host, args.model)
+            if not picture["ready"]:
+                reporter.error(picture["reason"] or "The model server is not ready.")
+                if args.json:
+                    emit({"v": V, "ok": False, "reason": picture["reason"], "server": picture["server"]})
+                else:
+                    print(f"error: {picture['reason']}", file=sys.stderr)
+                return 1
+
+        workers = args.workers if args.workers else snapshot().workers
+        explicit_tok = args.tokenizer is not None
+        tok_name = args.tokenizer or (None if args.no_coverage else DEFAULT_COVERAGE_TOKENIZER)
+        tok, cov_note = _tokenizer(tok_name, explicit_tok)
+
+        base_url = chat_endpoint(args.base_url_host, args.base_url, Options.base_url)
+        opts = Options(base_url=base_url, api_key=args.api_key, model=args.model,
+                       temperature=args.temperature, seed=args.seed, stride=args.stride,
+                       span=args.span, ngram_len=args.ngram_len, tokenizer=tok,
+                       language=args.lang, workers=workers, on_progress=reporter,
+                       min_coverage=args.min_coverage if tok is not None else 0.0,
+                       max_passes=args.max_passes)
+
+        fn = get_transform(args.transform)
+        reporter("Starting", 0, 1, f"Rewriting with {args.model}" if needs_model else "Applying rules")
+        t0 = time.perf_counter()
         res = run_transform(fn, text, opts)
     except CliError as e:
         reporter.error(str(e))

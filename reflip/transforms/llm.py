@@ -285,9 +285,31 @@ def _safe_parse(content: str) -> Any | None:
 
 _FENCE_OPEN_RE = re.compile(r"^[ \t]{0,3}(`{3,}|~{3,})")
 _INLINE_CODE_RE = re.compile(r"`+[^`\n]+`+")
-_URL_RE = re.compile(r"(?:https?://|www\.)[^\s<>()\[\]]+")
+# A run of ordinary URL characters, or one balanced (...) group, repeated: this is what lets
+# a Wikipedia-style link with a disambiguation suffix (".../Test_(disambiguation)") match
+# whole. The plain "no parens at all" version this replaced stopped at the first "(", which
+# left the ")" and everything before it inside as ordinary, editable text: adversarial input
+# with a parenthesised URL is what found this ("URLs with parentheses" in the test brief).
+_URL_RE = re.compile(r"(?:https?://|www\.)(?:[^\s<>()\[\]]|\([^\s<>()\[\]]*\))+")
 _EMAIL_RE = re.compile(r"[\w.+-]+@[\w-]+(?:\.[\w-]+)+")
-_LINK_TARGET_RE = re.compile(r"\]\([^)\s]+\)")
+# Same balanced-paren allowance for a markdown link target, so `[text](.../Test_(x))` closes
+# on the real final ")" instead of the first one, which is the one inside the URL.
+_LINK_TARGET_RE = re.compile(r"\]\((?:[^()\s]|\([^()\s]*\))*\)")
+# A file path is a name, and a rewriter that changes a name has broken the text. The two
+# shapes: a Windows path starting "X:\" or "X:/", and a Unix path with at least one
+# separator in it (rules.py has held the Unix one from the start; this module had
+# neither, so the words inside "C:\Users\test\Documents\report (draft).docx" were
+# ordinary editable text and came back as somebody else's file). A segment allows one
+# balanced (...) group and up to three more space-separated words before the next
+# separator or a file extension, which is what "report (draft).docx" and "Program Files
+# (x86)" both need; a space that never resolves to a separator or an extension still ends
+# the match, so an ordinary sentence following the path is not swallowed with it.
+_WINDOWS_PATH_RE = re.compile(
+    r"""(?<![A-Za-z0-9])[A-Za-z]:[\\/](?:[^\s<>\[\]]|(?: +[\w(][^\s<>\[\]/\\:]*){1,3}(?=[\\/])|(?: +[^\s<>\[\]/\\:]*\.[A-Za-z0-9]{1,8})(?![^\s<>\[\]]))*|\\\\[^\s<>\[\]/\\:]+(?:\\(?:[^\s<>\[\]]|(?: +[\w(][^\s<>\[\]/\\:]*){1,3}(?=[\\/])|(?: +[^\s<>\[\]/\\:]*\.[A-Za-z0-9]{1,8})(?![^\s<>\[\]]))*)+"""
+)
+_UNIX_PATH_RE = re.compile(
+    r"""(?<![\w/:~.])(?:~|\.{1,2})?/(?:[\w.\-]|\([^\s<>()\[\]]*\)|(?: +[\w(][\w.\-()]*){1,3}(?=/)|(?: +[^\s<>\[\]/\\:]*\.[A-Za-z0-9]{1,8})(?![^\s<>\[\]]))+(?:/(?:[\w.\-]|\([^\s<>()\[\]]*\)|(?: +[\w(][\w.\-()]*){1,3}(?=/)|(?: +[^\s<>\[\]/\\:]*\.[A-Za-z0-9]{1,8})(?![^\s<>\[\]]))+)*/?"""
+)
 
 
 def _fence_spans(text: str) -> list[tuple[int, int]]:
@@ -310,9 +332,15 @@ def _fence_spans(text: str) -> list[tuple[int, int]]:
 
 
 def _protected_spans_base(text: str) -> list[tuple[int, int]]:
-    """Regions no slot may touch: fenced code, inline code, URLs, e-mails, link targets."""
+    """Regions no slot may touch: fenced code, inline code, URLs, e-mails, link targets, paths.
+
+    URLs are matched before the path patterns and the caller merges overlaps, so the "//"
+    in "https://x/y" cannot be read as the start of a Unix path halfway through an address
+    that is already protected whole.
+    """
     spans = _fence_spans(text)
-    for rx in (_INLINE_CODE_RE, _URL_RE, _EMAIL_RE, _LINK_TARGET_RE):
+    for rx in (_INLINE_CODE_RE, _URL_RE, _EMAIL_RE, _LINK_TARGET_RE,
+               _WINDOWS_PATH_RE, _UNIX_PATH_RE):
         spans.extend((m.start(), m.end()) for m in rx.finditer(text))
     return sorted(spans)
 
@@ -389,11 +417,17 @@ def _build_slots(text: str, ws: list[Word], idxs: list[int], span: int,
 
 
 def _plan_slots(text: str, ws: list[Word], opts: Options, already: set[int] | None) -> tuple[list[Slot], int]:
+    protected = _protected_spans(text)
+    # Told which words are unusable, choose_slots prefers a real one over a protected one
+    # in the same window instead of tie-breaking onto the protected word and wasting the
+    # window's only pick (see the docstring in words.choose_slots).
+    eligible = {i for i, w in enumerate(ws) if _editable(w, protected)}
     if opts.tokenizer is not None:
-        idxs = choose_slots_tokenaware(text, ws, opts.tokenizer, opts.ngram_len, already=already)
+        idxs = choose_slots_tokenaware(text, ws, opts.tokenizer, opts.ngram_len, already=already,
+                                       eligible=eligible)
     else:
-        idxs = choose_slots(ws, opts.stride, already=already)
-    return _build_slots(text, ws, idxs, max(1, opts.span), _protected_spans(text))
+        idxs = choose_slots(ws, opts.stride, already=already, eligible=eligible)
+    return _build_slots(text, ws, idxs, max(1, opts.span), protected)
 
 
 def _paragraphs(text: str) -> list[tuple[int, int]]:

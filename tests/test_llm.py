@@ -412,9 +412,9 @@ def test_hybrid_passes_already_and_keeps_stride(monkeypatch):
     seen: dict = {}
     real = llm.choose_slots
 
-    def spy(ws, stride, already=None):
+    def spy(ws, stride, already=None, eligible=None):
         seen["already"] = set(already or ())
-        return real(ws, stride, already=already)
+        return real(ws, stride, already=already, eligible=eligible)
 
     monkeypatch.setattr(llm, "choose_slots", spy)
     stride = 3

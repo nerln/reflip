@@ -99,10 +99,14 @@ def cmd_server(args: argparse.Namespace) -> int:
     elif action == "stop":
         _, message = srv.stop(args.base_url_host)
     elif action == "warm":
-        ok, message = srv.warm(args.model, args.base_url_host)
+        _, message = srv.warm(args.model, args.base_url_host)
     picture = _picture(args.base_url_host, args.model)
-    if message:
-        picture["message"] = message
+    # Always a sentence, even for a plain status. The window shows what this says and
+    # writes nothing of its own, so a missing message left it saying that reflip had
+    # exited successfully and told it nothing.
+    picture["message"] = message or picture["reason"] or (
+        f"The model server is up at {picture['server']['url']}."
+        if picture["server"]["running"] else "The model server is not running.")
     if args.json:
         emit(picture)
     else:

@@ -1,0 +1,7 @@
+# Everything here is built from the text beside it, and none of it belongs in a clone.
+# rada keeps the same three lines in its root .gitignore; this one is scoped to macapp/
+# so that the Python package's own ignore file stays the Python package's business.
+.build/
+Reflip.app/
+# Drawn by make-icon.sh from Tools/make-icon.swift, like the bundle itself.
+Resources/Reflip.icns

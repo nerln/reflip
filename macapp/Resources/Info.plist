@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>CFBundleName</key>
+    <string>Reflip</string>
+    <key>CFBundleDisplayName</key>
+    <string>Reflip</string>
+    <key>CFBundleExecutable</key>
+    <string>Reflip</string>
+    <key>CFBundleIconFile</key>
+    <string>Reflip</string>
+    <key>CFBundleIdentifier</key>
+    <string>dev.nerelli.reflip</string>
+    <key>CFBundlePackageType</key>
+    <string>APPL</string>
+    <key>CFBundleShortVersionString</key>
+    <string>0.1.0</string>
+    <key>CFBundleVersion</key>
+    <string>1</string>
+    <key>LSMinimumSystemVersion</key>
+    <string>14.0</string>
+    <key>NSHighResolutionCapable</key>
+    <true/>
+    <key>NSHumanReadableCopyright</key>
+    <string>Eugenio Nerelli</string>
+    <!-- A rewrite may be in flight. Sudden termination lets the system kill the app
+         without running applicationWillTerminate, and that handler is the one line
+         that takes the child process with it: the window would go and reflip would
+         carry on with a model resident and nothing left on screen to say so. The text
+         a person pasted lives only in the window, too, and has not been written
+         anywhere it could be recovered from. -->
+    <key>NSSupportsSuddenTermination</key>
+    <false/>
+    <!-- AppKit reads the command line as pairs of a default and its value, and hands
+         whatever is left over to the application as files to open. `--sample` takes no
+         value, so it swallowed `--shot` as one and left the path to the picture behind
+         as an unknown argument: the app was launched as though it had been asked to
+         open a PNG, a request a window group cannot answer, and it started with no
+         window at all. Four seconds later it photographed nothing and quit. Nothing
+         here opens documents, so nothing is lost by saying so. -->
+    <key>NSTreatUnknownArgumentsAsOpen</key>
+    <false/>
+</dict>
+</plist>

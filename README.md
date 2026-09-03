@@ -130,6 +130,32 @@ reading, and every refusal it produces comes with the sentence explaining it. On
 machine a 343-word text took 20 seconds one piece at a time and 15 seconds four at a
 time, with identical output.
 
+## Which model to rewrite with
+
+```bash
+reflip models --recommended        # what is worth trying, and what each one is bad at
+reflip models --search "gemma 3"   # anything published as a GGUF file on Hugging Face
+reflip models --measure gemma3:4b  # run it over watermarked texts and see what the detector said
+```
+
+The catalogue is opinions, and it says so. `--measure` is the way to disagree with it: it
+runs the model over watermarked texts from the benchmark corpus and reports the detector
+before and after, the coverage, the share of words changed, the seconds and the tokens,
+then one sentence saying whether that is good enough. The default model measures at
+detector z 13.3 down to 0.65 with 98% coverage on this laptop.
+
+Anything published as GGUF can be pulled straight from Hugging Face, because the local
+server accepts a repository reference:
+
+```bash
+reflip pull hf.co/bartowski/Qwen2.5-7B-Instruct-GGUF:Q4_K_M
+```
+
+One rule is not a preference. A model that watermarks its own output is refused rather
+than ranked, because rewriting with it swaps one watermark for another. That covers
+Claude models launched since August 2026 and the Gemini service. Gemma's open weights are
+fine: SynthID is applied while sampling, and a local server does not apply it.
+
 ## Benchmark
 
 Reproduce: `reflip corpus --attn eager` (generates the watermarked and control texts, about 15 minutes on an M-series Mac), then `reflip bench --sweep-stride 2,3,4`. Transform outputs are cached, so re-scoring with other settings does not call the model again.

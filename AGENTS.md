@@ -56,6 +56,22 @@ Two facts, and neither of them is "the watermark is gone":
 Claiming a removal that was checked against the real detector would be a lie, and it is
 the lie every other tool in this space tells.
 
+## Choosing a model
+
+```bash
+reflip models --recommended --json     # the catalogue, each entry with what it is bad at
+reflip models --search "gemma 3" --json  # Hugging Face, anything in GGUF form
+reflip models --measure NAME --samples 3 --json --progress
+```
+
+`--measure` is the one that settles an argument: it rewrites watermarked texts with that
+model and reports `z_before`, `z_after`, `coverage`, `edit_ratio`, `seconds`,
+`tokens_per_1k_words` and a `verdict` sentence. Prefer it over the catalogue's opinion
+whenever the choice matters.
+
+A model that watermarks its own output is refused with a sentence and exit 1. Do not work
+around that: rewriting Claude's text with Claude leaves it marked.
+
 ## Choosing a transform
 
 `--transform paraphrase` is the default and the one that works. `infill` changes fewer

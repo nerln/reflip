@@ -1,0 +1,472 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>reflip: a rewriter that measures the watermark it removes</title>
+<meta name="description" content="Claude's text has carried a statistical watermark since 2 August 2026. reflip rewrites it with a local model, then runs the published detector before and after and prints the score, instead of deleting invisible characters and calling it done.">
+<meta property="og:title" content="reflip">
+<meta property="og:description" content="A local rewriter for Claude's statistical watermark, measured against the published detector before and after every rewrite.">
+<meta property="og:type" content="website">
+<link rel="canonical" href="https://nerln.github.io/reflip/">
+<meta name="theme-color" content="#ECEDE9" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0C1112" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="img/mark.svg" type="image/svg+xml">
+
+<style>
+/* ===========================================================================
+   reflip.
+   One self-contained file: no webfonts, no analytics, no third party at all.
+   Colour and rhythm follow porto's house style; the accent is reflip's own,
+   Rim, a coin's gold edge, from docs/brand.md.
+=========================================================================== */
+
+:root{
+  color-scheme:light dark;
+  --paper:#ECEDE9;
+  --paper-raised:#F6F6F1;
+  --ink:#0C1112;
+  --muted:#55605F;
+  --faint:#788483;
+  --line:rgba(12,17,18,.14);
+  --line-strong:rgba(12,17,18,.30);
+  --rim:#7D5C1A;
+  --rim-soft:rgba(216,182,92,.16);
+  --warn:#9C554D;
+  --warn-line:#C4685E;
+  --shadow:rgba(12,30,32,.14);
+  --sans:"Avenir Next",Avenir,"Helvetica Neue",Helvetica,Arial,sans-serif;
+  --mono:"SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;
+  --shell:min(1180px,calc(100vw - 64px));
+  --measure:66ch;
+}
+@media(prefers-color-scheme:dark){
+  :root{
+    --paper:#0C1112;
+    --paper-raised:#161C1D;
+    --ink:#ECEDE9;
+    --muted:#9BA6A5;
+    --faint:#71807E;
+    --line:rgba(236,237,233,.16);
+    --line-strong:rgba(236,237,233,.32);
+    --rim:#D8B65C;
+    --rim-soft:rgba(216,182,92,.14);
+    --warn:#E08579;
+    --warn-line:#C4685E;
+    --shadow:rgba(0,0,0,.4);
+  }
+}
+
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;scroll-behavior:smooth;overflow-x:clip}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+
+body{
+  margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);
+  font-size:clamp(1rem,.96rem + .2vw,1.0625rem);line-height:1.65;
+  -webkit-font-smoothing:antialiased;overflow-x:clip;
+}
+body::selection{background:var(--rim);color:var(--ink)}
+img{max-width:100%;height:auto;display:block}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--rim);outline-offset:3px}
+.skip-link{position:fixed;z-index:100;top:10px;left:10px;padding:10px 14px;background:var(--ink);color:var(--paper);transform:translateY(-160%);transition:transform .2s ease}
+.skip-link:focus-visible{transform:translateY(0)}
+
+.shell{width:var(--shell);margin-inline:auto}
+.narrow{max-width:var(--measure)}
+
+section{padding-block:clamp(3.25rem,7vw,6.5rem)}
+section+section{border-top:1px solid var(--line)}
+
+.eyebrow{
+  display:flex;align-items:center;gap:12px;
+  font:650 .72rem/1.2 var(--mono);letter-spacing:.15em;text-transform:uppercase;
+  color:var(--rim);margin:0 0 1.4rem;
+}
+.eyebrow::before{content:"";display:block;width:24px;height:1px;background:currentColor}
+
+h1,h2,h3{font-weight:700;letter-spacing:-.02em;line-height:1.08;margin:0}
+h1{font-size:clamp(2.3rem,1.5rem + 3.6vw,3.9rem);letter-spacing:-.035em;line-height:.98;max-width:15ch}
+h2{font-size:clamp(1.7rem,1.15rem + 2.2vw,2.7rem);max-width:19ch}
+h3{font-size:clamp(1.08rem,1rem + .5vw,1.3rem);letter-spacing:-.008em;line-height:1.3}
+
+p{max-width:var(--measure)}
+.lede{font-size:clamp(1.07rem,1rem + .4vw,1.24rem);color:var(--muted);line-height:1.58}
+.lede+p{margin-top:1.1rem}
+.small{font-size:.9rem;color:var(--faint)}
+
+code{font-family:var(--mono);font-size:.92em}
+p code,li code,td code{background:var(--paper-raised);border:1px solid var(--line);border-radius:4px;padding:.05em .35em}
+
+/* === header ============================================================= */
+
+.site-header{padding-block:1.9rem}
+.header-row{display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap}
+.brand{display:inline-flex;align-items:center;gap:10px;font:700 .95rem/1 var(--mono);letter-spacing:.02em}
+.brand img{width:24px;height:24px;border-radius:5px}
+.site-nav{display:flex;gap:26px;font:600 .74rem/1 var(--mono);letter-spacing:.07em;text-transform:uppercase;color:var(--muted)}
+.site-nav a{position:relative;padding:6px 0}
+.site-nav a::after{content:"";position:absolute;left:0;right:0;bottom:1px;height:1px;background:var(--rim);transform:scaleX(0);transform-origin:right;transition:transform .25s ease}
+.site-nav a:hover::after,.site-nav a:focus-visible::after{transform:scaleX(1);transform-origin:left}
+@media(max-width:680px){.site-nav{display:none}}
+
+/* === hero ================================================================ */
+
+.hero{padding-block:clamp(1.5rem,4vw,3rem) clamp(3.5rem,7vw,5.5rem)}
+.hero h1 em{font-style:normal;color:var(--rim)}
+.hero .lede{margin:1.6rem 0 0;max-width:52ch}
+.actions{display:flex;flex-wrap:wrap;align-items:center;gap:1.6rem;margin-top:2.2rem}
+.btn{display:inline-flex;align-items:center;gap:.6rem;font:700 .76rem/1 var(--mono);letter-spacing:.06em;text-transform:uppercase;transition:transform .2s ease,background-color .2s ease,border-color .2s ease}
+.btn-solid{min-height:48px;padding:0 20px;background:var(--ink);color:var(--paper)}
+.btn-solid:hover{transform:translateY(-2px);background:var(--rim);color:var(--ink)}
+.btn-text{color:var(--rim);border-bottom:1px solid var(--line-strong);padding:12px 0}
+.btn-text:hover{border-color:var(--rim)}
+
+/* === blocks =============================================================== */
+
+.cards{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));
+  gap:1px;margin-top:2.75rem;background:var(--line);border:1px solid var(--line);
+  border-radius:10px;overflow:hidden;
+}
+.card{background:var(--paper-raised);padding:1.6rem 1.5rem}
+.card .glyph{display:block;font:650 .7rem/1 var(--mono);letter-spacing:.13em;text-transform:uppercase;color:var(--rim);margin-bottom:.9rem}
+.card h3{margin-bottom:.6rem}
+.card p{color:var(--muted);font-size:.95rem;margin:0;max-width:none}
+.card--honest{border-top:2px solid var(--rim)}
+
+pre{
+  background:var(--paper-raised);border:1px solid var(--line);border-radius:9px;
+  padding:1rem 1.2rem;overflow-x:auto;font:400 .86rem/1.65 var(--mono);color:var(--ink);
+}
+pre code{font:inherit}
+
+.table-wrap{overflow-x:auto;margin-top:1rem;border:1px solid var(--line);border-radius:9px}
+table{border-collapse:collapse;width:100%;min-width:760px;font-size:.88rem}
+th,td{text-align:left;padding:.65rem .85rem;border-bottom:1px solid var(--line);vertical-align:top;white-space:nowrap}
+thead th{font:650 .66rem/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);background:var(--paper-raised)}
+tbody tr:last-child td{border-bottom:0}
+tbody tr:hover td{background:var(--rim-soft)}
+td:first-child,th:first-child{white-space:normal;min-width:15ch}
+
+.note{border-left:3px solid var(--rim);background:var(--paper-raised);border-radius:0 9px 9px 0;padding:1.05rem 1.3rem;margin-top:1.75rem}
+.note p{margin:0;max-width:68ch}
+.note p+p{margin-top:.65rem}
+
+figure{margin:2.5rem 0 0}
+figure img{border:1px solid var(--line);border-radius:10px;box-shadow:0 16px 34px -24px var(--shadow)}
+figcaption{font-size:.9rem;color:var(--faint);margin-top:.9rem;max-width:60ch}
+
+.diagram-figure{margin-top:2.5rem}
+.diagram-figure svg{width:100%;height:auto;display:block}
+.edit-diagram .tok{fill:var(--paper-raised);stroke:var(--line-strong);stroke-width:1.5}
+.edit-diagram .tok--edit{fill:var(--rim);stroke:var(--rim)}
+.edit-diagram .coin{fill:none;stroke:var(--line-strong);stroke-width:1.6}
+.edit-diagram .coin--fresh{fill:var(--rim);stroke:var(--rim)}
+.edit-diagram .bracket{fill:none;stroke:var(--rim);stroke-width:2;stroke-linecap:round}
+
+/* === weighted-note section (what this cannot verify) ==================== */
+
+.weight{background:var(--paper-raised)}
+.weight .eyebrow{color:var(--warn)}
+.weight .note{border-left-color:var(--warn-line)}
+
+/* === footer =============================================================== */
+
+footer{background:var(--ink);color:var(--paper)}
+.foot-row{display:flex;flex-wrap:wrap;gap:1.4rem;justify-content:space-between;align-items:baseline;padding-block:2.5rem}
+footer a{color:color-mix(in srgb,var(--paper) 82%,transparent);text-decoration-color:color-mix(in srgb,var(--paper) 30%,transparent);text-underline-offset:3px}
+footer a:hover{color:var(--paper)}
+.foot-row p{margin:0;font-size:.88rem;max-width:none}
+
+/* === responsive =========================================================== */
+
+@media(max-width:980px){
+  :root{--shell:min(100% - 40px,760px)}
+}
+@media(max-width:680px){
+  :root{--shell:calc(100% - 32px)}
+  body{font-size:16px}
+  .actions{flex-direction:column;align-items:flex-start;gap:.9rem}
+  .foot-row{flex-direction:column;gap:.6rem}
+}
+</style>
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to the content</a>
+
+<header class="site-header">
+  <div class="shell header-row">
+    <a class="brand" href="#top">
+      <img src="img/mark.svg" alt="" width="24" height="24">
+      <span>reflip</span>
+    </a>
+    <nav class="site-nav" aria-label="Section links">
+      <a href="#problem">Problem</a>
+      <a href="#numbers">Numbers</a>
+      <a href="#window">Window</a>
+      <a href="#agents">Agents</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main" tabindex="-1">
+  <section class="hero" id="top">
+    <div class="shell narrow">
+      <h1>Rewrites watermarked text until the detector reads it as <em>ordinary writing</em>.</h1>
+      <p class="lede">
+        Every other tool that claims to remove Claude's watermark deletes invisible
+        characters and stops there. reflip runs the published detector before and after
+        each rewrite and prints the score.
+      </p>
+      <div class="actions">
+        <a class="btn btn-solid" href="https://github.com/nerln/reflip">Read the code <span aria-hidden="true">↗</span></a>
+        <a class="btn btn-text" href="#numbers">See the numbers <span aria-hidden="true">↓</span></a>
+      </div>
+    </div>
+  </section>
+
+  <section id="problem">
+    <div class="shell narrow">
+      <p class="eyebrow">01 / the problem</p>
+      <h2>Every site calling itself a watermark remover leaves the score exactly where it found it: 17.6 before, 17.5 after.</h2>
+      <p class="lede">
+        Since 2 August 2026 Claude's text has carried a statistical watermark: a bias
+        in which words the model chose, not a hidden character in the text. The
+        detector recomputes a coin flip for each word from a secret that only
+        Anthropic holds, then checks whether too many of those coins came up heads.
+      </p>
+      <p>
+        Deleting a zero-width space or straightening a curly quote changes none of
+        those coins, because the coins were never encoded in the characters. That is
+        what most sites calling themselves watermark removers do, and the number
+        above is what it buys: the same score to the second decimal.
+      </p>
+    </div>
+  </section>
+
+  <section id="why">
+    <div class="shell narrow">
+      <p class="eyebrow">02 / why one edit is enough</p>
+      <h2>Change one token, and five coins are thrown again.</h2>
+      <p class="lede">
+        Each coin the detector recomputes depends on its token and the four tokens
+        before it. Edit one token, and the coins for that token and the four that
+        follow it become fresh, unbiased flips, because their hash context is no
+        longer the one the original sampler saw.
+      </p>
+      <p>
+        Cover every window of five consecutive tokens with at least one edit and every
+        coin is re-randomised, whatever the strength of the watermark. That is one
+        edit in five tokens, about one word in three or four. A toy generator with no
+        language model at all shows the same shape: replacing every fifth token brings
+        its score from above 10 down below 4, and replacing every tenth token only
+        halves it.
+      </p>
+    </div>
+
+    <div class="shell narrow diagram-figure">
+      <figure>
+        <svg class="edit-diagram" viewBox="0 0 640 172" aria-hidden="true" focusable="false">
+          <rect class="tok" x="26" y="20" width="48" height="44" rx="6"/>
+          <rect class="tok" x="86" y="20" width="48" height="44" rx="6"/>
+          <rect class="tok" x="146" y="20" width="48" height="44" rx="6"/>
+          <rect class="tok" x="206" y="20" width="48" height="44" rx="6"/>
+          <rect class="tok tok--edit" x="266" y="20" width="48" height="44" rx="6"/>
+          <rect class="tok" x="326" y="20" width="48" height="44" rx="6"/>
+          <rect class="tok" x="386" y="20" width="48" height="44" rx="6"/>
+          <rect class="tok" x="446" y="20" width="48" height="44" rx="6"/>
+          <rect class="tok" x="506" y="20" width="48" height="44" rx="6"/>
+          <rect class="tok" x="566" y="20" width="48" height="44" rx="6"/>
+
+          <path class="bracket" d="M290 64 V92 M290 92 H530 M290 92 V102 M530 92 V102"/>
+
+          <circle class="coin" cx="50" cy="132" r="9"/>
+          <circle class="coin" cx="110" cy="132" r="9"/>
+          <circle class="coin" cx="170" cy="132" r="9"/>
+          <circle class="coin" cx="230" cy="132" r="9"/>
+          <circle class="coin coin--fresh" cx="290" cy="132" r="9"/>
+          <circle class="coin coin--fresh" cx="350" cy="132" r="9"/>
+          <circle class="coin coin--fresh" cx="410" cy="132" r="9"/>
+          <circle class="coin coin--fresh" cx="470" cy="132" r="9"/>
+          <circle class="coin coin--fresh" cx="530" cy="132" r="9"/>
+          <circle class="coin" cx="590" cy="132" r="9"/>
+        </svg>
+        <figcaption>
+          Ten tokens in a row. Token five, filled gold, is the one edited. Its coin and
+          the four coins after it, tokens five through nine, are thrown again; the rest
+          keep the flip the original sampler saw.
+        </figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section id="numbers">
+    <div class="shell narrow">
+      <p class="eyebrow">03 / the numbers</p>
+      <h2>24 watermarked texts, one detector, run before and after nine kinds of edit.</h2>
+      <p class="lede">
+        z counts standard deviations above chance: unwatermarked text lands between
+        -2 and +2, and a z above 4 would happen about once in thirty thousand times by
+        accident.
+      </p>
+    </div>
+
+    <div class="shell">
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th scope="col">transform</th>
+              <th scope="col">z before</th>
+              <th scope="col">z after</th>
+              <th scope="col">z below 4</th>
+              <th scope="col">positions intact</th>
+              <th scope="col">meaning kept</th>
+              <th scope="col">words changed</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>none</td><td>17.6</td><td>17.5</td><td>0 of 24</td><td>0.99</td><td>1.000</td><td>0%</td></tr>
+            <tr><td>unicode strip</td><td>17.6</td><td>17.5</td><td>0 of 24</td><td>0.99</td><td>1.000</td><td>0%</td></tr>
+            <tr><td>rules, no model</td><td>17.6</td><td>15.8</td><td>0 of 24</td><td>0.90</td><td>0.999</td><td>2%</td></tr>
+            <tr><td>infill, stride 4</td><td>17.6</td><td>1.5</td><td>22 of 24</td><td>0.11</td><td>0.972</td><td>28%</td></tr>
+            <tr><td>infill, stride 3</td><td>17.6</td><td>1.5</td><td>21 of 24</td><td>0.10</td><td>0.967</td><td>40%</td></tr>
+            <tr><td>infill, stride 2</td><td>17.6</td><td>1.2</td><td>22 of 24</td><td>0.08</td><td>0.959</td><td>58%</td></tr>
+            <tr><td>rules, then infill (stride 3)</td><td>17.6</td><td>1.9</td><td>20 of 24</td><td>0.11</td><td>0.968</td><td>39%</td></tr>
+            <tr><td>paraphrase</td><td>17.6</td><td>0.6</td><td>23 of 24</td><td>0.04</td><td>0.956</td><td>72%</td></tr>
+            <tr><td>paraphrase, coverage-checked (default with <code>--tokenizer</code>)</td><td>17.6</td><td>0.3</td><td>24 of 24</td><td>0.03</td><td>0.955</td><td>74%</td></tr>
+            <tr><td>unwatermarked controls (23)</td><td>0.0</td><td>-0.1</td><td>23 of 23</td><td>0.99</td><td>1.000</td><td>0%</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="shell narrow">
+      <div class="cards">
+        <div class="card">
+          <span class="glyph">invisible characters</span>
+          <h3>Stripping invisible characters does nothing.</h3>
+          <p>The detector's score does not move: 17.6 before, 17.5 after, the same reading to the second decimal. That is what most sites calling themselves watermark removers do.</p>
+        </div>
+        <div class="card">
+          <span class="glyph">rules alone</span>
+          <h3>Rules without a model do not remove the watermark.</h3>
+          <p>Contractions, spelling variants, dashes and stock phrases change 2% of the words and take about a tenth off the score, from 17.6 to 15.8. Removal needs an edit in every window of five tokens, and rules cannot supply that density.</p>
+        </div>
+        <div class="card">
+          <span class="glyph">on real text</span>
+          <h3>One edit in every window is enough.</h3>
+          <p>Every rewrite that uses a model re-randomises 90 to 96% of the detector's positions, and the mean score drops from 17.6 to somewhere between 0.6 and 1.9, inside the range of the unwatermarked controls. tests/test_synthid.py shows the same shape with no language model at all.</p>
+        </div>
+        <div class="card card--honest">
+          <span class="glyph">the honest one</span>
+          <h3>Slot filling was the clever idea. The plain rewrite beat it.</h3>
+          <p>Infill was built to touch a quarter of the words and spend a fraction of the tokens a full rewrite spends. On this model it touches 28 to 58% of the words, spends two to three times what a paraphrase spends, runs twice as long, and leaves grammar slips the meaning score does not catch. The paraphrase reaches z 0.6 at 5,100 tokens per thousand words in 15 seconds, so paraphrase is the default and infill stays for when keeping most of the original wording matters more than fluency.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="window">
+    <div class="shell narrow">
+      <p class="eyebrow">04 / the window</p>
+      <h2>One column, top to bottom.</h2>
+      <p class="lede">
+        The window runs down in a single column: the model server and a button to
+        start it, a place to paste text, a button that rewrites it, and the result.
+      </p>
+      <p>
+        The numbers along the bottom of the picture are a real run of the paragraph
+        above them, generated by the application itself rather than staged by hand.
+      </p>
+
+      <figure>
+        <img src="img/window.png" width="1520" height="1800"
+             alt="The reflip window: a model-server status row at the top, the pasted paragraph to rewrite, a transform picker, the rewritten result below it, and a row of figures along the bottom for words changed, detector coverage, tokens spent and seconds.">
+      </figure>
+    </div>
+  </section>
+
+  <section id="agents">
+    <div class="shell narrow">
+      <p class="eyebrow">05 / for agents</p>
+      <h2>One command, and a result meant to be read by a program.</h2>
+    </div>
+
+    <div class="shell narrow">
+      <pre><code>reflip rewrite draft.md --json --progress</code></pre>
+      <p>
+        The result is a single JSON object carrying the transform and model used, the
+        rewritten text, the share of words changed, the coverage of five-token windows,
+        and what the call spent in tokens and seconds; with <code>--progress</code>,
+        JSON Lines arrive on standard error while the work runs, so a caller can show
+        progress without pulling the result out from between them.
+      </p>
+      <p>
+        Exit code 0 means done, 1 an expected refusal carrying a reason meant to be
+        shown as written, 2 a usage mistake, and 130 an interrupt.
+      </p>
+    </div>
+  </section>
+
+  <section id="models">
+    <div class="shell narrow">
+      <p class="eyebrow">06 / choosing a model</p>
+      <h2>A catalogue that says what it does not know, and a way to check it yourself.</h2>
+    </div>
+
+    <div class="shell narrow">
+<pre><code>reflip models --recommended
+reflip models --search "gemma 3"
+reflip models --measure gemma3:4b  </code></pre>
+      <p>
+        <code>--recommended</code> lists what is worth trying and what each entry is
+        bad at. <code>--search</code> reaches Hugging Face for anything published as a
+        GGUF file. <code>--measure</code> settles an argument instead of stating an
+        opinion: it rewrites watermarked texts from the benchmark corpus with the named
+        model and reports the detector before and after, the coverage, the words
+        changed, the seconds and the tokens.
+      </p>
+      <p>
+        A model that watermarks its own output is refused rather than ranked. That
+        covers Claude models launched since August 2026 and the Gemini service, while
+        open weights run under a local server, such as Gemma's, carry no watermark to
+        begin with.
+      </p>
+    </div>
+  </section>
+
+  <section id="unverifiable" class="weight">
+    <div class="shell narrow">
+      <p class="eyebrow">07 / what this cannot verify</p>
+      <h2>Nobody outside Anthropic can check this against Claude's own detector.</h2>
+      <p class="lede">
+        Anthropic's secret is private. So is the context length its detector reads,
+        and so is the detector itself. What runs here is the published SynthID-Text
+        algorithm, at its published settings, against an open model and a secret of
+        its own.
+      </p>
+      <div class="note">
+        <p>
+          That is the whole limit of what can be shown, and it is worth stating
+          plainly rather than in a footnote: a tool that claims to have checked a
+          removal against Claude's real detector is lying, because that detector is
+          not something anyone outside Anthropic can run. What is verified here is the
+          published method, applied honestly, with the numbers published alongside it.
+        </p>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="shell foot-row">
+    <p>reflip is MIT licensed.</p>
+    <p><a href="https://github.com/nerln/reflip">github.com/nerln/reflip</a> &nbsp;·&nbsp; <a href="https://nerln.github.io">nerln.github.io</a></p>
+  </div>
+</footer>
+
+</body>
+</html>

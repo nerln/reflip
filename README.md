@@ -47,7 +47,26 @@ Pass `--tokenizer Qwen/Qwen2.5-1.5B-Instruct` to choose edit positions in token 
 
 RESULTS_TABLE
 
-Reproduce: `reflip corpus` (generates the watermarked and control texts, ~15 min on an M-series Mac), then `reflip bench`.
+Reproduce: `reflip corpus --attn eager` (generates the watermarked and control texts, ~15 min on an M-series Mac), then `reflip bench`. Every number above is in `data/results/main/` with the per-sample texts.
+
+How it is measured:
+
+- **Corpus.** 24 prompts (22 English, 2 Italian: essays, emails, explanations, a story, a memo, a review) completed by Qwen2.5-1.5B-Instruct at temperature 0.9, top-p 0.95, with the open SynthID-Text processor (ngram length 5, 9 keys) and, from the same prompts, 23 completions without it as controls. Watermarked completions score z between 8.6 and 25.3 on 144 to 420 tokens; controls sit between -1.6 and +1.2.
+- **Detector.** Mean g-value (the paper's basic score) and the weighted-mean score DeepMind's reference code recommends, both as z-scores against the unwatermarked null. z above 4 is one chance in thirty thousand under the null; the benchmark reports the share of samples pushed below 4 and below 2.
+- **Intact.** The fraction of positions whose g-value the detector recomputes unchanged, measured on the re-tokenised edited text, not on a token list. This is the quantity the theory is about: 0 means every coin has been re-flipped.
+- **Meaning and cost.** Cosine similarity of multilingual-e5-small embeddings between original and edited text, share of words changed, perplexity under the generating model before and after, and LLM tokens spent per thousand input words.
+
+## What the other tools do
+
+More than forty "Claude watermark remover" repositories and sites appeared in August 2026. All of them fall into three groups: invisible-character strippers (verifiable, and irrelevant to the statistical watermark; several miss variation selectors), "rewrite it with another model" wrappers with no measurement, and a few measurement studies that explicitly decline to claim removal. None publishes before-and-after numbers against a SynthID-class detector together with a quality cost. That gap is what this repository fills: the transforms are ordinary, the measurement is the contribution.
+
+## Threat model, honestly
+
+- **Context length.** The published SynthID-Text uses the previous 4 tokens (the Nature paper: "we use H = 4"), and Anthropic's own description is "a few words that come before". If Anthropic's context is longer, one edit re-randomises more coins and a larger stride would do; if it is shorter, a smaller stride is needed. Stride 3 in words already gives about one edit per 4 to 5 tokens; `--stride 2` is the belt-and-braces setting; `paraphrase` does not depend on the context length at all.
+- **Tokenizer.** Anthropic's tokenizer is not public. Word-level strides are tokenizer-agnostic by construction; the benchmark measures coverage under the generating model's tokenizer and shows how much margin each stride leaves.
+- **Detector.** Anthropic may run a trained (Bayesian) detector rather than the mean score. Every such detector is a function of the same g-values; once they are all re-randomised there is nothing left for it to weight. Partial removal (the `rules` row) is where detectors differ, which is why the benchmark reports both scores.
+- **Repeated contexts.** SynthID does not watermark a position whose 4-token context already appeared in the text; the detector masks the same positions. Edits change which positions are masked; the benchmark scores exactly what the detector would see, so this is already inside the numbers.
+- **Low-entropy text.** Code, lists of facts and very short texts carry little watermark to begin with (Anthropic says so too). The tool leaves code blocks, URLs, e-mails and placeholders untouched; do not expect the detector to move there, and do not expect it to have been confident there either.
 
 ## Licence
 

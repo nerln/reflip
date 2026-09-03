@@ -44,6 +44,10 @@ def _pick_device(device: str | None):
 
     if device:
         return torch.device(device)
+    if torch.backends.mps.is_available():
+        return torch.device("mps")
+    if torch.cuda.is_available():
+        return torch.device("cuda")
     return torch.device("cpu")
 
 

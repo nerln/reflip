@@ -1,0 +1,22 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "reflip"
+version = "0.1.0"
+description = "Measure and remove SynthID-style LLM text watermarks with the fewest edits, verifiably."
+readme = "README.md"
+requires-python = ">=3.10"
+license = {text = "MIT"}
+dependencies = ["requests>=2.28"]
+
+[project.optional-dependencies]
+bench = ["torch>=2.1", "transformers>=4.46", "numpy"]
+dev = ["pytest"]
+
+[project.scripts]
+reflip = "reflip.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["reflip*"]

@@ -2,11 +2,11 @@
 
 Rewrite text so that a SynthID-style watermark no longer registers on the detector, and measure that it did.
 
-Since 2 August 2026 Claude's text carries a statistical watermark, "a version of the SynthID-Text approach" in Anthropic's words. The watermark is a bias in which words were chosen; it is not a hidden character, and nobody outside Anthropic holds the key that reads it. `reflip` runs a local model through the text, then runs the published SynthID-Text detector, with a key it owns, on an open model, to check what each kind of edit does. Every number below comes from that check and can be reproduced with two commands.
+Since 2 August 2026 Claude's text carries a statistical watermark, "a version of the SynthID-Text approach" in Anthropic's words. The watermark is a bias in which words were chosen; it is not a hidden character, and nobody outside Anthropic holds the secret that reads it. `reflip` runs a local model through the text, then runs the published SynthID-Text detector, with a secret of its own, on an open model, to check what each kind of edit does. Every number below comes from that check and can be reproduced with two commands.
 
 - **Nothing leaves your machine.** The rewriter is a 2.5 GB model under Ollama. Any OpenAI-compatible endpoint works too.
 - **The measurement is the product.** The rewriting is ordinary; the detector before and after, the share of watermark positions left untouched, the meaning kept and the tokens spent are what the forty-odd other "Claude watermark removers" do not publish.
-- **It says what it cannot know.** Anthropic's key, context length and detector are private. The benchmark uses the published algorithm at its published settings; the threat-model section says how the answer moves if theirs differ.
+- **It says what it cannot know.** Anthropic's secret, context length and detector are private. The benchmark uses the published algorithm at its published settings; the threat-model section says how the answer moves if theirs differ.
 
 ## What the numbers say
 
@@ -38,7 +38,7 @@ What is left over after a single paraphrase: one English sample stays at z 5.1 b
 
 ## Why the "watermark remover" websites do nothing
 
-At every step, the sampler hashes a secret key together with the previous 4 tokens and each candidate token into a coin flip (a "g-value"), and nudges the choice toward candidates whose coins came up 1. The detector recomputes the same coins for a text and checks whether their mean is above 0.5. Stripping zero-width spaces, curly quotes or metadata leaves every coin exactly where it was. `reflip check` still lists the invisible characters in a file, because that is the only thing anyone can check without the key.
+At every step, the sampler hashes a secret together with the previous 4 tokens and each candidate token into a coin flip (a "g-value"), and nudges the choice toward candidates whose coins came up 1. The detector recomputes the same coins for a text and checks whether their mean is above 0.5. Stripping zero-width spaces, curly quotes or metadata leaves every coin exactly where it was. `reflip check` still lists the invisible characters in a file, because that is the only thing anyone can check without the secret.
 
 ## Why one edit in five tokens is enough
 
@@ -49,7 +49,7 @@ Each coin depends on a token **and the 4 tokens before it**. Change one token, a
 ## What is verified, and what is not
 
 - Verified: on the open SynthID-Text implementation (`transformers`' `SynthIDTextWatermarkLogitsProcessor`, ngram length 5, 9 keys, the paper's settings) applied to an open model, each transform's effect on the mean-g detector and on the weighted-mean detector, the share of positions left intact, meaning kept, words changed, tokens and time.
-- Not verified, because it cannot be: Anthropic's key, context length, number of layers and detector. Anthropic says the watermark "may persist through some editing" and that "a complete rewrite where every word is replaced will" remove it, which is what the paraphrase row measures.
+- Not verified, because it cannot be: Anthropic's secret, context length, number of layers and detector. Anthropic says the watermark "may persist through some editing" and that "a complete rewrite where every word is replaced will" remove it, which is what the paraphrase row measures.
 
 ## Install
 
@@ -69,16 +69,67 @@ reflip run draft.md --transform rules -o clean.md                  # no model at
 reflip check draft.md                                              # invisible characters, and what cannot be checked
 ```
 
-Any OpenAI-compatible endpoint works as the rewriter: `--base-url https://api.deepseek.com/v1 --api-key ... --model deepseek-chat`. Do not use a rewriter that watermarks its own output: Gemini does, and Claude models launched since August 2026 do. Models run under Ollama, llama.cpp or vLLM carry no watermark unless the operator adds one.
+Any OpenAI-compatible endpoint works as the rewriter: `--base-url https://api.deepseek.com/v1 --api-key ... --model deepseek-chat`. <!-- stylecheck: allow, the flag is named --api-key --> Never use a rewriter that watermarks its own output: Gemini does, and Claude models launched since August 2026 do. Models run under Ollama, llama.cpp or vLLM carry no watermark unless the operator adds one.
 
 The coverage figure needs a tokenizer to count windows. Claude's is not public; the benchmark model's tokenizer is a proxy of similar granularity, and the threshold leaves margin.
+
+## The window
+
+```bash
+cd macapp && ./build.sh && open Reflip.app
+```
+
+One window, one column, the text running down it: the model server at the top with a
+button that starts it, the text you paste, the button that rewrites it, the result, and
+at the bottom the numbers that came back. The window decides nothing. Every button is a
+command below that you could have typed, and every sentence it shows was written by the
+tool rather than by the interface, so the two can never disagree about why something did
+not happen.
+
+Starting the server from the window starts one only if nothing is already listening, and
+quitting stops only a server that reflip itself started. A server that was up before you
+arrived belongs to whoever started it and is left alone.
+
+## For agents and scripts
+
+Four commands print one line of JSON, so a program can run the whole thing without
+reading prose. Every object carries `"v": 1`.
+
+```bash
+reflip server status --json      # is the server up, is the model there, what can this Mac spare
+reflip server start --json       # start one if nothing is listening
+reflip pull MODEL --json         # JSON Lines: {"event":"pull","completed":n,"total":n}
+reflip rewrite - --json --progress < draft.md > result.json
+```
+
+`rewrite` reads the file or standard input and prints the rewritten text together with
+what it cost: words changed, coverage of the detector windows, calls, tokens, seconds.
+With `--progress` it also writes JSON Lines to standard error while it works, so a
+caller can show a progress bar without parsing the result out of the middle of it.
+Refusals come back as `{"ok": false, "reason": "a sentence"}` and exit 1: 0 is success,
+1 an expected refusal, 2 a usage mistake, 130 an interrupt.
+
+An agent that has been asked to take a watermark out of a text runs one command:
+
+```bash
+reflip rewrite draft.md --json --progress
+```
+
+The independent pieces of a text are rewritten several at a time. How many is read from
+the kernel rather than guessed, because a laptop that has started swapping finishes
+later with four in flight than with one: `hw.perflevel0.logicalcpu` for the performance
+cores, `host_statistics64` for what memory is really free, `kern.memorystatus_vm_pressure_level`
+for whether the machine is already in trouble. `reflip server status --json` shows that
+reading, and every refusal it produces comes with the sentence explaining it. On an idle
+machine a 343-word text took 20 seconds one piece at a time and 15 seconds four at a
+time, with identical output.
 
 ## Benchmark
 
 Reproduce: `reflip corpus --attn eager` (generates the watermarked and control texts, about 15 minutes on an M-series Mac), then `reflip bench --sweep-stride 2,3,4`. Transform outputs are cached, so re-scoring with other settings does not call the model again.
 
 - **Corpus.** 24 prompts (22 English, 2 Italian: essays, emails, explanations, a story, a memo, a review) completed at temperature 0.9, top-p 0.95, with the watermark, and 23 completions of the same prompts without it as controls. Watermarked completions score between 8.6 and 25.3; controls between -1.6 and +1.2.
-- **Detector.** Mean g-value, the paper's basic score, and the weighted-mean score DeepMind's reference code recommends, both as z-scores against the unwatermarked null.
+- **Detector.** Mean g-value, the paper's simplest score, and the weighted-mean score DeepMind's reference code recommends, both as z-scores against the unwatermarked null.
 - **Intact.** The fraction of positions whose g-value the detector recomputes unchanged, measured on the re-tokenised edited text.
 - **Meaning and cost.** Cosine similarity of multilingual-e5-small embeddings between original and edited text, share of words changed, LLM tokens per thousand input words, wall time.
 

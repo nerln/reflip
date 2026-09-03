@@ -93,7 +93,7 @@ def test_rules_each_positive():
         "contractions": ("Don't stop. I'm here. We will go.", "Do not stop. I am here. We'll go."),
         "serial_comma": ("apples, pears, and plums", "apples, pears and plums"),
         "spelling": ("the color and the favorite theater", "the colour and the favourite theatre"),
-        "phrases": ("In order to utilize it, e.g. now", "To use it, for example now"),
+        "phrases": ("In order to utilize it, e.g. now", "To use it, for example now"),  # stylecheck: allow, test data for the rule that removes it
         "numbers": ("10 percent of 1,000 people", "10% of 1000 people"),
     }
     for name, (src, want) in cases.items():
@@ -103,7 +103,7 @@ def test_rules_each_positive():
 
 
 def test_rules_leave_protected_spans_and_numbers_alone():
-    src = "See https://x.y/a—b and `don't` and me@x.org, from 2019–2021, at /usr/bin/don't"
+    src = "See https://x.y/a—b and `don't` and me@x.org, from 2019–2021, at /usr/bin/don't"  # stylecheck: allow, test data for the rule that removes it
     got, _ = apply_rules(src)
     assert "https://x.y/a—b" in got and "`don't`" in got and "me@x.org" in got and "2019–2021" in got
     assert "/usr/bin/don't" in got
@@ -130,7 +130,7 @@ def test_rules_transform_reports_density():
 
 
 def test_rules_italian_only_typographic():
-    src = "Non c’è — davvero. Additionally, color."
+    src = "Non c’è — davvero. Additionally, color."  # stylecheck: allow, test data for the rule that removes it
     got, counts = apply_rules(src, language="it")
     assert got == "Non c'è, davvero. Additionally, color."
     assert "phrases" not in counts and "spelling" not in counts

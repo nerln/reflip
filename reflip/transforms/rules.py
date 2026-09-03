@@ -78,7 +78,7 @@ def _sub_count(pattern: re.Pattern, repl, text: str) -> tuple[str, int]:
 
 
 # --------------------------------------------------------------------------- rules
-_DASH = re.compile(r"(?<=[^\s\d,;:(\[])[ \t]*[—–][ \t]*(?=[^\s\d,;:)\]])")
+_DASH = re.compile(r"(?<=[^\s\d,;:(\[])[ \t]*[—–][ \t]*(?=[^\s\d,;:)\]])")  # stylecheck: allow, the pattern this rule removes
 
 
 def rule_dashes(seg: str) -> tuple[str, int]:
@@ -205,7 +205,7 @@ _PHRASES = {
     "in addition,": "also,", "a number of": "several", "due to the fact that": "because",
     "at this point in time": "now", "prior to": "before", "subsequent to": "after",
     "in the event that": "if", "whether or not": "whether", "each and every": "every",
-    "it is important to note that": "note that", "it's worth noting that": "notably,",
+    "it is important to note that": "note that", "it's worth noting that": "notably,",  # stylecheck: allow, a phrase this rule replaces
     "in conclusion,": "to sum up,", "delve into": "dig into", "crucial": "key",
     "seamless": "smooth", "robust": "solid", "a wide range of": "many", "in today's world": "today",
     "plays a vital role": "matters", "it is essential to": "you must", "ensure that": "make sure that",

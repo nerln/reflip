@@ -278,7 +278,7 @@ def test_infill_rejects_bad_fills_and_normalises_keys(monkeypatch):
             elif mode == 2:
                 reply[n] = "quoted 'ok'"            # inner quotes are fine, brackets are not
             elif mode == 3:
-                reply[f"slot {n}"] = '"' + sfx(o, "y") + '"'      # key with prose, value in quotes -> accepted
+                reply[f"slot {n}"] = '"' + sfx(o, "y") + '"'      # key with prose, value in quotes -> accepted  # stylecheck: allow, test data for the rule that removes it
             elif mode == 4:
                 reply[n] = {"replacement": sfx(o, "z")}  # nested object -> accepted
             else:
@@ -463,12 +463,16 @@ def test_live_ollama_infill(monkeypatch):
     text = ("Cities that invest in public libraries get more than shelves of books. A library "
             "offers warm rooms, free internet, and quiet desks to people who have none of "
             "those at home, and it asks nothing in return.")
-    assert len(words(text)) == 40
+    assert len(words(text)) == 37  # a guard on the fixture, not on the tool
     res = llm.infill(text, Options(base_url=LIVE_URL, model=LIVE_MODEL, stride=3, timeout=180))
     assert res.llm_calls == 1
     assert res.notes["slots"] >= 10
     assert res.edits >= res.notes["slots"] // 2, res.notes
-    assert res.text != text and skeleton(res.text) == skeleton(text)
+    # Punctuation, not spacing. A slot that covers a phrase may come back shorter
+    # ("at home" as "within"), which changes how many spaces are inside that span while
+    # leaving every comma and full stop where it was.
+    assert res.text != text
+    assert re.sub(r"\s+", "", skeleton(res.text)) == re.sub(r"\s+", "", skeleton(text))
     assert res.prompt_tokens > 0
 
 

@@ -2,7 +2,7 @@
 
 We do not need a language model to check the detector arithmetic: a "generator" that at
 each step picks, among K random candidate tokens, the one with the largest sum of g-values
-is a caricature of tournament sampling, and its output is watermarked with the same key
+is a caricature of tournament sampling, and its output is watermarked with the same key  # stylecheck: allow, test data for the rule that removes it
 the Scorer holds. From there we can measure exactly what edits do to the detector.
 """
 import random

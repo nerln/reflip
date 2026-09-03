@@ -72,7 +72,7 @@ class Machine:
 
     total: int = 0            # bytes of physical memory
     free_for_work: int = 0    # bytes a new job may claim
-    pressure: int = 1         # kernel memory pressure: 1 normal, 2 warn, 4 critical
+    pressure: int = 1         # kernel memory pressure: 1 is normal, 2 warns, 4 is the last one
     swap_used: int = 0
     cores: int = 1            # performance cores if we can tell, else half the logical ones
     workers: int = 1          # how many rewrite requests to keep in flight

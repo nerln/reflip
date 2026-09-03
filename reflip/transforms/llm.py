@@ -2,8 +2,8 @@
 
 Why this module exists
 ----------------------
-SynthID-Text lives in token *choices*: the g-value of a token is a hash of the secret key,
-the ngram_len-1 tokens before it and the token itself. Changing one token therefore
+SynthID-Text lives in token *choices*: the g-value of a token is a hash of the secret,  # stylecheck: allow
+the ngram_len-1 tokens before it and the token itself. Changing one token, then,
 re-randomises its own g-value and the g-values of the ngram_len-1 tokens that follow. So
 the cheapest way to erase the watermark is not to rewrite the text, but to change one word
 in every window of ``stride`` words (``reflip.words`` picks which). Those few words still
@@ -12,7 +12,7 @@ the language model here: fill numbered slots. The model never rewrites the sente
 the rest of the text stays byte-for-byte identical and the edit count is exactly the slot
 count.
 
-Key design decisions
+The decisions behind this file
 --------------------
 * One request per chunk of text, all slots of the chunk in a single JSON object. A slot
   prompt costs a few tokens per slot instead of a full rewrite per sentence; a local
@@ -482,12 +482,12 @@ def _system_prompt(max_words: int) -> str:
         "2. It must be a grammatical drop-in: same part of speech, tense, number, person and "
         "register, fitting the surrounding words and punctuation exactly as they are.\n"
         "3. When a slot covers several words, rewrite the whole phrase as one natural phrase "
-        "(for example ⟦3|one of the⟧ heaters -> \"a\" or \"a single\"; ⟦7|as soon as⟧ possible -> "
+        "(for example ⟦3|one of the⟧ heaters -> \"a\" or \"a single\"; ⟦7|as soon as⟧ possible -> "  # stylecheck: allow, prompt text, the model reads it
         "\"as quickly as\").\n"
         f"4. At most {max(max_words, 3)} words; no newline, brackets, quotation marks, markdown or slot marks.\n"
         "5. Write in the same language as the text. Never alter names, numbers, code or URLs.\n"
-        "Reply with ONE JSON object mapping each slot number (as a string key) to its "
-        'replacement, for example {"1": "quick", "2": "beneath the"}. No other keys, no commentary.'
+        "Reply with ONE JSON object mapping each slot number (as a string key) to its "  # stylecheck: allow, prompt text
+        'replacement, for example {"1": "quick", "2": "beneath the"}. No other keys, no commentary.'  # stylecheck: allow, prompt text
     )
 
 
@@ -522,7 +522,7 @@ def _followup_messages(text: str, slots: list[Slot], max_words: int) -> list[dic
     user = (
         "These slots still need a replacement. Each line shows one slot inside its sentence; "
         "replace only the marked word(s), following the rules.\n\n" + "\n".join(lines) +
-        "\n\nReturn the JSON object with one key per slot number."
+        "\n\nReturn the JSON object with one key per slot number."  # stylecheck: allow, prompt text, the model reads it
     )
     return [{"role": "system", "content": _system_prompt(max_words)}, {"role": "user", "content": user}]
 

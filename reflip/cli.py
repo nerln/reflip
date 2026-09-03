@@ -7,7 +7,7 @@ named, the share of ngram_len-token windows that contain an edit, which is the q
 the SynthID detector actually cares about). Everything else is dispatch: `bench` and
 `corpus` forward their arguments to those modules, `transforms` lists the registry.
 
-Design decision: `reflip check` refuses to pretend. Anthropic's key is private, so no
+Design decision: `reflip check` refuses to pretend. Anthropic's key is private, so no  # stylecheck: allow, the cryptographic term
 program outside Anthropic can tell whether a text carries Claude's watermark. `check` only
 scans for invisible characters, which are a different, trivially removable marker, and
 then says so in one sentence. Failures exit non-zero with one line and no traceback:
@@ -27,7 +27,7 @@ from .words import word_edit_ratio
 
 DEFAULT_TRANSFORM = "paraphrase"
 KNOWN_TRANSFORMS = "{hybrid,infill,paraphrase,rules,unicode}"
-NO_DETECTOR = ("No public detector exists for Claude's key, so a file cannot be checked for the "
+NO_DETECTOR = ("No public detector exists for Claude's key, so a file cannot be checked for the "  # stylecheck: allow, the cryptographic term
                "statistical watermark; use `reflip bench` to measure a transform against the "
                "open SynthID implementation.")
 

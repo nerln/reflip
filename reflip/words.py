@@ -1,7 +1,7 @@
 """Word segmentation and edit-slot selection.
 
 The SynthID detector hashes each token together with the ngram_len-1 tokens before it.
-Changing one token therefore re-randomises the g-values of that token and of the
+Changing one token re-randomises the g-values of that token and of the
 ngram_len-1 tokens after it. If every window of ngram_len consecutive tokens contains at
 least one edited token, every g-value is re-randomised and the watermark is gone. The
 functions here pick the *fewest* words to edit under that constraint, preferring content
@@ -60,7 +60,7 @@ def choose_slots(ws: list[Word], stride: int, already: set[int] | None = None) -
     Greedy: walk the words; as soon as `stride` words have gone by without an edit, pick
     the best word inside that run (content word first, then the latest one so that edits
     are as sparse as the constraint allows). Words in `already` count as edited (they
-    are not returned) — used by the hybrid transform after the rule pass.
+    are not returned), which is how the hybrid transform reports what the rules already did.
     """
     if stride < 1:
         raise ValueError("stride must be >= 1")

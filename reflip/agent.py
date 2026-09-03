@@ -30,6 +30,25 @@ V = 1
 DEFAULT_COVERAGE_TOKENIZER = "Qwen/Qwen2.5-1.5B-Instruct"
 
 
+def default_host() -> str:
+    """Where the model server is, unless a flag says otherwise.
+
+    The window passes it in the environment rather than as a flag, because an unknown
+    flag is exit code 2 and an unread variable is harmless: the two halves can be
+    upgraded in either order without a version handshake.
+    """
+    import os
+
+    return os.environ.get("REFLIP_HOST") or os.environ.get("REFLIP_BASE_URL") or srv.DEFAULT_URL
+
+
+def chat_endpoint(host: str, given: str | None, fallback: str) -> str:
+    """The OpenAI-compatible URL to talk to: what was asked for, or the host's own /v1."""
+    if given and given != fallback:
+        return given
+    return host.rstrip("/") + "/v1"
+
+
 def emit(obj: dict, stream=None) -> None:
     """One JSON object, one line, flushed. A reader should never wait for a buffer."""
     stream = stream or sys.stdout
@@ -192,7 +211,8 @@ def cmd_rewrite(args: argparse.Namespace) -> int:
     tok_name = args.tokenizer or (None if args.no_coverage else DEFAULT_COVERAGE_TOKENIZER)
     tok, cov_note = _tokenizer(tok_name, explicit_tok)
 
-    opts = Options(base_url=args.base_url, api_key=args.api_key, model=args.model,
+    base_url = chat_endpoint(args.base_url_host, args.base_url, Options.base_url)
+    opts = Options(base_url=base_url, api_key=args.api_key, model=args.model,
                    temperature=args.temperature, seed=args.seed, stride=args.stride,
                    span=args.span, ngram_len=args.ngram_len, tokenizer=tok,
                    language=args.lang, workers=workers, on_progress=reporter,
@@ -239,11 +259,12 @@ def cmd_rewrite(args: argparse.Namespace) -> int:
 
 def add_parsers(sub, options) -> None:
     """Mount the machine-facing commands on the main parser."""
-    common = dict(base_url_host=srv.DEFAULT_URL)
+    host = default_host()
+    common = dict(base_url_host=host)
 
     def with_host(p):
-        p.add_argument("--host", dest="base_url_host", default=srv.DEFAULT_URL,
-                       help="where the model server listens")
+        p.add_argument("--host", dest="base_url_host", default=host,
+                       help="where the model server listens (or REFLIP_HOST)")
         p.add_argument("--json", action="store_true", help="one line of JSON, for programs")
         return p
 

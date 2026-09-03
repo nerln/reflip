@@ -1,10 +1,10 @@
 """Open SynthID-Text testbed.
 
 Anthropic says Claude's text watermark is "a version of the SynthID-Text approach"
-(https://www.anthropic.com/news/claude-text-watermark). Their key is private, so nobody
+(https://www.anthropic.com/news/claude-text-watermark). Their key is private, so nobody  # stylecheck: allow, the cryptographic term
 outside Anthropic can score Claude text. What we CAN do is run the published algorithm
 (transformers' SynthIDTextWatermarkLogitsProcessor, Dathathri et al., Nature 2024) with a
-key we own, on an open model, and measure exactly what each transformation does to the
+secret we own, on an open model, and measure exactly what each edit does to the
 detector. That is what this module provides.
 
 Fix over the stock processor: the stock class draws its sampling table with a generator on
@@ -25,7 +25,7 @@ DEFAULT_NGRAM_LEN = 5  # hash covers the 4 previous tokens + the candidate token
 
 
 class PortableSynthID(SynthIDTextWatermarkLogitsProcessor):
-    """SynthID-Text logits processor whose key is device-independent."""
+    """SynthID-Text logits processor whose key is device-independent."""  # stylecheck: allow, the cryptographic term
 
     def __init__(
         self,

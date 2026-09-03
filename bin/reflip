@@ -1,16 +1,102 @@
 #!/usr/bin/env python3
 """The `reflip` command, runnable from a clone that was never installed.
 
-The window in macapp/ looks for this file next to the app bundle, so somebody who
-downloaded the repository and built the app gets a working tool without pip.
+Two jobs. It puts the repository on the import path, so somebody who downloaded the
+source and built the window gets a working tool without pip. And it makes sure the
+interpreter running underneath is one that can do the whole job.
+
+That second part is not decoration. An application launched from the Finder inherits a
+PATH with neither homebrew nor pyenv on it, so `python3` resolves to the one Apple ships.
+That interpreter finds `requests` in the user's site packages and stops there: it has no
+transformers, so the coverage figure came back as "not measured" from the window while
+the same command in a terminal measured it. The answer is cached in ~/.reflip/python,
+because this is asked on every poll of the server status and probing four interpreters
+each time would cost more than the command it is running.
 """
+# This file runs before we have chosen an interpreter, so it has to work on the oldest
+# python3 a Mac might hand it. That is what the future import is for: without it, the
+# annotations below are a syntax error on 3.9, which is what an app launched from the
+# Finder gets.
+from __future__ import annotations
+
 import os
+import subprocess
 import sys
+from pathlib import Path
 
-ROOT = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
-sys.path.insert(0, ROOT)
+ROOT = Path(__file__).resolve().parent.parent
+HOME = Path(os.environ.get("REFLIP_HOME", Path.home() / ".reflip"))
+CACHE = HOME / "python"
 
-from reflip.cli import main  # noqa: E402
+# In order of preference. The first that can import transformers wins; if none can, the
+# first that can import requests does, and coverage says why it was not measured.
+CANDIDATES = [
+    "/opt/homebrew/Caskroom/miniforge/base/bin/python3",
+    "/opt/homebrew/bin/python3",
+    "/usr/local/bin/python3",
+    str(Path.home() / ".pyenv/shims/python3"),
+    "/usr/bin/python3",
+]
+
+
+def _can(python: str, module: str) -> bool:
+    try:
+        return subprocess.run([python, "-c", f"import importlib.util,sys; "
+                                             f"sys.exit(0 if importlib.util.find_spec('{module}') else 1)"],
+                              capture_output=True, timeout=20).returncode == 0
+    except (OSError, subprocess.SubprocessError):
+        return False
+
+
+def _find() -> str | None:
+    """The best interpreter on this machine, or None to stay where we are."""
+    seen = []
+    for python in CANDIDATES:
+        if not os.access(python, os.X_OK) or python in seen:
+            continue
+        seen.append(python)
+        if _can(python, "transformers"):
+            return python
+    for python in seen:
+        if _can(python, "requests"):
+            return python
+    return None
+
+
+def _better_interpreter() -> str | None:
+    chosen = os.environ.get("REFLIP_PYTHON")
+    if chosen:
+        return chosen if os.access(chosen, os.X_OK) else None
+    try:
+        cached = CACHE.read_text().strip()
+        if cached and os.access(cached, os.X_OK):
+            return cached
+    except OSError:
+        pass
+    found = _find()
+    if found:
+        try:
+            HOME.mkdir(parents=True, exist_ok=True)
+            CACHE.write_text(found)
+        except OSError:
+            pass
+    return found
+
+
+def main() -> int:
+    import importlib.util
+
+    if os.environ.get("REFLIP_NO_REEXEC") != "1" and importlib.util.find_spec("transformers") is None:
+        better = _better_interpreter()
+        if better and os.path.realpath(better) != os.path.realpath(sys.executable):
+            env = dict(os.environ, REFLIP_NO_REEXEC="1")
+            os.execve(better, [better, __file__, *sys.argv[1:]], env)
+
+    sys.path.insert(0, str(ROOT))
+    from reflip.cli import main as cli_main
+
+    return cli_main()
+
 
 if __name__ == "__main__":
     sys.exit(main())

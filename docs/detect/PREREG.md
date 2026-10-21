@@ -127,6 +127,22 @@ written, so it is a change of protocol, not a reaction to a result.
    Italian long cell has fewer machine texts than the others. More long Italian texts are
    requested from the two local models until the cell has 40.
 
+6. **The browser's detector is calibrated on its own files.** The browser runs the 0.5B pair
+   as 4-bit ONNX files (`onnx/model_q4f16.onnx` of `onnx-community/Qwen2.5-0.5B` and
+   `-Instruct`), because that is what a browser can download. Its scores differ from the
+   full-precision ones (on one test sentence Binoculars was 0.97 against 1.04), so the browser
+   gets its own thresholds and its own table of allowed and refused cells, computed on the same
+   split with the same rules, for the detector chosen above. The command line keeps the
+   full-precision pair.
+
+Added the same day, after the corpus was built and before any detector scored it:
+
+7. **Italian long human texts: 320, not 400.** The two Italian sources ran out of articles over
+   300 words before the target. That cell has 100 human texts for calibration and 220 for test,
+   so zero false positives bound the rate under 1.4%, and one already exceeds the 2% bound.
+8. **No extra Italian long requests were needed.** The first round of generation filed 40
+   Italian texts in the long bucket, which point 5 asked for.
+
 ## Changes after seeing results
 
 None yet.

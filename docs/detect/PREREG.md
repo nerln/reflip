@@ -97,6 +97,36 @@ benchmark's own). Anthropic's watermark, live since 2 August 2026, and Google's 
 detected without their secrets, and the tool says so wherever it offers watermark
 detection.
 
+## Amendment of 21 October 2026, before any score was computed
+
+Made after the expansion council (docs/council/2026-10-21-espansione.md) and before any
+detector had scored a single text of this corpus. No benchmark number existed when it was
+written, so it is a change of protocol, not a reaction to a result.
+
+1. **More human texts.** 75 test humans per cell cannot support the phrase "1% false
+   positives": zero errors in 75 only bounds the true rate below about 3.9%. Each language and
+   length now has **400 human texts: 100 for calibration, 300 for test**. The 1% threshold is
+   still set per length on the calibration humans of all three languages together, now 300
+   texts. Machine texts keep the 50/50 split.
+2. **The refusal rule also looks at false positives.** A cell gets a verdict only if, in
+   addition to the two conditions above, the one-sided 95% upper bound (Clopper-Pearson) of
+   its test false-positive rate at the threshold is **at most 2%**. With 300 test humans that
+   allows at most one human text flagged. The answer then states that bound, per language
+   and length, instead of saying "1%".
+3. **Writers in a second language are their own population.** Perplexity-based detectors
+   are known to flag them (Liang et al., 2023), and they are the people most likely to be
+   accused. Where a learner corpus is openly available for a language, its texts are scored
+   and their false-positive rate at the threshold is reported separately. They are not used
+   for calibration and not used to choose the detector. A language with no openly available
+   learner corpus is reported as not measured.
+4. **What the output says.** The probability under a 50% prior is dropped from what a person
+   reads: it invites a reading as "the chance this person cheated". The answer is the share of
+   measured human texts that scored at least as machine-like, with its interval, and the
+   verdict where the cell allows one.
+5. **Italian long machine texts.** Claude Haiku wrote most long Italian requests short, so the
+   Italian long cell has fewer machine texts than the others. More long Italian texts are
+   requested from the two local models until the cell has 40.
+
 ## Changes after seeing results
 
 None yet.

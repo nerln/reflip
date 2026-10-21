@@ -8,3 +8,8 @@ data/*.jsonl
 data/*.log
 data/cache/
 !data/results/
+# Human excerpts are other people's writing: only their provenance is committed,
+# in docs/detect/corpus-manifest.json.
+data/detect/
+data/detect-*.log
+web/node_modules/

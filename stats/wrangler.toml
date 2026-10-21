@@ -1,0 +1,16 @@
+# The counter behind reflip's usage statistics. See src/schema.js for what it may count.
+name = "reflip-stats"
+main = "src/index.js"
+compatibility_date = "2026-10-01"
+workers_dev = true
+# No logs of requests: the counter is the only record, and a request log would hold the
+# IP addresses the code itself never reads.
+logpush = false
+
+[observability]
+enabled = false
+
+[[d1_databases]]
+binding = "DB"
+database_name = "reflip-stats"
+database_id = "3e0ff932-433d-41eb-83ca-7ba5375f45b7"

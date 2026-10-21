@@ -21,6 +21,7 @@ import json
 import sys
 import threading
 import time
+from pathlib import Path
 
 from . import server as srv
 from .mac import snapshot
@@ -408,6 +409,20 @@ def cmd_rewrite(args: argparse.Namespace) -> int:
 
     cov = _coverage(tok, text, res.text, args.ngram_len) if tok is not None else None
     obj = _result_object(args.transform, args.model, text, res, seconds, cov, cov_note, workers)
+    # Every rewrite is checked for changed facts. One that changed any is still printed, so
+    # the person can see it, but it is not reported as a success unless they allowed that.
+    from .facts import diff as facts_diff, language as fact_language, sentences as fact_sentences
+
+    lang = fact_language(text, args.lang)
+    fd = facts_diff(text, res.text, lang) if lang else None
+    obj["facts"] = fd
+    obj["facts_altered"] = fd["altered"] if fd else None
+    obj["facts_note"] = ("\n".join(fact_sentences(fd)) if fd else
+                         "Facts not checked: the language is not English, Italian or Spanish.")
+    obj["ok"] = not (fd and fd["altered"]) or args.allow_fact_changes
+    if not obj["ok"]:
+        obj["reason"] = (f"the rewrite changed {fd['altered']} facts (numbers, names, negations or "
+                         "quantifiers); see `facts`, or pass --allow-fact-changes")
     reporter("Done", 1, 1, "Finished")
     if args.json:
         emit(obj)
@@ -425,8 +440,92 @@ def cmd_rewrite(args: argparse.Namespace) -> int:
         if cov is not None:
             line += f"; coverage {cov:.1%} of {args.ngram_len}-token windows"
         print(line, file=sys.stderr)
+        print(obj["facts_note"], file=sys.stderr)
+    return 0 if obj["ok"] else 3
+
+
+def cmd_diff(args: argparse.Namespace) -> int:
+    """What changed in the facts between two texts. No model, no network."""
+    from .cli import read_input
+    from .facts import diff as facts_diff, language as fact_language, sentences as fact_sentences
+
+    a, b = Path(args.original).read_text(), read_input(args.rewritten)
+    lang = fact_language(a, args.lang)
+    if not lang:
+        reason = "the language is not English, Italian or Spanish; pass --lang if it is"
+        if args.json:
+            emit({"v": V, "ok": False, "reason": reason})
+        else:
+            print(f"error: {reason}", file=sys.stderr)
+        return 2
+    d = facts_diff(a, b, lang)
+    if args.json:
+        emit({"v": V, "ok": True, **d})
+    else:
+        print("\n".join(fact_sentences(d)))
+    return 0 if not d["altered"] else 1
+
+
+
+# --------------------------------------------------------------------------- detect
+
+def cmd_detect(args: argparse.Namespace) -> int:
+    """Was this text written by a model? A calibrated answer, a refusal, or a watermark reading."""
+    from .cli import read_input
+    from . import detect_assess as da
+
+    text = read_input(args.file)
+    out = {"v": V}
+    if args.watermark:
+        out["watermark"] = _watermark(text, args)
+    if not args.watermark_only:
+        calib = da.load()
+        if calib is None:
+            out["zero_shot"] = {"refused": "This install has no detector calibration "
+                                           "(reflip/detect_calibration.json is missing).",
+                                "note": da.VENDOR_NOTE}
+        else:
+            a = da.assess(text, None, calib, args.lang)
+            if not a["refused"]:
+                from .detect import Detector
+
+                det = Detector(calib["pair"])
+                a = da.assess(text, det.features(text).to_dict(), calib, args.lang)
+            out["zero_shot"] = a
+    if args.json:
+        emit(out)
+    else:
+        if "watermark" in out:
+            w = out["watermark"]
+            print(w["sentence"])
+        if "zero_shot" in out:
+            z = out["zero_shot"]
+            for line in (da.sentences(z) if "note" in z and "words" in z else [z["refused"], z["note"]]):
+                print(line)
     return 0
 
+
+def _watermark(text: str, args) -> dict:
+    """Read a SynthID-style watermark whose secret we hold. Only that kind: see the note."""
+    from transformers import AutoTokenizer
+    from .synthid import DEFAULT_KEYS, Scorer
+
+    keys = [int(k) for k in args.watermark_keys.split(",")] if args.watermark_keys else DEFAULT_KEYS
+    tok = AutoTokenizer.from_pretrained(args.watermark_tokenizer)
+    sc = Scorer(tok, ngram_len=args.watermark_ngram, keys=keys, sampling_table_seed=args.watermark_seed)
+    s = sc.score(text)
+    found = s.scored >= 50 and s.z > 4
+    if s.scored < 50:
+        sentence = (f"Watermark: not enough text to read ({s.scored} scored positions; 50 is the "
+                    "least this will judge on).")
+    elif found:
+        sentence = (f"Watermark: found, z = {s.z:.1f} over {s.scored} positions. A text without this "
+                    "watermark goes above 4 about once in thirty thousand.")
+    else:
+        sentence = f"Watermark: not found with this secret (z = {s.z:.1f} over {s.scored} positions)."
+    return {"found": found, "z": s.z, "p": s.p, "scored": s.scored, "tokens": s.tokens,
+            "secret": "reflip benchmark default" if not args.watermark_keys else "given",
+            "sentence": sentence + " " + __import__("reflip.detect_assess", fromlist=["x"]).VENDOR_NOTE}
 
 # --------------------------------------------------------------------------- parser
 
@@ -488,4 +587,26 @@ def add_parsers(sub, options) -> None:
     r.add_argument("--workers", type=int, default=0, help="requests in flight (0: ask the machine)")
     r.add_argument("--progress", action="store_true", help="JSON Lines progress on stderr")
     r.add_argument("-o", "--output", default=None)
+    r.add_argument("--allow-fact-changes", action="store_true",
+                   help="report success even if a number, name, negation or quantifier changed")
     r.set_defaults(func=cmd_rewrite, **common)
+
+    df = sub.add_parser("diff", help="what a rewrite changed in numbers, names, negations and "
+                                     "quantifiers (exit 1 if anything did)")
+    df.add_argument("original", help="the text before")
+    df.add_argument("rewritten", nargs="?", default="-", help="the text after, or - for stdin (default)")
+    df.add_argument("--lang", choices=["en", "it", "es"], default=None, help="skip the language guess")
+    df.add_argument("--json", action="store_true", help="one line of JSON, for programs")
+    df.set_defaults(func=cmd_diff)
+
+    d = with_host(sub.add_parser("detect", help="estimate whether a model wrote a text, with how sure that can be"))
+    d.add_argument("file", nargs="?", default="-", help="input file, or - for stdin (default)")
+    d.add_argument("--lang", choices=["en", "it", "es"], default=None, help="skip the language guess")
+    d.add_argument("--watermark", action="store_true",
+                   help="also read a SynthID-style watermark whose secret you hold (not Claude's or Gemini's)")
+    d.add_argument("--watermark-only", action="store_true", help="only the watermark reading")
+    d.add_argument("--watermark-keys", default=None, help="comma-separated keys; default: the benchmark's")
+    d.add_argument("--watermark-ngram", type=int, default=5)
+    d.add_argument("--watermark-seed", type=int, default=0)
+    d.add_argument("--watermark-tokenizer", default="Qwen/Qwen2.5-1.5B-Instruct")
+    d.set_defaults(func=cmd_detect, **common)

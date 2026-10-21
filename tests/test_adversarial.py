@@ -390,9 +390,37 @@ def test_paraphrase_200kb_single_block_completes(monkeypatch):
 
     monkeypatch.setattr(llm.Chat, "complete", counting_fake)
     text = ADVERSARIAL["huge_200kb"]
-    res = llm.paraphrase(text, Options())
+    # the fake suffixes every word, names and negations included, which the facts guard
+    # would rightly re-ask; this test is about the request count of one huge block
+    res = llm.paraphrase(text, Options(keep_facts=False))
     assert calls["n"] == 1  # one block, no blank lines: exactly one request
     assert res.text != ""
+
+
+def test_paraphrase_reasks_a_block_that_changed_a_fact(monkeypatch):
+    replies = iter(["The trial enrolled patients over 16 months.",
+                    "Over 18 months the trial took in 412 patients."])
+    calls = {"n": 0}
+
+    def fake(self, messages, **kw):
+        calls["n"] += 1
+        return json.dumps({"text": next(replies)}), dict(_USAGE)
+
+    monkeypatch.setattr(llm.Chat, "complete", fake)
+    res = llm.paraphrase("The trial enrolled 412 patients over 18 months.", Options())
+    assert calls["n"] == 2                       # the first reply lost 412 and turned 18 into 16
+    assert res.text == "Over 18 months the trial took in 412 patients."
+    assert res.notes["fact_retries"] == 1 and res.notes["blocks_facts_changed"] == 0
+
+
+def test_infill_never_slots_a_fact():
+    from reflip.facts import fact_spans
+
+    text = "Most of the 40 people Ferraris asked did not reply, and only three wrote back."
+    spans = fact_spans(text, "en")
+    taken = {text[a:b] for a, b in spans}
+    assert {"Most", "Ferraris", "not", "only", "three"} <= taken
+    assert "people" not in taken
 
 
 # --------------------------------------------------------------------------- hybrid

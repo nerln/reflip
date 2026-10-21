@@ -54,6 +54,9 @@ from ..words import (
     word_edit_ratio,
     words,
 )
+from ..facts import diff as facts_diff
+from ..facts import fact_spans
+from ..facts import language as fact_language
 from . import Options, TransformResult, register
 
 # --------------------------------------------------------------------------- Chat client
@@ -418,6 +421,12 @@ def _build_slots(text: str, ws: list[Word], idxs: list[int], span: int,
 
 def _plan_slots(text: str, ws: list[Word], opts: Options, already: set[int] | None) -> tuple[list[Slot], int]:
     protected = _protected_spans(text)
+    if opts.keep_facts:
+        # A slot on "not", "most" or a name hands the model the one word that changes the
+        # claim; the earlier benchmark counted 21 to 32 such breaks per dense text.
+        lang = fact_language(text, opts.language)
+        if lang:
+            protected = sorted(protected + fact_spans(text, lang))
     # Told which words are unusable, choose_slots prefers a real one over a protected one
     # in the same window instead of tie-breaking onto the protected word and wasting the
     # window's only pick (see the docstring in words.choose_slots).
@@ -719,13 +728,15 @@ def _paraphrase_messages(block: str, strong: bool = False) -> list[dict]:
         "Rewrite the following text in your own words, changing the wording throughout (change at "
         "least every third word), while keeping the meaning, tone, length (within 15%), language, "
         "names, numbers, and any markdown structure (bullets, headings, quotes, line breaks, "
-        "emphasis). Keep every line break where it is.\n\n"
+        "emphasis). Keep every line break where it is. Keep every negation (not, never, no) and "
+        "every quantifier (all, most, some, only, at least) exactly as strong as it is.\n\n"
     )
     if strong:
         user += (
-            "The previous attempt kept too many of the original word sequences. This time change "
-            "nearly every word and reorder clauses where the meaning allows; keep only names, "
-            "numbers and the meaning.\n\n"
+            "The previous attempt either kept too many of the original word sequences or changed "
+            "a number, a name, a negation or a quantifier. This time change nearly every other "
+            "word and reorder clauses where the meaning allows; keep every name, number, negation "
+            "and quantifier, and the meaning.\n\n"
         )
     return [{"role": "system", "content": system}, {"role": "user", "content": user + "TEXT:\n" + block}]
 
@@ -758,20 +769,26 @@ def _rewrite_block(chat: Chat, block: str, opts: Options, acc: _Usage, stats: di
     core = block.strip("\n")
     lead, trail = block[:block.index(core)], block[block.index(core) + len(core):]
     check = opts.tokenizer is not None and opts.min_coverage > 0
-    best, best_cov = None, -1.0
-    for attempt in range(max(1, opts.max_passes) if check else 1):
+    lang = fact_language(core, opts.language) if opts.keep_facts else None
+    best, best_key, best_cov, best_altered = None, None, -1.0, 0
+    for attempt in range(max(1, opts.max_passes) if (check or lang) else 1):
         new = _ask_rewrite(chat, core, opts, acc, strong=attempt > 0)
         if new is None:
             continue
         cov = _coverage(core, new, opts) if check else 1.0
-        if cov > best_cov:
-            best, best_cov = new, cov
-        if not check or cov >= opts.min_coverage:
+        altered = facts_diff(core, new, lang)["altered"] if lang else 0
+        # an attempt that keeps every fact beats one that edits more windows
+        key = (-altered, cov)
+        if best_key is None or key > best_key:
+            best, best_key, best_cov, best_altered = new, key, cov, altered
+        if (not check or cov >= opts.min_coverage) and not altered:
             break
-        stats.bump("extra_passes")
+        stats.bump("fact_retries" if altered else "extra_passes")
     if best is None:
         stats.bump("blocks_failed")
         return block
+    if best_altered:
+        stats.bump("blocks_facts_changed")
     if check:
         stats.least("min_block_coverage", round(best_cov, 3))
         if best_cov < opts.min_coverage:
@@ -789,7 +806,7 @@ def paraphrase(text: str, opts: Options) -> TransformResult:
     acc = _Usage()
     # Counters incremented from worker threads: a plain dict loses counts on +=.
     stats = _Counters({"blocks_failed": 0, "lines_changed": 0, "extra_passes": 0,
-                       "low_coverage_blocks": 0})
+                       "low_coverage_blocks": 0, "fact_retries": 0, "blocks_facts_changed": 0})
     pieces = _blocks(text)
     todo = [i for i, (piece, rewrite) in enumerate(pieces) if rewrite and WORD_RE.search(piece)]
     rewritten = _map_ordered(lambda i: _rewrite_block(chat, pieces[i][0], opts, acc, stats),

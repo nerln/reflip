@@ -57,6 +57,15 @@ struct ReceiptStrip: View {
                           + "rewrite.")
             }
 
+            if let altered = receipt.factsAltered {
+                figure(Format.count(altered), altered == 1 ? "fact changed" : "facts changed",
+                       tint: altered == 0 ? .green : .orange)
+                    .help(receipt.factsNote ?? "")
+            } else {
+                figure("not checked", "facts", tint: .secondary)
+                    .help(receipt.factsNote ?? "")
+            }
+
             figure(Format.count(receipt.tokens), "tokens spent")
                 .help("Prompt and completion tokens billed by the model across every "
                       + "call this rewrite made.")

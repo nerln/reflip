@@ -1,0 +1,98 @@
+/* reflip in the browser. Colours and rhythm from the site page (docs/index.html);
+   no monospace anywhere in the interface. */
+
+:root {
+  color-scheme: light dark;
+  --paper: #ECEDE9;
+  --raised: #F6F6F1;
+  --ink: #0C1112;
+  --muted: #55605F;
+  --line: rgba(12, 17, 18, .14);
+  --strong: rgba(12, 17, 18, .30);
+  --rim: #7D5C1A;
+  --rim-soft: rgba(216, 182, 92, .16);
+  --warn: #9C554D;
+  --ok: #3D6B4A;
+  --sans: "Avenir Next", Avenir, "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --paper: #0C1112;
+    --raised: #161C1D;
+    --ink: #ECEDE9;
+    --muted: #9BA6A5;
+    --line: rgba(236, 237, 233, .16);
+    --strong: rgba(236, 237, 233, .32);
+    --rim: #D8B65C;
+    --rim-soft: rgba(216, 182, 92, .14);
+    --warn: #E08579;
+    --ok: #8CC59B;
+  }
+}
+
+*, *::before, *::after { box-sizing: border-box }
+html { -webkit-text-size-adjust: 100% }
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font: 17px/1.55 var(--sans);
+}
+a { color: inherit; text-underline-offset: 3px }
+.top, main, footer { width: min(720px, calc(100vw - 32px)); margin: 0 auto }
+.top {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  padding: 16px 0; border-bottom: 1px solid var(--line);
+}
+.brand { display: inline-flex; align-items: center; gap: 8px; font-weight: 600; text-decoration: none }
+nav { display: flex; align-items: center; gap: 14px; font-size: 15px; flex-wrap: wrap; justify-content: flex-end }
+h1 { font-size: clamp(28px, 6vw, 40px); line-height: 1.12; margin: 28px 0 10px; letter-spacing: -.01em }
+.lede { font-size: 19px; color: var(--muted); margin: 0 0 14px }
+.promise {
+  border-left: 3px solid var(--rim); background: var(--rim-soft);
+  padding: 10px 14px; margin: 0 0 22px; border-radius: 0 8px 8px 0;
+}
+.tabs { display: flex; gap: 6px; margin: 8px 0 14px; flex-wrap: wrap }
+.tabs button {
+  border: 1px solid var(--line); background: transparent; color: var(--ink);
+  border-radius: 999px; padding: 8px 14px; font: inherit; font-size: 15px; cursor: pointer;
+}
+.tabs button[aria-selected="true"] { background: var(--ink); color: var(--paper); border-color: var(--ink) }
+.field { display: block; margin: 12px 0 }
+.field > span { display: block; font-size: 14px; color: var(--muted); margin-bottom: 4px }
+textarea, select {
+  width: 100%; font: inherit; font-size: 16px; color: var(--ink); background: var(--raised);
+  border: 1px solid var(--strong); border-radius: 10px; padding: 10px 12px;
+}
+textarea { resize: vertical; min-height: 9em }
+nav select { width: auto; padding: 4px 8px; font-size: 14px }
+.row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center }
+button.primary, button.ghost {
+  font: inherit; font-size: 16px; border-radius: 10px; padding: 10px 16px; cursor: pointer;
+  border: 1px solid var(--ink);
+}
+button.primary { background: var(--ink); color: var(--paper) }
+button.ghost { background: transparent; color: var(--ink) }
+button:disabled { opacity: .45; cursor: not-allowed }
+button.link { background: none; border: 0; padding: 0; color: inherit; text-decoration: underline; font: inherit; cursor: pointer }
+.note { color: var(--muted); margin: 6px 0 }
+.warn { color: var(--warn) }
+.status { color: var(--muted); min-height: 1.5em; font-size: 15px }
+.out { margin: 14px 0 }
+.out p { margin: 6px 0 }
+.out .head { font-weight: 600 }
+.out .bad { color: var(--warn) }
+.out .good { color: var(--ok) }
+.out ul { margin: 6px 0; padding-left: 20px }
+.out .small { font-size: 14px; color: var(--muted) }
+.lockline {
+  position: sticky; top: 0; z-index: 2; display: flex; align-items: center; gap: 8px;
+  background: var(--raised); border: 1px solid var(--line); border-radius: 10px; padding: 8px 12px; font-size: 15px;
+}
+.lockline .dot { width: 9px; height: 9px; border-radius: 50%; background: var(--rim) }
+.sent { margin: 28px 0 8px; border-top: 1px solid var(--line); padding-top: 12px }
+.sent summary { cursor: pointer; font-weight: 600 }
+.sent code { font-size: 14px; word-break: break-all }
+.stored { font-size: 14px; color: var(--muted) }
+footer { padding: 24px 0 40px; font-size: 14px; color: var(--muted); border-top: 1px solid var(--line); margin-top: 24px }
+[hidden] { display: none !important }

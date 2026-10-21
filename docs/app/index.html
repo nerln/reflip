@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; worker-src 'self' blob:; connect-src 'self' https://huggingface.co https://*.hf.co https://reflip-stats.nerln.workers.dev; img-src 'self' data:; style-src 'self'; font-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'">
+<meta name="referrer" content="no-referrer">
+<title>reflip in the browser</title>
+<meta name="description" content="Check what a rewrite changed, estimate whether a model wrote a text, or rewrite one, entirely on your device.">
+<link rel="icon" href="../img/mark.svg" type="image/svg+xml">
+<link rel="stylesheet" href="app.css">
+<script type="module" src="app.js"></script>
+</head>
+<body>
+<header class="top">
+  <a class="brand" href="../"><img src="../img/mark.svg" alt="" width="22" height="22"> reflip</a>
+  <nav>
+    <a href="../" data-t="home">About reflip</a>
+    <a href="../privacy.html" data-t="privacy">Privacy</a>
+    <select id="ui-lang" aria-label="Language">
+      <option value="en">English</option><option value="it">Italiano</option><option value="es">Español</option>
+    </select>
+  </nav>
+</header>
+
+<main>
+  <h1 data-t="title">reflip in your browser</h1>
+  <p class="lede" data-t="lede"></p>
+  <p class="promise" data-t="promise"></p>
+
+  <div class="lockline" id="lockline" hidden><span class="dot"></span> <span data-t="locked">Network locked</span></div>
+
+  <div class="tabs" role="tablist">
+    <button role="tab" id="tab-facts" aria-controls="pane-facts" aria-selected="true" data-t="tab_facts">Compare facts</button>
+    <button role="tab" id="tab-detect" aria-controls="pane-detect" aria-selected="false" data-t="tab_detect">Detect</button>
+    <button role="tab" id="tab-rewrite" aria-controls="pane-rewrite" aria-selected="false" data-t="tab_rewrite">Rewrite</button>
+  </div>
+
+  <label class="field"><span data-t="text">Text</span>
+    <textarea id="text" rows="9" spellcheck="false" autocomplete="off" data-ph="text_ph"></textarea>
+  </label>
+
+  <section id="pane-facts" role="tabpanel" aria-labelledby="tab-facts">
+    <p class="note" data-t="facts_intro"></p>
+    <label class="field"><span data-t="after">Rewritten text</span>
+      <textarea id="after" rows="9" spellcheck="false" autocomplete="off" data-ph="after_ph"></textarea>
+    </label>
+    <button class="primary" id="compare" data-t="compare">Compare</button>
+    <div class="out" id="facts-out" aria-live="polite"></div>
+  </section>
+
+  <section id="pane-detect" role="tabpanel" aria-labelledby="tab-detect" hidden>
+    <p class="note" id="detect-intro"></p>
+    <p class="warn" id="detect-unavailable" hidden></p>
+    <div class="row">
+      <button class="primary" id="detect" disabled></button>
+      <button class="ghost" id="detect-cancel" hidden data-t="cancel">Cancel</button>
+    </div>
+    <p class="status" id="detect-status" aria-live="polite"></p>
+    <div class="out" id="detect-out" aria-live="polite"></div>
+  </section>
+
+  <section id="pane-rewrite" role="tabpanel" aria-labelledby="tab-rewrite" hidden>
+    <p class="note" data-t="rewrite_intro"></p>
+    <p class="note" data-t="rewrite_unmeasured"></p>
+    <p class="warn" id="rewrite-unavailable" hidden></p>
+    <label class="field"><span data-t="model">Model</span><select id="rewriter"></select></label>
+    <div class="row">
+      <button class="primary" id="rewrite" disabled></button>
+      <button class="ghost" id="rewrite-cancel" hidden data-t="cancel">Cancel</button>
+    </div>
+    <p class="status" id="rewrite-status" aria-live="polite"></p>
+    <div id="rewrite-result" hidden>
+      <label class="field"><span data-t="result">Rewritten text</span>
+        <textarea id="rewritten" rows="9" readonly></textarea>
+      </label>
+      <button class="ghost" id="copy" data-t="copy">Copy</button>
+      <div class="out" id="rewrite-facts"></div>
+    </div>
+  </section>
+
+  <details class="sent" id="sent">
+    <summary data-t="see_sent">What this page has sent</summary>
+    <div id="sent-body"></div>
+  </details>
+
+  <p class="stored"><span id="stored"></span> <button class="link" id="forget" hidden data-t="forget">Delete downloaded models</button></p>
+</main>
+
+<footer>
+  <a href="https://github.com/nerln/reflip" data-t="source">Source</a> · <a href="../privacy.html" data-t="privacy">Privacy</a>
+</footer>
+</body>
+</html>

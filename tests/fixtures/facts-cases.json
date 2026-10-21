@@ -1,0 +1,167 @@
+[
+ {
+  "name": "figures written out are the same figures",
+  "lang": "en",
+  "a": "The survey reached 3 million homes in 12 countries, and 40% replied.",
+  "b": "Three million homes in twelve countries got the survey; 40% of them answered.",
+  "altered": 0
+ },
+ {
+  "name": "a dropped figure and a changed one",
+  "lang": "en",
+  "a": "The trial enrolled 412 patients over 18 months at a cost of 2.5 million euros.",
+  "b": "The trial enrolled patients over 16 months at a cost of 2.5 million euros.",
+  "altered": 3,
+  "numbers": {
+   "missing": [
+    "18",
+    "412"
+   ],
+   "added": [
+    "16"
+   ]
+  }
+ },
+ {
+  "name": "a name moved to the start of a sentence is kept",
+  "lang": "en",
+  "a": "The report was written by Okafor and reviewed in Geneva.",
+  "b": "Okafor wrote the report, which was then reviewed in Geneva.",
+  "altered": 0
+ },
+ {
+  "name": "a name swapped for another",
+  "lang": "en",
+  "a": "The method was first described by Lindqvist in a paper on sampling.",
+  "b": "The method was first described by Lindgren in a paper on sampling.",
+  "altered": 2,
+  "names": {
+   "missing": [
+    "Lindqvist"
+   ],
+   "added": [
+    "Lindgren"
+   ]
+  }
+ },
+ {
+  "name": "a lost negation",
+  "lang": "en",
+  "a": "The effect did not survive the correction, and the authors don't claim it.",
+  "b": "The effect survived the correction, and the authors don't claim it.",
+  "altered": 1,
+  "negations": {
+   "before": 2,
+   "after": 1
+  }
+ },
+ {
+  "name": "most became all",
+  "lang": "en",
+  "a": "Most participants finished at least two sessions.",
+  "b": "All participants finished two sessions.",
+  "altered": 3,
+  "quantifiers": {
+   "missing": [
+    "at_least",
+    "most"
+   ],
+   "added": [
+    "all"
+   ]
+  }
+ },
+ {
+  "name": "two hundred and five",
+  "lang": "en",
+  "a": "There were 205 entries and 1,250 votes.",
+  "b": "There were two hundred and five entries and one thousand two hundred fifty votes.",
+  "altered": 0
+ },
+ {
+  "name": "Italian compound numbers",
+  "lang": "it",
+  "a": "Lo studio ha coinvolto 345 persone in 23 città e 1.200 famiglie.",
+  "b": "Lo studio ha coinvolto trecentoquarantacinque persone in ventitré città e milleduecento famiglie.",
+  "altered": 0
+ },
+ {
+  "name": "Italian millions and a decimal comma",
+  "lang": "it",
+  "a": "Il bilancio è di 2,5 milioni, contro i tre milioni dell'anno scorso.",
+  "b": "Il bilancio è di 2,5 milioni, contro i 3 milioni dell'anno precedente.",
+  "altered": 0
+ },
+ {
+  "name": "Italian: a lost non and a lost name",
+  "lang": "it",
+  "a": "Secondo Ferraris il modello non funziona sui testi brevi.",
+  "b": "Secondo gli autori il modello funziona sui testi brevi.",
+  "altered": 2,
+  "names": {
+   "missing": [
+    "Ferraris"
+   ],
+   "added": []
+  },
+  "negations": {
+   "before": 1,
+   "after": 0
+  }
+ },
+ {
+  "name": "Italian sei is a verb on its own",
+  "lang": "it",
+  "a": "Sei sicuro che siano trentasei?",
+  "b": "Sei certo che siano 36?",
+  "altered": 0
+ },
+ {
+  "name": "Spanish tens joined by y",
+  "lang": "es",
+  "a": "Participaron 33 equipos de 7 países durante 1.500 horas.",
+  "b": "Participaron treinta y tres equipos de siete países durante mil quinientas horas.",
+  "altered": 0
+ },
+ {
+  "name": "Spanish: casi todos became todos",
+  "lang": "es",
+  "a": "Casi todos los estudiantes aprobaron, pero ninguno con nota máxima.",
+  "b": "Todos los estudiantes aprobaron, pero ninguno con nota máxima.",
+  "altered": 1,
+  "quantifiers": {
+   "missing": [
+    "about"
+   ],
+   "added": []
+  }
+ },
+ {
+  "name": "Spanish: a figure changed and García lost",
+  "lang": "es",
+  "a": "Según García, el 60% de los encuestados no usa la aplicación.",
+  "b": "Según el estudio, el 70% de los encuestados no usa la aplicación.",
+  "altered": 3,
+  "numbers": {
+   "missing": [
+    "60"
+   ],
+   "added": [
+    "70"
+   ]
+  },
+  "names": {
+   "missing": [
+    "García"
+   ],
+   "added": []
+  }
+ },
+ {
+  "name": "capitals are not new names",
+  "lang": "en",
+  "a": "The committee in Brussels did not approve all of the 12 proposals.",
+  "b": "THE COMMITTEE IN BRUSSELS DID NOT APPROVE ALL OF THE 12 PROPOSALS.",
+  "altered": 0
+ }
+]

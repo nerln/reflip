@@ -160,6 +160,11 @@ struct Receipt: Decodable, Equatable {
     let promptTokens: Int
     let completionTokens: Int
     let seconds: Double
+    /// How many numbers, names, negations and quantifiers the rewrite changed, and
+    /// reflip's sentences saying which. Null when the language is not English, Italian or
+    /// Spanish, the three reflip reads facts in: unchecked, which is not the same as zero.
+    let factsAltered: Int?
+    let factsNote: String?
 
     var tokens: Int { promptTokens + completionTokens }
 
@@ -170,6 +175,8 @@ struct Receipt: Decodable, Equatable {
         case llmCalls = "llm_calls"
         case promptTokens = "prompt_tokens"
         case completionTokens = "completion_tokens"
+        case factsAltered = "facts_altered"
+        case factsNote = "facts_note"
     }
 
     // The counters are absent, not zero, for `rules` and `unicode`: those transforms
@@ -189,6 +196,8 @@ struct Receipt: Decodable, Equatable {
         promptTokens = try box.decodeIfPresent(Int.self, forKey: .promptTokens) ?? 0
         completionTokens = try box.decodeIfPresent(Int.self, forKey: .completionTokens) ?? 0
         seconds = try box.decodeIfPresent(Double.self, forKey: .seconds) ?? 0
+        factsAltered = try box.decodeIfPresent(Int.self, forKey: .factsAltered)
+        factsNote = try box.decodeIfPresent(String.self, forKey: .factsNote)
     }
 }
 

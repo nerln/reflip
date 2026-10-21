@@ -1,0 +1,12 @@
+{
+  "name": "reflip-web-tests",
+  "private": true,
+  "type": "module",
+  "description": "Tests for the browser version in docs/app: facts parity and the privacy promise.",
+  "scripts": {
+    "test": "node --test test/*.test.mjs"
+  },
+  "devDependencies": {
+    "puppeteer-core": "25.14.0"
+  }
+}

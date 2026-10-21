@@ -230,7 +230,7 @@ def test_infill_span_two_never_crosses_newline_or_punctuation(monkeypatch):
     fake = fake_complete()
     monkeypatch.setattr(llm.Chat, "complete", fake)
     text = "one two\nthree four, five six. seven eight nine ten"
-    res = llm.infill(text, Options(stride=2, span=2))
+    res = llm.infill(text, Options(stride=2, span=2, keep_facts=False))  # number words are facts
     originals = [o for _, o in SLOT.findall(fake.calls[0])]
     assert originals, "slots were sent"
     for o in originals:
@@ -494,7 +494,8 @@ def test_paraphrase_reasks_until_coverage(monkeypatch):
 
     monkeypatch.setattr(llm.Chat, "complete", complete)
     text = "one two three four five six seven eight nine ten eleven twelve"
-    res = llm.paraphrase(text, Options(tokenizer=_WordTok(), min_coverage=0.9, max_passes=3))
+    res = llm.paraphrase(text, Options(tokenizer=_WordTok(), min_coverage=0.9, max_passes=3,
+                                       keep_facts=False))  # the words are numbers; this is about coverage
     assert len(calls) == 2 and "previous attempt" in calls[1]
     assert res.text != text and res.notes["extra_passes"] == 1 and res.notes["low_coverage_blocks"] == 0
     assert res.notes["min_block_coverage"] >= 0.9

@@ -89,6 +89,9 @@ final class Rewriter: ObservableObject {
         arguments += ["--stride", String(stride)]
         if !model.isEmpty { arguments += ["--model", model] }
         if !checkCoverage { arguments.append("--no-coverage") }
+        // The window shows the rewrite whatever it changed, with the count of changed
+        // facts in the strip; without this flag reflip withholds success and the text with it.
+        arguments.append("--allow-fact-changes")
         launch(arguments, feeding: text, onFinish: onFinish)
     }
 

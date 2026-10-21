@@ -20,3 +20,8 @@ reflip = "reflip.cli:main"
 
 [tool.setuptools.packages.find]
 include = ["reflip*"]
+
+# The detectors' calibration ships with the code: without it `reflip detect` can
+# score a text but has nothing to compare the score to.
+[tool.setuptools.package-data]
+reflip = ["detect_calibration.json"]

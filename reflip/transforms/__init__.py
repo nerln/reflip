@@ -32,6 +32,9 @@ class Options:
     # rules
     rules: tuple[str, ...] = ()  # empty = all
     language: str = "en"
+    # paraphrase: re-ask a block whose rewrite changed a number, a name, a negation or a
+    # quantifier (reflip.facts); infill: never put a slot on one of those words.
+    keep_facts: bool = True
 
 
 @dataclass

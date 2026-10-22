@@ -95,6 +95,57 @@ Quantifiers: gone most; new all.
 
 It reads numbers written as digits or as words in English, Italian and Spanish ("three million" and "3 million" are the same number, so is "trecentoquarantacinque" and 345), names (capitalised words that do not open a sentence, a line or a heading), negations and quantifiers. Every rewrite runs through it: `paraphrase` asks again for any paragraph that changed one of them, `infill` never offers one of those words to the model, and `reflip rewrite` reports `"ok": false` with exit code 3 if any are still changed at the end, keeping the text so you can look. It is a check, not a proof: a claim reworded with every number and name in place is invisible to it.
 
+## Telling machine text from human text
+
+```bash
+reflip detect essay.md            # sentences for a person
+reflip detect essay.md --json     # the same answer as numbers
+reflip detect essay.md --watermark --watermark-keys 1,2,3   # also read a SynthID-style watermark whose keys you hold
+```
+
+Two families of evidence, and they are not the same kind of thing. **A watermark** is proof, for whoever holds its secret: reflip reads the SynthID-style watermark of its own benchmark, because it holds that secret. It cannot read Anthropic's (on Claude models launched since 2 August 2026) or Google's, and nothing outside those companies can; every answer says so. **Zero-shot detectors** need no secret and prove nothing on their own: machine text tends to be more predictable to a language model, and Binoculars, Fast-DetectGPT, perplexity and burstiness turn that tendency into a score.
+
+How far a score can be trusted was measured, under a protocol written before any detector ran (`docs/detect/PREREG.md`): 3,520 human texts (Wikipedia, and BBC, Il Post and El País articles) and 432 machine texts from three model families, in English, Italian and Spanish, at three lengths, plus 45 machine texts rewritten by reflip and 300 essays by people writing English or Spanish as a second language. Thresholds were set on one half and every number comes from the other. Binoculars on the Qwen2.5 1.5B pair won by the pre-registered rule (mean AUROC 0.965 on medium and long texts).
+
+| | short (40 to 99 words) | medium (100 to 300) | long (301 to 600) |
+|---|---|---|---|
+| English | AUROC 0.83, refused | 0.92, refused: catches 46% | **0.97, verdict given**: catches 50%, flagged 0 of 300 humans |
+| Italian | 0.82, refused | 0.94, refused: flagged 10 of 300 | 0.99, refused: flagged 2 of 220 |
+| Spanish | 0.88, refused | 0.98, refused: flagged 11 of 300 | 0.98, refused: flagged 2 of 300 |
+
+A verdict is given only where the AUROC's 95% lower bound is at least 0.85, the threshold catches at least half of the machine texts, and the false-positive rate is under 2% at the top of its 95% interval. That is one cell of nine. Everywhere else `reflip detect` refuses and prints the numbers that made it refuse. What it always prints is how many of the measured human texts of that length scored at least as machine-like as yours: that number needs no assumption about who usually sends texts to the tool, and it is the one that matters to a person being accused. There is no probability, on purpose.
+
+Three more findings:
+
+- **reflip's own rewrites get past it.** Machine text rewritten by reflip scores an AUROC of 0.56 (medium) and 0.71 (long) against human text, where the same kind of text unrewritten scores 0.95 and 0.98.
+- **Claude is the hardest to tell apart.** Text from Claude Haiku 5.5 scores 0.75, 0.92 and 0.95 at the three lengths; the two local 4B models, 0.85 to 0.99.
+- **Second-language writers.** At the threshold, 0 of 135 English learner essays were flagged, and 3 of 130 Spanish ones (2.3%, up to 5.9%). The versions a teacher corrected were flagged more: 7 of 132. No open corpus of Italian learners was found, and the answer says so for Italian.
+
+The strict rule is what keeps most cells refused: with about 300 test humans per cell, the 2% bound allows one false positive, and a threshold aimed at 1% flags about three. Thresholds per language, tried after seeing the results, did worse (`data/results/detect/exploratory-per-language.md`). Reproduce: `python -m reflip.detect_corpus humans` (and `requests`, `generate`, `learners`, `rewrite`), then `python -m reflip.detect_bench score --pair qwen2.5-1.5b` and `evaluate`. The human texts are not in the repository; `docs/detect/corpus-manifest.json` says where each one came from.
+
+## In your browser
+
+[nerln.github.io/reflip/app](https://nerln.github.io/reflip/app/) runs the facts check, detection and rewriting on the reader's device. The text never leaves it, and the page is built so that this does not rest on a promise:
+
+- **A network lock.** While a text is being processed, `fetch`, `XMLHttpRequest`, `sendBeacon`, `WebSocket`, `EventSource` and image loads throw, in the page and inside the worker that runs the models. Models are downloaded before the lock goes on, and are read from the device after.
+- **A Content-Security-Policy** that lets the page connect only to itself, to Hugging Face for model files and to the counter. A policy in a `<meta>` tag does not reach a worker loaded from its own file, and GitHub Pages cannot send headers, so inside the worker the lock is the wall.
+- **Counting that has nowhere to put a text.** The page counts four fields: the format version, what happened (a page opened, a model downloaded, a tool used), which page, and which model, each from a closed list that the page and the counter both enforce. Not the text, its length, a hash, its language, a score or a verdict. The counter keeps one total per day and combination and nothing else. The page shows every request it has sent, as sent. Global Privacy Control and Do Not Track turn counting off.
+- **A test that fails when any of this breaks.** `web/test/privacy.test.mjs` runs the page in headless Chrome with a hostile engine that tries to send the pasted text out by every route above while it "processes". It fails if one request leaves, or if a statistics payload has a value off the list, four characters in a row of the text, or a number other than the format version. Switching the lock off makes it fail.
+
+Model files are pinned to a commit and checked against a SHA-256 as they stream in, then kept in the browser's private file system until the page's delete button or the browser's settings remove them.
+
+What the measurements decided:
+
+- **The detector runs on the processor, and gives no verdict anywhere.** The browser downloads the 0.5B pair as 4-bit files with 16-bit arithmetic (966 MB), the largest a browser handles comfortably. Measured on the same corpus, it reaches a mean AUROC of 0.947, but no language and length passes the rule (its best cell, Italian long, catches 80% and flagged 3 of 220 humans), so the page shows the share of human texts that scored as high and the reason it will not say more. On the processor, in the browser, they reproduce the scores onnxruntime gave on the same files to the third decimal (Binoculars 0.9957 against 0.9952 on a 251-token text, 1.0225 against 1.0235 on a 512-token one), so the numbers measured in Python describe what the page computes. On WebGPU the same files gave 1.245, and wrote "Th Th Th" when asked to rewrite, in Chrome 152 and in the Claude app's browser alike, on an Apple GPU. A 512-token text takes about 25 seconds.
+- **Rewriting runs on WebGPU**, with 4-bit files that keep 32-bit arithmetic: they wrote what the processor wrote, in 4 seconds instead of 215. Measured over the 24 watermarked texts, scored with the benchmark's detector:
+
+| browser model | download | z after (mean) | z after (max) | z below 4 | positions intact | facts changed per 1,000 words | words changed | seconds per text |
+|---|---|---|---|---|---|---|---|---|
+| Qwen2.5 0.5B Instruct | 786 MB | 2.0 | 18.1 | 22 of 24 | 0.12 | 22.8 | 61% | 27 |
+| Gemma 3 1B | 859 MB | 1.2 | 10.6 | 21 of 24 | 0.08 | 25.7 | 59% | 35 |
+
+  Both are weaker than the command line's 4B model. Qwen2.5 1.5B, the next size up, does not fit: its single 1.8 GB file stops with `std::bad_alloc`. Llama 3.2 1B loads, and was left out after it wrote up to eight times the length of the original and changed 112 facts per thousand words. The replies are cleaned of the announcements small models put around a rewrite ("Okay, here's a revised version:"), which Gemma did in 14 of 24 texts before the cleaning existed.
+
 ## The window
 
 ```bash

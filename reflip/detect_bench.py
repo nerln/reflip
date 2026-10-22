@@ -65,6 +65,10 @@ def cmd_score(args) -> int:
     if not todo:
         print("nothing to score", file=sys.stderr)
         return 0
+    # A fresh process per batch: on Apple's GPU the memory a long run holds grows until it
+    # stops (166, 395 and 155 texts on 21 and 22 October), and exiting is what gives it back.
+    if args.limit:
+        todo = todo[:args.limit]
     det = make_detector(args.pair)
     t0 = time.time()
     with out.open("a") as f:
@@ -420,6 +424,7 @@ def main(argv=None) -> int:
     sub = ap.add_subparsers(dest="cmd", required=True)
     s = sub.add_parser("score")
     s.add_argument("--pair", choices=sorted(ALL_PAIRS), required=True)
+    s.add_argument("--limit", type=int, default=0, help="score at most this many texts, then exit")
     s.set_defaults(fn=cmd_score)
     sub.add_parser("evaluate").set_defaults(fn=cmd_evaluate)
     args = ap.parse_args(argv)

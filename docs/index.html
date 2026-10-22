@@ -85,7 +85,7 @@ section+section{border-top:1px solid var(--line)}
 
 .eyebrow{
   display:flex;align-items:center;gap:12px;
-  font:650 .72rem/1.2 var(--mono);letter-spacing:.15em;text-transform:uppercase;
+  font:650 .9rem/1.2 var(--sans);letter-spacing:0;
   color:var(--rim);margin:0 0 1.4rem;
 }
 .eyebrow::before{content:"";display:block;width:24px;height:1px;background:currentColor}
@@ -107,9 +107,9 @@ p code,li code,td code{background:var(--paper-raised);border:1px solid var(--lin
 
 .site-header{padding-block:1.9rem}
 .header-row{display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap}
-.brand{display:inline-flex;align-items:center;gap:10px;font:700 .95rem/1 var(--mono);letter-spacing:.02em}
+.brand{display:inline-flex;align-items:center;gap:10px;font:700 1.05rem/1 var(--sans)}
 .brand img{width:24px;height:24px;border-radius:5px}
-.site-nav{display:flex;gap:26px;font:600 .74rem/1 var(--mono);letter-spacing:.07em;text-transform:uppercase;color:var(--muted)}
+.site-nav{display:flex;gap:26px;font:600 .92rem/1 var(--sans);color:var(--muted)}
 .site-nav a{position:relative;padding:6px 0}
 .site-nav a::after{content:"";position:absolute;left:0;right:0;bottom:1px;height:1px;background:var(--rim);transform:scaleX(0);transform-origin:right;transition:transform .25s ease}
 .site-nav a:hover::after,.site-nav a:focus-visible::after{transform:scaleX(1);transform-origin:left}
@@ -121,7 +121,7 @@ p code,li code,td code{background:var(--paper-raised);border:1px solid var(--lin
 .hero h1 em{font-style:normal;color:var(--rim)}
 .hero .lede{margin:1.6rem 0 0;max-width:52ch}
 .actions{display:flex;flex-wrap:wrap;align-items:center;gap:1.6rem;margin-top:2.2rem}
-.btn{display:inline-flex;align-items:center;gap:.6rem;font:700 .76rem/1 var(--mono);letter-spacing:.06em;text-transform:uppercase;transition:transform .2s ease,background-color .2s ease,border-color .2s ease}
+.btn{display:inline-flex;align-items:center;gap:.6rem;font:650 .98rem/1 var(--sans);transition:transform .2s ease,background-color .2s ease,border-color .2s ease}
 .btn-solid{min-height:48px;padding:0 20px;background:var(--ink);color:var(--paper)}
 .btn-solid:hover{transform:translateY(-2px);background:var(--rim);color:var(--ink)}
 .btn-text{color:var(--rim);border-bottom:1px solid var(--line-strong);padding:12px 0}
@@ -135,7 +135,7 @@ p code,li code,td code{background:var(--paper-raised);border:1px solid var(--lin
   border-radius:10px;overflow:hidden;
 }
 .card{background:var(--paper-raised);padding:1.6rem 1.5rem}
-.card .glyph{display:block;font:650 .7rem/1 var(--mono);letter-spacing:.13em;text-transform:uppercase;color:var(--rim);margin-bottom:.9rem}
+.card .glyph{display:block;font:650 .9rem/1.2 var(--sans);color:var(--rim);margin-bottom:.9rem}
 .card h3{margin-bottom:.6rem}
 .card p{color:var(--muted);font-size:.95rem;margin:0;max-width:none}
 .card--honest{border-top:2px solid var(--rim)}
@@ -149,7 +149,7 @@ pre code{font:inherit}
 .table-wrap{overflow-x:auto;margin-top:1rem;border:1px solid var(--line);border-radius:9px}
 table{border-collapse:collapse;width:100%;min-width:760px;font-size:.88rem}
 th,td{text-align:left;padding:.65rem .85rem;border-bottom:1px solid var(--line);vertical-align:top;white-space:nowrap}
-thead th{font:650 .66rem/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);background:var(--paper-raised)}
+thead th{font:650 .85rem/1.2 var(--sans);color:var(--muted);background:var(--paper-raised)}
 tbody tr:last-child td{border-bottom:0}
 tbody tr:hover td{background:var(--rim-soft)}
 td:first-child,th:first-child{white-space:normal;min-width:15ch}
@@ -445,9 +445,59 @@ reflip models --measure gemma3:4b  </code></pre>
     </div>
   </section>
 
+  <section id="detect">
+    <div class="shell narrow">
+      <p class="eyebrow">07 / the other direction</p>
+      <h2>Was this written by a model? One cell of nine earns an answer.</h2>
+      <p class="lede">
+        <code>reflip detect</code> runs Binoculars, the detector that won a protocol written
+        before any detector ran: 3,520 human texts and 432 machine texts from three model
+        families, in English, Italian and Spanish, at three lengths. It gives a verdict only
+        where the measured error allows one, and always says how many measured human texts
+        scored as high as yours.
+      </p>
+    </div>
+
+    <div class="shell">
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th scope="col"></th><th scope="col">short (40 to 99 words)</th><th scope="col">medium (100 to 300)</th><th scope="col">long (301 to 600)</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>English</td><td>AUROC 0.83, refused</td><td>0.92, refused: catches 46%</td><td><strong>0.97, verdict given</strong>: catches 50%, flagged 0 of 300 humans</td></tr>
+            <tr><td>Italian</td><td>0.82, refused</td><td>0.94, refused: flagged 10 of 300</td><td>0.99, refused: flagged 2 of 220</td></tr>
+            <tr><td>Spanish</td><td>0.88, refused</td><td>0.98, refused: flagged 11 of 300</td><td>0.98, refused: flagged 2 of 300</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="shell narrow">
+      <div class="note">
+        <p>
+          A verdict needs an AUROC whose 95% lower bound is at least 0.85, a threshold that
+          catches half the machine texts, and a false-positive rate under 2% at the top of its
+          interval. There is no probability: it would be read as the chance that a person
+          cheated. reflip's own rewrites fall to an AUROC of 0.56 and 0.71. Learners of English
+          were never flagged (0 of 135); learners of Spanish, 3 of 130. Claude Haiku is the
+          hardest family to tell apart. And no detector here reads Claude's or Gemini's
+          watermark: only Anthropic and Google hold those secrets.
+        </p>
+      </div>
+      <p class="lede">
+        <a href="app/">In your browser</a>, the facts check, detection and rewriting run on
+        your device. While a text is being processed the page locks its own network access, a
+        test fails if any request leaves, and the page counts four values from fixed lists,
+        never the text. The smaller browser detector gives no verdict in any cell; the page
+        says so, and why.
+      </p>
+    </div>
+  </section>
+
   <section id="unverifiable" class="weight">
     <div class="shell narrow">
-      <p class="eyebrow">07 / what this cannot verify</p>
+      <p class="eyebrow">08 / what this cannot verify</p>
       <h2>Nobody outside Anthropic can check this against Claude's own detector.</h2>
       <p class="lede">
         Anthropic's secret is private. So is the context length its detector reads,

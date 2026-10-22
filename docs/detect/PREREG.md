@@ -143,6 +143,48 @@ Added the same day, after the corpus was built and before any detector scored it
 8. **No extra Italian long requests were needed.** The first round of generation filed 40
    Italian texts in the long bucket, which point 5 asked for.
 
+## How the run went, before any result was looked at
+
+- The full-precision 0.5B pair stopped twice on Apple's GPU running out of memory (after 166
+  and 395 texts, with other programs holding 15 to 16 GB). Scoring resumes where it stopped,
+  one text at a time, so the scores of the texts already done are unchanged. The detector now
+  frees the GPU's pool after each text and retries a text that does not fit.
+- The browser's 4-bit pair was scored with onnxruntime on the processor, which is also where
+  the browser runs it: on WebGPU the same files gave other scores (Binoculars 1.245 against
+  0.995 on one text), while the browser's own processor backend matched onnxruntime to the
+  third decimal on the two texts compared. So the browser calibration describes what the page
+  computes.
+
+## Results, 22 October 2026
+
+Full tables: `data/results/detect/summary.md`. All numbers from the test half.
+
+- **Chosen detector:** Binoculars on the 1.5B pair, mean test AUROC 0.965 over the six medium
+  and long cells (0.5B pair: 0.942; the browser's 4-bit 0.5B pair: 0.947).
+- **Verdicts the command line gives:** one cell of nine, English long: AUROC 0.97 (0.95 to
+  0.99), the threshold catches 12 of 24 machine texts and flagged 0 of 300 human texts, so the
+  false-positive rate is under 1.0% at 95%. Every other cell is refused. Short texts fail on the
+  AUROC bound (0.73 to 0.80); English medium catches 46%, under half; the other four fail the
+  false-positive bound, flagging 2 to 11 of 220 to 300 human texts.
+- **Verdicts the browser gives:** none. Its best cell, Italian long, has AUROC 0.99 and catches
+  80%, but flagged 3 of 220 human texts.
+- **Machine text rewritten by reflip:** AUROC against humans 0.56 (medium) and 0.71 (long), 25%
+  and 19% caught at the threshold, against 0.95 and 0.98 for machine text at the same lengths
+  that was not rewritten.
+- **Writers in a second language:** at the threshold, 0 of 135 English learner essays (medium)
+  and 3 of 130 Spanish ones (2.3%, up to 5.9%); the corrected Spanish versions, 7 of 132 (5.3%).
+  Italian learners: not measured, no open corpus found.
+- **By generator:** Claude Haiku 5.5 is the hardest to tell apart at every length (AUROC 0.75,
+  0.92, 0.95 for short, medium, long), the two local 4B models the easiest.
+
 ## Changes after seeing results
 
-None yet.
+None to the tool: it ships the calibration the pre-registered rules produced.
+
+One exploratory analysis, decided after seeing that most refusals came from the false-positive
+bound: a threshold per language and length instead of one per length
+(`data/results/detect/exploratory-per-language.md`). It made things worse, 0 cells of 9 on
+either pair, because 100 calibration texts give a noisier 99th percentile than 300. What the
+numbers say instead: with about 300 test humans per cell, the 2% bound allows one false positive,
+and a threshold aimed at 1% flags about three. A verdict at this strictness needs either a
+threshold aimed lower than 1%, which catches less, or several times more human text per cell.

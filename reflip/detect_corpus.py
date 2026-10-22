@@ -435,7 +435,7 @@ def cmd_rewrite(args) -> int:
         p = subprocess.run([str(reflip), "rewrite", "-", "--json", "--allow-fact-changes"],
                            input=r["text"], capture_output=True, text=True, timeout=900)
         if p.returncode != 0:
-            print(f"{r['id']}: reflip exited {p.returncode}: {p.stderr[-200:]}", file=sys.stderr)
+            print(f"{r['id']}: reflip exited {p.returncode}: {(p.stdout + p.stderr)[-300:]}", file=sys.stderr)
             continue
         res = json.loads(p.stdout)
         w = word_count(res["text"])
@@ -474,6 +474,14 @@ def cmd_manifest(args) -> int:
     humans = [{k: r[k] for k in ("id", "lang", "genre", "bucket", "words", "dataset", "config",
                                  "split", "row_idx", "sentences")} for r in read_jsonl(path("humans.jsonl"))]
     machine = read_jsonl(path("ai.jsonl")) + read_jsonl(path("rewritten.jsonl"))
+    # A news topic is the article's own summary sentence, written by the BBC, Il Post or El
+    # País: it stays out, and the machine text points at the human document it came from.
+    source = {(t["lang"], t["topic"]): t["source"] for t in read_jsonl(path("topics.jsonl"))}
+    for r in machine:
+        if "topic" in r:
+            r["topic_source"] = source.get((r["lang"], r["topic"]))
+            if r.get("genre") == "news":
+                del r["topic"]
     target = ROOT / "docs" / "detect" / "corpus-manifest.json"
     target.write_text(json.dumps({"humans": humans, "machine": machine}, ensure_ascii=False))
     print(f"{target}: {len(humans)} human sources, {len(machine)} machine texts", file=sys.stderr)

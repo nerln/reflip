@@ -257,6 +257,29 @@ function renderRewriteControls() {
 }
 $("rewriter").addEventListener("change", renderRewriteControls);
 
+// Other models, read from Hugging Face only when the list is opened, never while a text is
+// being worked on (the network lock would refuse it anyway). Shown, not offered: nothing here
+// is downloaded, because the page only loads files it has measured and pinned.
+const HF_LIST = "https://huggingface.co/api/models?author=onnx-community&pipeline_tag=text-generation&sort=downloads&direction=-1&limit=12";
+let others = null;
+$("others").addEventListener("toggle", async () => {
+  if (!$("others").open || others || busy) return;
+  const list = $("others-list");
+  try {
+    others = await (await fetch(HF_LIST, { credentials: "omit", referrerPolicy: "no-referrer" })).json();
+  } catch {
+    list.replaceChildren(Object.assign(document.createElement("li"), { textContent: T.others_error }));
+    return;
+  }
+  const offered = new Set(REWRITERS.flatMap((r) => r.parts.map((p) => p.repo)));
+  list.replaceChildren(...others.map((m) => {
+    const li = document.createElement("li");
+    const a = Object.assign(document.createElement("a"), { href: `https://huggingface.co/${m.id}`, textContent: m.id.replace("onnx-community/", ""), rel: "noopener" });
+    li.append(a, ` · ${num(m.downloads || 0, ui, 0)} ⤓ · ${offered.has(m.id) ? T.others_marks.offered : T.others_marks.unmeasured}`);
+    return li;
+  }));
+});
+
 $("rewrite").addEventListener("click", async () => {
   const text = $("text").value.normalize("NFC");
   if (!text.trim()) return;

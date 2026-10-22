@@ -90,6 +90,9 @@ button.link { background: none; border: 0; padding: 0; color: inherit; text-deco
   background: var(--raised); border: 1px solid var(--line); border-radius: 10px; padding: 8px 12px; font-size: 15px;
 }
 .lockline .dot { width: 9px; height: 9px; border-radius: 50%; background: var(--rim) }
+.others { margin: 12px 0 }
+.others summary { cursor: pointer }
+.others ul { padding-left: 20px; font-size: 15px }
 .sent { margin: 28px 0 8px; border-top: 1px solid var(--line); padding-top: 12px }
 .sent summary { cursor: pointer; font-weight: 600 }
 .sent code { font-size: 14px; word-break: break-all }

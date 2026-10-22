@@ -71,6 +71,11 @@
       <button class="ghost" id="rewrite-cancel" hidden data-t="cancel">Cancel</button>
     </div>
     <p class="status" id="rewrite-status" aria-live="polite"></p>
+    <details class="others" id="others">
+      <summary data-t="others_title">Other models on Hugging Face</summary>
+      <p class="note" data-t="others_note"></p>
+      <ul id="others-list"></ul>
+    </details>
     <div id="rewrite-result" hidden>
       <label class="field"><span data-t="result">Rewritten text</span>
         <textarea id="rewritten" rows="9" readonly></textarea>

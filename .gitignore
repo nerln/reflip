@@ -14,3 +14,6 @@ data/detect/
 data/detect-*.log
 web/node_modules/
 docs/app/parity-sample.json
+docs/app/detect-sample.tmp.txt
+data/run-*.sh
+data/results/browser-rewriters.first-run.jsonl

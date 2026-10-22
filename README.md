@@ -9,35 +9,34 @@ Since 2 August 2026 Claude's text carries a statistical watermark, "a version of
 - **With the default local model, nothing leaves your machine.** The rewriter is a 2.5 GB model under Ollama. Any OpenAI-compatible endpoint works too, and then the text goes to that endpoint.
 - **The measurement is the product.** The rewriting is ordinary; the detector before and after, the share of watermark positions left untouched, the facts kept and the tokens spent are what the forty-odd other "Claude watermark removers" do not publish.
 - **It says what it cannot know.** Anthropic's secret, context length and detector are private. The benchmark uses the published algorithm at its published settings; the threat-model section says how the answer moves if theirs differ.
-- **What it is for.** Measuring what a transformation does to a text: to a watermark, to its facts, to a detector's score. It is not built to decide things about people, such as grading, hiring or accusing someone of using a model, and its detection answers are worded so that they cannot be read that way.
+- **What it is for.** Measuring what an edit does to a text: to a watermark, to its facts, to a detector's score. It is not built to decide things about people, such as grading, hiring or accusing someone of using a model, and its detection answers are worded so that they cannot be read that way.
 
 ## What the numbers say
 
-24 watermarked texts of 144 to 420 tokens, detector z-score before and after each transform. z is the number of standard deviations above chance; unwatermarked text lands between -2 and +2, and z above 4 happens once in thirty thousand by accident. Full table with medians, the weighted-mean score DeepMind's code recommends, and the per-sample texts: `data/results/main/`.
+24 watermarked texts of 144 to 420 tokens, detector z-score before and after each transform. z is the number of standard deviations above chance; unwatermarked text lands between -2 and +2, and z above 4 happens once in thirty thousand by accident. Run on 22 October 2026 with the facts guard on; full tables with medians, the weighted-mean score DeepMind's code recommends, cosine similarity and the per-sample texts: `data/results/facts/` and `data/results/facts-coverage/` (the run before the guard: `data/results/main/`).
 
-| transform | z before | z after (mean) | z after (max) | z below 4 | positions intact | meaning kept (cosine) | words changed | LLM tokens per 1,000 words | seconds per text |
+| transform | z before | z after (mean) | z after (max) | z below 4 | positions intact | facts changed per 1,000 words | words changed | LLM tokens per 1,000 words | seconds per text |
 |---|---|---|---|---|---|---|---|---|---|
-| none | 17.6 | 17.5 | 25.3 | 0 of 24 | 0.99 | 1.000 | 0% | 0 | 0 |
-| unicode strip | 17.6 | 17.5 | 25.3 | 0 of 24 | 0.99 | 1.000 | 0% | 0 | 0 |
-| rules, no model | 17.6 | 15.8 | 24.8 | 0 of 24 | 0.90 | 0.999 | 2% | 0 | 0 |
-| infill, stride 4 | 17.6 | 1.5 | 12.6 | 22 of 24 | 0.11 | 0.972 | 28% | 9,900 | 31 |
-| infill, stride 3 | 17.6 | 1.5 | 8.3 | 21 of 24 | 0.10 | 0.967 | 40% | 13,400 | 42 |
-| infill, stride 2 | 17.6 | 1.2 | 10.1 | 22 of 24 | 0.08 | 0.959 | 58% | 17,900 | 53 |
-| rules, then infill (stride 3) | 17.6 | 1.9 | 10.9 | 20 of 24 | 0.11 | 0.968 | 39% | 14,000 | 40 |
-| paraphrase | 17.6 | 0.6 | 5.1 | 23 of 24 | 0.04 | 0.956 | 72% | 5,100 | 15 |
-| paraphrase, coverage-checked (default with `--tokenizer`) | 17.6 | 0.3 | 2.4 | 24 of 24 | 0.03 | 0.955 | 74% | 5,800 | 17 |
-| unwatermarked controls (23) | 0.0 | -0.1 | 1.2 | 23 of 23 | 0.99 | 1.000 | 0% | 0 | 0 |
+| none | 17.6 | 17.5 | 25.3 | 0 of 24 | 0.99 | 0.0 | 0% | 0 | 0 |
+| unicode strip | 17.6 | 17.5 | 25.3 | 0 of 24 | 0.99 | 0.0 | 0% | 0 | 0 |
+| rules, no model | 17.6 | 15.8 | 24.8 | 0 of 24 | 0.90 | 0.5 | 2% | 0 | 0 |
+| infill, stride 4 | 17.6 | 1.3 | 13.5 | 22 of 24 | 0.11 | 3.3 | 28% | 9,140 | 22 |
+| infill, stride 3 | 17.6 | 1.3 | 7.8 | 22 of 24 | 0.07 | 5.0 | 39% | 12,534 | 31 |
+| infill, stride 2 | 17.6 | 0.8 | 6.1 | 22 of 24 | 0.06 | 8.5 | 62% | 17,343 | 44 |
+| rules, then infill (stride 3) | 17.6 | 1.5 | 9.0 | 21 of 24 | 0.08 | 4.9 | 42% | 12,430 | 30 |
+| paraphrase | 17.6 | 0.5 | 5.6 | 22 of 24 | 0.05 | 24.9 | 67% | 14,478 | 28 |
+| paraphrase, coverage-checked (default with `--tokenizer`) | 17.6 | 0.5 | 5.6 | 22 of 24 | 0.05 | 25.2 | 68% | 15,142 | 29 |
+| unwatermarked controls (23) | 0.0 | -0.1 | 1.2 | 23 of 23 | 0.99 | 0.0 | 0% | 0 | 0 |
 
-Rewriter: `qwen3:4b-instruct-2507-q4_K_M` under Ollama on a 16 GB Apple Silicon laptop, temperature 0.7. Watermarked texts: Qwen2.5-1.5B-Instruct with the open SynthID-Text processor (context 4 tokens, 9 keys). "Positions intact" is measured on the re-tokenised edited text and is the quantity the theory is about: 0.04 means 96% of the detector's coins were re-flipped. The identity row sits at 0.99 rather than 1.00 because two texts do not survive a decode/encode round trip byte for byte; that is the floor for every row.
+Rewriter: `qwen3:4b-instruct-2507-q4_K_M` under Ollama on a 16 GB Apple Silicon laptop, temperature 0.7. Watermarked texts: Qwen2.5-1.5B-Instruct with the open SynthID-Text processor (context 4 tokens, 9 keys). "Positions intact" is measured on the re-tokenised edited text and is the quantity the theory is about: 0.05 means 95% of the detector's coins were re-flipped. The identity row sits at 0.99 rather than 1.00 because two texts do not survive a decode/encode round trip byte for byte; that is the floor for every row. "Facts changed" is `reflip diff` between the original and the rewrite (see below).
 
-Four things the table settles:
+What the table settles:
 
 1. **Stripping invisible characters does nothing.** Same score to the second decimal. This is what most "remover" sites do.
 2. **Rules without a model do not get there.** Contractions, spelling variants, dashes and stock phrases change 2% of the words and take a tenth off the score. Removal needs an edit in every window of five tokens, and rules cannot supply that density.
-3. **One edit per window is enough, on real text.** Every model-driven row re-randomises 90 to 96% of the detector's positions, and the mean score drops from 17.6 to between 0.6 and 1.9, inside the range of unwatermarked text. The theory that predicted this is in `tests/test_synthid.py`, without any language model.
-4. **With a small local model, the full rewrite is the cheaper and cleaner way to get those edits.** Slot filling was designed to touch a quarter of the words and spend a fraction of the tokens. On this model it touches 28 to 58% of the words, spends two to three times the tokens of a paraphrase (every retry resends the text, and the numbered JSON answer is not short), takes twice as long, and leaves grammar slips that the meaning score does not see. The paraphrase reaches z 0.6 with 5,100 tokens per thousand words in 15 seconds. So the default is `paraphrase`; `infill` stays for the case where keeping most of the original wording matters more than fluency.
-
-What is left over after a single paraphrase: one English sample stays at z 5.1 because the model rewrote it lightly (a third of the positions intact). That is why `reflip run` with `--tokenizer` re-asks the model for any paragraph in which fewer than 90% of the token windows carry an edit, and prints the coverage it reached. The "coverage-checked" row is that mode: every one of the 24 texts ends inside the range of the unwatermarked controls (maximum z 2.4 against the controls' 1.2), for 14% more tokens and two more seconds. The two Italian texts came out worse under every transform with this 4B model; a rewriter that is fluent in the language matters.
+3. **One edit per window is enough, on real text.** Every model-driven row re-randomises 89 to 95% of the detector's positions, and the mean score drops from 17.6 to between 0.5 and 1.5, inside the range of unwatermarked text. The theory that predicted this is in `tests/test_synthid.py`, without any language model.
+4. **If the facts matter, use `infill`.** With numbers, names, negations and quantifiers kept out of its slots, slot filling changes 5.0 facts per thousand words at stride 3, against 24.9 for the paraphrase, and gets as many texts below 4 (22 of 24) for fewer tokens. Before the guard it changed 22.3, and the paraphrase 32.7. The paraphrase still reads better: slot filling leaves grammar slips a reader notices, which is why `paraphrase` stays the default.
+5. **The guard has a price on the paraphrase.** Asking again for every paragraph that changed a fact took it from 5,100 to 14,478 tokens per thousand words and from 15 to 28 seconds, for 32.7 down to 24.9 facts changed. It also costs removal in Italian: when the model cannot rewrite a paragraph without changing a fact, the attempt that kept the facts wins, and the two Italian texts stay at z 5.6 and 4.9. Before the guard, the coverage-checked paraphrase brought all 24 texts below 4 (maximum 2.4); now 22, and all 22 English ones. A rewriter more fluent in Italian is the fix, not a looser guard.
 
 ## Why the "watermark remover" websites do nothing
 
@@ -67,7 +66,7 @@ ollama pull qwen3:4b-instruct-2507-q4_K_M
 ```bash
 reflip run draft.md -o clean.md                                    # paraphrase with the local model
 reflip run draft.md --tokenizer Qwen/Qwen2.5-1.5B-Instruct -o clean.md   # same, and re-ask until 90% of 5-token windows carry an edit; prints the coverage
-reflip run draft.md --transform infill --stride 3 -o clean.md      # touch fewer words, accept some grammar slips
+reflip run draft.md --transform infill --stride 3 -o clean.md      # keeps facts best (5 changed per 1,000 words), some grammar slips
 reflip run draft.md --transform rules -o clean.md                  # no model at all: partial, see the table
 reflip check draft.md                                              # invisible characters, and what cannot be checked
 ```

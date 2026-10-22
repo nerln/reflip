@@ -330,21 +330,21 @@ footer a:hover{color:var(--paper)}
               <th scope="col">z after</th>
               <th scope="col">z below 4</th>
               <th scope="col">positions intact</th>
-              <th scope="col">meaning kept</th>
+              <th scope="col">facts changed per 1,000 words</th>
               <th scope="col">words changed</th>
             </tr>
           </thead>
           <tbody>
-            <tr><td>none</td><td>17.6</td><td>17.5</td><td>0 of 24</td><td>0.99</td><td>1.000</td><td>0%</td></tr>
-            <tr><td>unicode strip</td><td>17.6</td><td>17.5</td><td>0 of 24</td><td>0.99</td><td>1.000</td><td>0%</td></tr>
-            <tr><td>rules, no model</td><td>17.6</td><td>15.8</td><td>0 of 24</td><td>0.90</td><td>0.999</td><td>2%</td></tr>
-            <tr><td>infill, stride 4</td><td>17.6</td><td>1.5</td><td>22 of 24</td><td>0.11</td><td>0.972</td><td>28%</td></tr>
-            <tr><td>infill, stride 3</td><td>17.6</td><td>1.5</td><td>21 of 24</td><td>0.10</td><td>0.967</td><td>40%</td></tr>
-            <tr><td>infill, stride 2</td><td>17.6</td><td>1.2</td><td>22 of 24</td><td>0.08</td><td>0.959</td><td>58%</td></tr>
-            <tr><td>rules, then infill (stride 3)</td><td>17.6</td><td>1.9</td><td>20 of 24</td><td>0.11</td><td>0.968</td><td>39%</td></tr>
-            <tr><td>paraphrase</td><td>17.6</td><td>0.6</td><td>23 of 24</td><td>0.04</td><td>0.956</td><td>72%</td></tr>
-            <tr><td>paraphrase, coverage-checked (default with <code>--tokenizer</code>)</td><td>17.6</td><td>0.3</td><td>24 of 24</td><td>0.03</td><td>0.955</td><td>74%</td></tr>
-            <tr><td>unwatermarked controls (23)</td><td>0.0</td><td>-0.1</td><td>23 of 23</td><td>0.99</td><td>1.000</td><td>0%</td></tr>
+            <tr><td>none</td><td>17.6</td><td>17.5</td><td>0 of 24</td><td>0.99</td><td>0.0</td><td>0%</td></tr>
+            <tr><td>unicode strip</td><td>17.6</td><td>17.5</td><td>0 of 24</td><td>0.99</td><td>0.0</td><td>0%</td></tr>
+            <tr><td>rules, no model</td><td>17.6</td><td>15.8</td><td>0 of 24</td><td>0.90</td><td>0.5</td><td>2%</td></tr>
+            <tr><td>infill, stride 4</td><td>17.6</td><td>1.3</td><td>22 of 24</td><td>0.11</td><td>3.3</td><td>28%</td></tr>
+            <tr><td>infill, stride 3</td><td>17.6</td><td>1.3</td><td>22 of 24</td><td>0.07</td><td>5.0</td><td>39%</td></tr>
+            <tr><td>infill, stride 2</td><td>17.6</td><td>0.8</td><td>22 of 24</td><td>0.06</td><td>8.5</td><td>62%</td></tr>
+            <tr><td>rules, then infill (stride 3)</td><td>17.6</td><td>1.5</td><td>21 of 24</td><td>0.08</td><td>4.9</td><td>42%</td></tr>
+            <tr><td>paraphrase</td><td>17.6</td><td>0.5</td><td>22 of 24</td><td>0.05</td><td>24.9</td><td>67%</td></tr>
+            <tr><td>paraphrase, coverage-checked (default with <code>--tokenizer</code>)</td><td>17.6</td><td>0.5</td><td>22 of 24</td><td>0.05</td><td>25.2</td><td>68%</td></tr>
+            <tr><td>unwatermarked controls (23)</td><td>0.0</td><td>-0.1</td><td>23 of 23</td><td>0.99</td><td>0.0</td><td>0%</td></tr>
           </tbody>
         </table>
       </div>
@@ -365,12 +365,12 @@ footer a:hover{color:var(--paper)}
         <div class="card">
           <span class="glyph">on real text</span>
           <h3>One edit in every window is enough.</h3>
-          <p>Every rewrite that uses a model re-randomises 90 to 96% of the detector's positions, and the mean score drops from 17.6 to somewhere between 0.6 and 1.9, inside the range of the unwatermarked controls. tests/test_synthid.py shows the same shape with no language model at all.</p>
+          <p>Every rewrite that uses a model re-randomises 89 to 95% of the detector's positions, and the mean score drops from 17.6 to somewhere between 0.5 and 1.5, inside the range of the unwatermarked controls. tests/test_synthid.py shows the same shape with no language model at all.</p>
         </div>
         <div class="card card--honest">
           <span class="glyph">the honest one</span>
-          <h3>Slot filling was the clever idea. The plain rewrite beat it.</h3>
-          <p>Infill was built to touch a quarter of the words and spend a fraction of the tokens a full rewrite spends. On this model it touches 28 to 58% of the words, spends two to three times what a paraphrase spends, runs twice as long, and leaves grammar slips the meaning score does not catch. The paraphrase reaches z 0.6 at 5,100 tokens per thousand words in 15 seconds, so paraphrase is the default and infill stays for when keeping most of the original wording matters more than fluency.</p>
+          <h3>The plain rewrite reads better. Slot filling keeps the facts.</h3>
+          <p>With numbers, names, negations and quantifiers kept out of its slots, infill changes 5 facts per thousand words, against 25 for the paraphrase, and brings as many texts below 4 for fewer tokens. The paraphrase reads better, and asking it again for every paragraph that changed a fact nearly tripled its tokens; it stays the default, and infill is the one to use when the facts matter more than the prose.</p>
         </div>
       </div>
     </div>

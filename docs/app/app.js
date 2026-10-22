@@ -17,6 +17,7 @@ const $ = (id) => document.getElementById(id);
 let ui = pickLanguage();
 let T = strings(ui);
 let calib = null;
+let measured = null;
 let caps = null;
 let cached = new Set();
 let busy = false;
@@ -244,6 +245,11 @@ function renderRewriteControls() {
   const rw = REWRITERS.find((r) => r.id === sel.value) || REWRITERS[0];
   const extra = rewriterBytes(rw);
   $("rewrite").textContent = extra ? fill(T.download_rewriter, { size: bytes(extra, ui) }) : T.rewrite;
+  const m = measured?.models?.[rw.id];
+  const one = (x) => new Intl.NumberFormat(ui, { minimumFractionDigits: 1, maximumFractionDigits: 1 }).format(x);
+  $("rewrite-measured").textContent = m ? fill(T.measured_row, { zb: one(m.z_before), za: one(m.z_after),
+    below: m.below_threshold, n: m.texts, facts: one(m.facts_per_1000_words), edit: pct(m.edit_ratio, ui),
+    sec: num(m.seconds_per_text, ui, 0) }) : "";
   const unavailable = caps && !caps.webgpu || caps && !caps.f16 ? T.no_gpu : "";
   $("rewrite-unavailable").hidden = !unavailable;
   $("rewrite-unavailable").textContent = unavailable;
@@ -329,6 +335,11 @@ renderSent();
     calib = await (await fetch("calibration-browser.json", { cache: "no-cache" })).json();
   } catch {
     calib = null;
+  }
+  try {
+    measured = await (await fetch("rewriters-measured.json", { cache: "no-cache" })).json();
+  } catch {
+    measured = null;
   }
   caps = await call({ type: "capabilities" });
   cached = new Set(caps.cached || []);

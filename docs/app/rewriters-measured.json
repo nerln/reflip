@@ -1,0 +1,41 @@
+{
+ "v": 1,
+ "threshold": 4.0,
+ "corpus": "data/corpus.jsonl (24 watermarked texts)",
+ "how": "web/measure-rewriters.mjs in headless Chrome 152 on WebGPU (Apple M-series), scored by reflip.browser_measure with the benchmark's detector and key",
+ "models": {
+  "qwen2.5-0.5b": {
+   "texts": 24,
+   "z_before": 17.63,
+   "z_after": 2.01,
+   "z_after_max": 18.14,
+   "below_threshold": 22,
+   "intact": 0.119,
+   "edit_ratio": 0.614,
+   "facts_per_1000_words": 22.8,
+   "seconds_per_text": 26.8
+  },
+  "gemma-3-1b": {
+   "texts": 24,
+   "z_before": 17.63,
+   "z_after": 1.18,
+   "z_after_max": 10.6,
+   "below_threshold": 21,
+   "intact": 0.075,
+   "edit_ratio": 0.59,
+   "facts_per_1000_words": 25.7,
+   "seconds_per_text": 35.4
+  },
+  "llama-3.2-1b": {
+   "texts": 24,
+   "z_before": 17.63,
+   "z_after": 3.51,
+   "z_after_max": 11.73,
+   "below_threshold": 16,
+   "intact": 0.107,
+   "edit_ratio": 0.349,
+   "facts_per_1000_words": 112.3,
+   "seconds_per_text": 99.8
+  }
+ }
+}

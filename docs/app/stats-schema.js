@@ -23,7 +23,7 @@ export const SCHEMA = Object.freeze({
   // which page, for "page"; "-" otherwise
   f: Object.freeze(["home", "app", "privacy", "-"]),
   // which model the person picked; "-" when no model is involved
-  m: Object.freeze(["qwen2.5-0.5b", "gemma-3-1b", "llama-3.2-1b", "-"]),
+  m: Object.freeze(["qwen2.5-0.5b", "gemma-3-1b", "-"]),
 });
 
 export const FIELDS = Object.freeze(Object.keys(SCHEMA));

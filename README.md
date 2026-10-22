@@ -1,12 +1,15 @@
 # reflip
 
-Rewrite text so that a SynthID-style watermark no longer registers on the detector, and measure that it did.
+Nobody outside Anthropic can tell you whether a Claude text still carries its watermark, and reflip cannot either.
 
-Since 2 August 2026 Claude's text carries a statistical watermark, "a version of the SynthID-Text approach" in Anthropic's words. The watermark is a bias in which words were chosen; it is not a hidden character, and nobody outside Anthropic holds the secret that reads it. `reflip` runs a local model through the text, then runs the published SynthID-Text detector, with a secret of its own, on an open model, to check what each kind of edit does. Every number below comes from that check and can be reproduced with two commands.
+What reflip does is measure. It rewrites text with a local model until a SynthID-style watermark stops registering on the published detector, checked with a secret of its own on an open model. It checks that the rewrite kept the numbers, names, negations and quantifiers. And it estimates whether a text was written by a model, with the error it measured and a refusal wherever that error is too large to say anything. The same tools run in a browser, on the reader's own device: [nerln.github.io/reflip/app](https://nerln.github.io/reflip/app/).
 
-- **Nothing leaves your machine.** The rewriter is a 2.5 GB model under Ollama. Any OpenAI-compatible endpoint works too.
-- **The measurement is the product.** The rewriting is ordinary; the detector before and after, the share of watermark positions left untouched, the meaning kept and the tokens spent are what the forty-odd other "Claude watermark removers" do not publish.
+Since 2 August 2026 Claude's text carries a statistical watermark, "a version of the SynthID-Text approach" in Anthropic's words. The watermark is a bias in which words were chosen; it is not a hidden character, and nobody outside Anthropic holds the secret that reads it. Every number below comes from reflip's own check and can be reproduced with the commands next to it.
+
+- **With the default local model, nothing leaves your machine.** The rewriter is a 2.5 GB model under Ollama. Any OpenAI-compatible endpoint works too, and then the text goes to that endpoint.
+- **The measurement is the product.** The rewriting is ordinary; the detector before and after, the share of watermark positions left untouched, the facts kept and the tokens spent are what the forty-odd other "Claude watermark removers" do not publish.
 - **It says what it cannot know.** Anthropic's secret, context length and detector are private. The benchmark uses the published algorithm at its published settings; the threat-model section says how the answer moves if theirs differ.
+- **What it is for.** Measuring what a transformation does to a text: to a watermark, to its facts, to a detector's score. It is not built to decide things about people, such as grading, hiring or accusing someone of using a model, and its detection answers are worded so that they cannot be read that way.
 
 ## What the numbers say
 
@@ -42,7 +45,7 @@ At every step, the sampler hashes a secret together with the previous 4 tokens a
 
 ## Why one edit in five tokens is enough
 
-Each coin depends on a token **and the 4 tokens before it**. Change one token, and the detector's recomputed coins for that token and for the 4 that follow it become fresh, unbiased flips: their hash context is no longer the one the sampler saw. If every window of 5 consecutive tokens contains at least one edited token, every coin is re-randomised and the detector sees noise, whatever the strength of the watermark. That is one edit in five tokens, about one word in three or four.
+Each coin depends on a token **and the 4 tokens before it**. Change one token, and the detector's recomputed coins for that token and for the 4 that follow it become fresh, unbiased flips: their hash context is no longer the one the sampler saw. If every window of 5 consecutive tokens contains at least one edited token, every coin is re-randomised, and both the mean and the weighted-mean scores fall back to what unwatermarked text gets, whatever the strength of the watermark. That is one edit in five tokens, about one word in three or four.
 
 `tests/test_synthid.py` shows this without a language model: a toy generator that picks, among random candidates, the one with the most 1-coins scores z above 10 on 300 tokens; replacing every 5th token brings it below 4; replacing every 10th halves it. The benchmark shows it on real text, after re-tokenisation.
 
@@ -72,6 +75,25 @@ reflip check draft.md                                              # invisible c
 Any OpenAI-compatible endpoint works as the rewriter: `--base-url https://api.deepseek.com/v1 --api-key ... --model deepseek-chat`. <!-- stylecheck: allow, the flag is named --api-key --> Never use a rewriter that watermarks its own output: Gemini does, and Claude models launched since August 2026 do. Models run under Ollama, llama.cpp or vLLM carry no watermark unless the operator adds one.
 
 The coverage figure needs a tokenizer to count windows. Claude's is not public; the benchmark model's tokenizer is a proxy of similar granularity, and the threshold leaves margin.
+
+## Checking the facts
+
+A paraphrase that reads well can still say something else: a figure dropped, a name gone, a "not" lost, "most" turned into "all". On the October benchmark the model-driven rewrites changed 20 to 34 such facts per thousand words. `reflip diff` counts them without a model:
+
+```bash
+reflip diff before.md after.md          # exit 1 if anything changed
+reflip diff before.md after.md --json   # the same, for a program
+```
+
+Before: "The trial enrolled 412 patients over 18 months at three hospitals in Lyon. Most participants did not report side effects." After: "Over 16 months, three hospitals in Lyon took part in the trial. All participants reported no side effects."
+
+```
+5 facts changed (277.8 per 1,000 words).
+Numbers: gone 18, 412; new 16.
+Quantifiers: gone most; new all.
+```
+
+It reads numbers written as digits or as words in English, Italian and Spanish ("three million" and "3 million" are the same number, so is "trecentoquarantacinque" and 345), names (capitalised words that do not open a sentence, a line or a heading), negations and quantifiers. Every rewrite runs through it: `paraphrase` asks again for any paragraph that changed one of them, `infill` never offers one of those words to the model, and `reflip rewrite` reports `"ok": false` with exit code 3 if any are still changed at the end, keeping the text so you can look. It is a check, not a proof: a claim reworded with every number and name in place is invisible to it.
 
 ## The window
 
@@ -191,11 +213,20 @@ Reproduce: `reflip corpus --attn eager` (generates the watermarked and control t
 - **Corpus.** 24 prompts (22 English, 2 Italian: essays, emails, explanations, a story, a memo, a review) completed at temperature 0.9, top-p 0.95, with the watermark, and 23 completions of the same prompts without it as controls. Watermarked completions score between 8.6 and 25.3; controls between -1.6 and +1.2.
 - **Detector.** Mean g-value, the paper's simplest score, and the weighted-mean score DeepMind's reference code recommends, both as z-scores against the unwatermarked null.
 - **Intact.** The fraction of positions whose g-value the detector recomputes unchanged, measured on the re-tokenised edited text.
-- **Meaning and cost.** Cosine similarity of multilingual-e5-small embeddings between original and edited text, share of words changed, LLM tokens per thousand input words, wall time.
+- **Facts.** Numbers (digits and words, in English, Italian and Spanish), names, negations and quantifiers that the rewrite dropped or added, per thousand words of the original (`reflip/facts.py`, the same check `reflip diff` runs). It replaced the cosine similarity of sentence embeddings as the headline quality number: on the October benchmark every model-driven row kept a cosine between 0.955 and 0.972 while changing 20 to 34 facts per thousand words (the coverage-checked paraphrase: 34).
+- **Cost.** Share of words changed, LLM tokens per thousand input words, wall time. The cosine similarity of multilingual-e5-small embeddings is still in `summary.md`.
 
 ## What the other tools do
 
 More than forty "Claude watermark remover" repositories and sites appeared in August 2026. They fall into three groups: invisible-character strippers (verifiable, and irrelevant to the statistical watermark; several miss variation selectors), "rewrite it with another model" wrappers with no measurement, and a few measurement studies that decline to claim removal. None publishes before-and-after numbers against a SynthID-class detector together with a quality cost. That gap is what this repository fills.
+
+## Related work
+
+- **SynthID-Text** (Dathathri et al., *Nature*, 2024) is the watermark this benchmark reimplements, through the open `transformers` processor.
+- **Paraphrasing evades detectors** (Krishna et al., 2023) showed that a paraphrase model (DIPPER) breaks both watermarks and zero-shot detectors, and proposed retrieval as a defence. reflip's paraphrase row is the same finding on a SynthID-class watermark, with the facts it costs.
+- **MarkMyWords** (Piet et al., 2023) and **MarkLLM** (Pan et al., 2024) benchmark and implement text watermarks, robustness to rewriting included.
+- **RAID** (Dugan et al., 2024) measures machine-text detectors across generators, domains and adversarial edits, paraphrase among them; **AuTexTification** (IberLEF 2023) ran the same question as a shared task in English and Spanish.
+- **Binoculars** (Hans et al., 2024) and **Fast-DetectGPT** (Bao et al., 2024) are the two zero-shot detectors `reflip detect` uses. **Liang et al.** (2023) found that perplexity-based detectors flag people writing in a second language, which is why reflip measures them apart and says so in every answer.
 
 ## Threat model, honestly
 

@@ -150,6 +150,11 @@ def cmd_run(args: argparse.Namespace) -> int:
     write_output(res.text, args.output)
     cov = coverage(text, res.text, args.tokenizer, args.ngram_len) if args.tokenizer else None
     print(report_line(args.transform, text, res, seconds, cov, args.ngram_len), file=sys.stderr)
+    from .facts import diff as facts_diff, language as fact_language, sentences as fact_sentences
+
+    lang = fact_language(text, args.lang)
+    if lang:
+        print("\n".join(fact_sentences(facts_diff(text, res.text, lang))), file=sys.stderr)
     return 0
 
 

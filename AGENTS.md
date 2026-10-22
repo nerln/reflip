@@ -14,10 +14,12 @@ text to standard input.
 The result:
 
 ```json
-{"v": 1, "transform": "paraphrase", "model": "qwen3:4b-instruct-2507-q4_K_M",
+{"v": 1, "ok": true, "transform": "paraphrase", "model": "qwen3:4b-instruct-2507-q4_K_M",
  "text": "the rewritten text", "words": 312, "edits": 231, "edit_ratio": 0.74,
  "coverage": 0.97, "coverage_note": null, "workers": 2, "llm_calls": 8,
- "prompt_tokens": 1820, "completion_tokens": 700, "seconds": 16.4, "notes": {}}
+ "prompt_tokens": 1820, "completion_tokens": 700, "seconds": 16.4, "notes": {},
+ "facts_altered": 0, "facts_note": "No number, name, negation or quantifier changed.",
+ "facts": {"altered": 0, "numbers": {"missing": [], "added": []}, "...": "..."}}
 ```
 
 `coverage` is the share of five-token windows that contain an edit, which is the quantity
@@ -25,9 +27,18 @@ the detector cares about. It is `null` when it was not measured, and `coverage_n
 says why in a sentence. Anything above 0.9 means every position the detector scores has
 been re-randomised.
 
-Exit codes: 0 done, 1 an expected refusal, 2 a usage mistake, 130 an interrupt. A refusal
-prints `{"ok": false, "reason": "a sentence"}` and the sentence is meant to be shown to
-whoever asked, not paraphrased.
+`facts` is what the rewrite changed in numbers, names, negations and quantifiers, in
+English, Italian or Spanish. Paraphrase already re-asks any paragraph that changed one;
+when some are still changed at the end, `ok` is `false`, the exit code is 3, `reason` says
+how many, and the text is still in `text` so the person can look. Show them `facts_note`.
+Pass `--allow-fact-changes` only if they asked for that.
+
+Exit codes: 0 done, 1 an expected refusal, 2 a usage mistake, 3 facts changed, 130 an
+interrupt. A refusal prints `{"ok": false, "reason": "a sentence"}` and the sentence is
+meant to be shown to whoever asked, not paraphrased.
+
+To check a rewrite made elsewhere: `reflip diff before.md after.md --json` (exit 1 if any
+fact changed). No model, no network.
 
 ## Before the first run
 
@@ -80,3 +91,15 @@ model. `rules` needs no model at all and does not remove the watermark on its ow
 it only when a model is unavailable and a partial reduction is better than nothing.
 `unicode` strips invisible characters and has no effect on a statistical watermark; it is
 in the list because people ask for it.
+
+## If you are asked whether a text was written by a model
+
+```bash
+reflip detect essay.md --json
+```
+
+It answers with the share of measured human texts that scored at least as machine-like,
+and a verdict only for a language and length where the benchmark allows one; elsewhere it
+refuses and says why. There is no probability, on purpose. Relay the sentences as they are,
+including the one about second-language writers, and never present the answer as proof
+about a person. It cannot read Claude's or Gemini's watermark, and says so.

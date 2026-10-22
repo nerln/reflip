@@ -14,6 +14,7 @@ from __future__ import annotations
 
 import bisect
 import json
+import math
 import re
 from collections import Counter
 from dataclasses import dataclass, field
@@ -38,14 +39,34 @@ class Facts:
     words: int = 0
 
 
-def tokens(text: str) -> list[tuple[str, bool]]:
-    """Words and numbers, each with whether it opens a sentence or a line."""
+def tokens(text: str) -> list[tuple[str, bool, int, int]]:
+    """Words and numbers, each with whether it opens a sentence or a line, and where it is.
+    Curly apostrophes are read as straight ones: "Landlord’s" and "Landlord's" are one name."""
     starts = [0] + [m.end() for m in SENTENCE_END.finditer(text)]
     out = []
     for m in WORD.finditer(text):
         s = starts[bisect.bisect_right(starts, m.start()) - 1]
-        out.append((m.group(0), text[s:m.start()].strip(OPENERS) == ""))
+        out.append((m.group(0).replace("\u2019", "'"), text[s:m.start()].strip(OPENERS) == "", m.start(), m.end()))
     return out
+
+
+LIST_MARKER = re.compile(r"[.)](\s|$)")
+TITLE_WORD = re.compile(r"[^\W\d_]{4,}")
+
+
+def heading_spans(text: str) -> list[tuple[int, int]]:
+    """Lines that are headings: markdown '#', a line in bold, or a short Title Case line
+    without closing punctuation. Their capitals are style, not names."""
+    spans, pos = [], 0
+    for line in text.split("\n"):
+        t = line.strip()
+        long_words = TITLE_WORD.findall(t)
+        title = (t and t[-1] not in ".!?:;," and len(t.split()) <= 12 and long_words
+                 and sum(w[0].isupper() for w in long_words) >= 0.6 * len(long_words) and len(long_words) >= 2)
+        if t.startswith("#") or (t.startswith("**") and t.endswith("**") and len(t) > 4) or title:
+            spans.append((pos, pos + len(line)))
+        pos += len(line) + 1
+    return spans
 
 
 def digit_value(tok: str, lang: str) -> float | None:
@@ -156,11 +177,14 @@ def _joins(prev: str, nxt: str, lex: dict, lang: str) -> bool:
 def facts(text: str, lang: str) -> Facts:
     f = Facts()
     toks = tokens(text)
-    words = [t.lower() for t, _ in toks]
-    f.words = sum(1 for t, _ in toks if not t[0].isdigit())
+    words = [t.lower() for t, *_ in toks]
+    f.words = sum(1 for t, *_ in toks if not t[0].isdigit())
     scales = LEXICON["numbers"][lang]["scales"]
-    for k, (t, _) in enumerate(toks):
+    for k, (t, opening, a, b) in enumerate(toks):
         if t[0].isdigit():
+            # "1." or "2)" at the start of a line numbers a list; it is not a fact
+            if opening and LIST_MARKER.match(text, b):
+                continue
             v = digit_value(t, lang)
             if v is not None:
                 # "3 million" is the number three million, as "three million" is
@@ -169,9 +193,11 @@ def facts(text: str, lang: str) -> Facts:
     split = [p for w in words if not w[0].isdigit() for p in w.split("-")]
     for v in word_numbers(split, lang):
         f.numbers[v] += 1
-    for t, opening in toks:
+    heads = heading_spans(text)
+    for t, opening, a, b in toks:
         f.lowered.add(t.lower())
-        if t[0].isupper() and len(t) > 1 and not opening:
+        if (t[0].isupper() and len(t) > 1 and not opening and not (lang == "en" and t.startswith("I'"))
+                and not any(x <= a < y for x, y in heads)):
             f.names[t] += 1
     neg = set(LEXICON["negations"][lang])
     f.negations = sum(1 for w in split if w in neg)
@@ -245,7 +271,8 @@ def diff(original: str, rewritten: str, lang: str) -> dict:
         "lang": lang,
         "words": a.words,
         "altered": altered,
-        "per_1000_words": round(1000 * altered / a.words, 1) if a.words else 0.0,
+        # half up, as JavaScript's Math.round does: Python's round() goes to even on .x5
+        "per_1000_words": math.floor(10000 * altered / a.words + 0.5) / 10 if a.words else 0.0,
         "numbers": {"missing": sorted(_fmt(v) for v in missing_num.elements()),
                     "added": sorted(_fmt(v) for v in added_num.elements())},
         "names": {"missing": sorted(missing_names.elements()), "added": sorted(added_names.elements())},

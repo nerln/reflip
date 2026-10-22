@@ -13,3 +13,4 @@ data/cache/
 data/detect/
 data/detect-*.log
 web/node_modules/
+docs/app/parity-sample.json

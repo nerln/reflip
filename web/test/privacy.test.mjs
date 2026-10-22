@@ -49,8 +49,31 @@ function chromePath() {
 
 let server, browser, origin;
 
+// A worker that installs the same lock the engine worker does, locks it, and tries every
+// way out. It is served by this test only; the site never ships it.
+const GUARD_WORKER = `
+import { install, lock } from "/app/guard.js";
+install(self);
+lock();
+const out = {};
+const tries = {
+  fetch: () => fetch("/leak"),
+  xhr: () => { const x = new XMLHttpRequest(); x.open("GET", "/leak"); x.send(); },
+  websocket: () => new WebSocket("wss://example.com/leak"),
+  eventsource: () => new EventSource("/leak"),
+};
+for (const [name, fn] of Object.entries(tries)) {
+  try { await fn(); out[name] = "sent"; } catch (e) { out[name] = e.name; }
+}
+postMessage(out);
+`;
+
 before(async () => {
   server = createServer((req, res) => {
+    if (req.url === "/__test/guard-worker.js") {
+      res.writeHead(200, { "Content-Type": "text/javascript" });
+      return res.end(GUARD_WORKER);
+    }
     const path = normalize(decodeURIComponent(new URL(req.url, "http://x").pathname)).replace(/^\/+/, "");
     let file = join(DOCS, path);
     if (existsSync(file) && statSync(file).isDirectory()) file = join(file, "index.html");
@@ -80,8 +103,8 @@ after(async () => {
 function fakeWorker() {
   window.__attempts = [];
   window.__processing = [];
-  const cached = ["onnx-community/Qwen2.5-0.5B", "onnx-community/Qwen2.5-0.5B-Instruct",
-    "onnx-community/Qwen2.5-1.5B-Instruct", "onnx-community/Qwen3-1.7B-ONNX"];
+  const cached = ["onnx-community/Qwen2.5-0.5B@q4f16", "onnx-community/Qwen2.5-0.5B-Instruct@q4f16",
+    "onnx-community/Qwen2.5-0.5B-Instruct@q4", "onnx-community/Qwen2.5-1.5B-Instruct@q4"];
   window.Worker = class {
     constructor() { this.onmessage = null; }
     reply(data) { setTimeout(() => this.onmessage?.({ data }), 5); }
@@ -193,6 +216,21 @@ for (const tool of ["detect", "rewrite"]) {
     await page.close();
   });
 }
+
+test("inside a worker, the lock refuses fetch, XHR, WebSocket and EventSource", async () => {
+  const page = await browser.newPage();
+  const leaks = [];
+  page.on("request", (r) => { if (r.url().includes("leak")) leaks.push(r.url()); });
+  await page.goto(`${origin}/app/`, { waitUntil: "domcontentloaded" });
+  const out = await page.evaluate(() => new Promise((resolve) => {
+    const w = new Worker("/__test/guard-worker.js", { type: "module" });
+    w.onmessage = ({ data }) => resolve(data);
+  }));
+  assert.deepEqual(out, { fetch: "NetworkLockedError", xhr: "NetworkLockedError",
+    websocket: "NetworkLockedError", eventsource: "NetworkLockedError" });
+  assert.deepEqual(leaks, []);
+  await page.close();
+});
 
 test("the page declares the Content-Security-Policy the promise depends on", () => {
   const html = readFileSync(join(DOCS, "app/index.html"), "utf8");

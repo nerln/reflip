@@ -9,22 +9,93 @@
 import { install, whileLocked } from "./guard.js";
 import { featuresFromRows, rows } from "./detect.js";
 import { diff } from "./facts.js";
-import { DETECTOR, REPOS, REWRITERS, SMALL_FILES, WEIGHTS, fileURL } from "./models.js";
+import { cleanReply } from "./clean.js";
+import { DATA, DETECTOR, FILES, REPOS, REWRITERS, SMALL_FILES, fileURL, partBytes, partKey } from "./models.js";
+import { Sha256 } from "./sha256.js";
 import { AutoModelForCausalLM, AutoTokenizer, InterruptableStoppingCriteria, Tensor, env } from "./vendor/transformers.min.js";
 
 install(self);
 
 env.allowLocalModels = false;
-env.useBrowserCache = true;
+// Model files live in the Origin Private File System, not the Cache Storage: browsers refuse
+// a cache entry of a few hundred megabytes (measured: 150 MB stored, 300 MB refused), and a
+// weights file is 483 MB. transformers.js reads them through the custom cache below.
+env.useBrowserCache = false;
+env.useWasmCache = false;
+env.useCustomCache = true;
 env.backends.onnx.wasm.wasmPaths = {
   mjs: new URL("./vendor/ort-wasm-simd-threaded.asyncify.mjs", import.meta.url).href,
   wasm: new URL("./vendor/ort-wasm-simd-threaded.asyncify.wasm", import.meta.url).href,
 };
 
+const DIR = "reflip-models";
+const nameOf = (url) => url.replace(/^https:\/\/huggingface\.co\//, "").replace(/[^A-Za-z0-9._-]/g, "_");
+
+async function modelsDir(create = true) {
+  const root = await navigator.storage.getDirectory();
+  return root.getDirectoryHandle(DIR, { create });
+}
+
+async function stored(url) {
+  try {
+    const dir = await modelsDir(false);
+    await dir.getFileHandle(nameOf(url) + ".ok");
+    return await (await dir.getFileHandle(nameOf(url))).getFile();
+  } catch {
+    return null;
+  }
+}
+
+// Write a stream to a file, hashing it on the way; the ".ok" marker is written last, so a
+// download cut short is never mistaken for a file.
+async function store(url, stream, onBytes = () => {}) {
+  const dir = await modelsDir();
+  const name = nameOf(url);
+  try { await dir.removeEntry(name + ".ok"); } catch {}
+  const handle = await (await dir.getFileHandle(name, { create: true })).createSyncAccessHandle();
+  const hash = new Sha256();
+  try {
+    handle.truncate(0);
+    let at = 0;
+    const reader = stream.getReader();
+    for (;;) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      handle.write(value, { at });
+      at += value.byteLength;
+      hash.update(value);
+      onBytes(value.byteLength);
+    }
+    handle.flush();
+  } finally {
+    handle.close();
+  }
+  return { hex: hash.hex(), ok: async () => (await dir.getFileHandle(name + ".ok", { create: true })) };
+}
+
+env.customCache = {
+  async match(request) {
+    const url = typeof request === "string" ? request : request.url;
+    const file = await stored(url);
+    return file ? new Response(file, { headers: { "Content-Length": String(file.size) } }) : undefined;
+  },
+  async put(request, response) {
+    // only files transformers.js fetched itself while preparing, never during work
+    const url = typeof request === "string" ? request : request.url;
+    const saved = await store(url, response.body);
+    await saved.ok();
+  },
+};
+
 const MAX_TOKENS = 512;
-const CACHE = "transformers-cache";
-let device = "webgpu";
-const loaded = new Map(); // repo -> model
+// The detector runs on the processor. On WebGPU the same 4-bit files gave other scores
+// (Binoculars 1.245 against 0.995 on one text, perplexity a nat and a half higher), which
+// would have put every text on the wrong side of thresholds measured with onnxruntime on a
+// CPU; in the browser's own CPU backend the scores match those to three decimals. Rewriting
+// runs on WebGPU with the 32-bit-arithmetic files (see models.js), and needs it: on the
+// processor one paragraph took 215 seconds.
+let gpu = null;
+const loaded = new Map(); // "repo@dtype" -> model
 let tokenizer = null; // the Qwen2.5 tokenizer, shared by the detector pair
 const tokenizers = new Map();
 let stopper = null;
@@ -40,80 +111,70 @@ async function capabilities() {
     webgpu = !!adapter;
     f16 = !!adapter?.features?.has("shader-f16");
   } catch {}
-  device = webgpu && f16 ? "webgpu" : "wasm";
-  return { webgpu, f16, device };
+  gpu = webgpu && f16 ? "webgpu" : null;
+  return { webgpu, f16, device: gpu || "wasm" };
 }
 
-function hex(buf) {
-  return [...new Uint8Array(buf)].map((b) => b.toString(16).padStart(2, "0")).join("");
-}
-
-// Download one file into the cache transformers.js reads from, checking its SHA-256 first.
-async function ensure(repo, file, onBytes) {
+// Download one file to the device. A weights file whose SHA-256 is not the pinned one is
+// deleted before anything can load it.
+async function ensure(repo, file, pin, onBytes) {
   const url = fileURL(repo, file);
-  const cache = await caches.open(CACHE);
-  if (await cache.match(url)) return 0;
+  if (await stored(url)) {
+    if (pin) onBytes(pin.size);
+    return;
+  }
   const res = await fetch(url);
   if (!res.ok) throw new Error(`${repo}/${file}: HTTP ${res.status}`);
-  const total = Number(res.headers.get("Content-Length")) || (file === WEIGHTS ? REPOS[repo].size : 0);
-  const reader = res.body.getReader();
-  const chunks = [];
-  let got = 0;
-  for (;;) {
-    const { done, value } = await reader.read();
-    if (done) break;
-    chunks.push(value);
-    got += value.byteLength;
-    onBytes(value.byteLength);
+  const saved = await store(url, res.body, pin ? onBytes : () => {});
+  if (pin && saved.hex !== pin.sha256) {
+    try { await (await modelsDir()).removeEntry(nameOf(url)); } catch {}
+    throw new Error(`${repo}/${file}: SHA-256 ${saved.hex} is not the pinned ${pin.sha256}`);
   }
-  const body = new Uint8Array(got);
-  let at = 0;
-  for (const c of chunks) {
-    body.set(c, at);
-    at += c.byteLength;
-  }
-  chunks.length = 0;
-  if (file === WEIGHTS) {
-    const want = REPOS[repo].sha256;
-    const have = hex(await crypto.subtle.digest("SHA-256", body));
-    if (have !== want) throw new Error(`${repo}/${file}: SHA-256 ${have} is not the pinned ${want}`);
-  }
-  await cache.put(url, new Response(body, { headers: { "Content-Type": res.headers.get("Content-Type") || "application/octet-stream", "Content-Length": String(got) } }));
-  return total;
+  await saved.ok();
 }
 
-async function prepare(repos) {
-  const need = repos.filter((r) => !loaded.has(r));
-  const total = need.reduce((s, r) => s + REPOS[r].size, 0);
+// parts: [{repo, dtype}]. q4f16 parts load on the processor, q4 parts on the GPU.
+async function prepare(parts) {
+  const need = parts.filter((p) => !loaded.has(partKey(p)));
+  const total = need.reduce((s, p) => s + partBytes(p), 0);
   let done = 0;
   const onBytes = (n) => {
     done += n;
     post({ type: "progress", phase: "download", done, total });
   };
-  for (const repo of need) {
-    for (const f of SMALL_FILES) await ensure(repo, f, () => {});
-    await ensure(repo, WEIGHTS, onBytes);
+  for (const { repo, dtype } of need) {
+    for (const f of SMALL_FILES) await ensure(repo, f, null, () => {});
+    const w = REPOS[repo].weights[dtype];
+    await ensure(repo, FILES[dtype], { size: w.size - (w.data?.size || 0), sha256: w.sha256 }, onBytes);
+    if (w.data) await ensure(repo, DATA(dtype), w.data, onBytes);
   }
   post({ type: "progress", phase: "load", done: 0, total: need.length });
   let k = 0;
-  for (const repo of need) {
-    const opts = { revision: REPOS[repo].rev, dtype: "q4f16", device };
-    loaded.set(repo, await AutoModelForCausalLM.from_pretrained(repo, opts));
-    tokenizers.set(repo, await AutoTokenizer.from_pretrained(repo, { revision: REPOS[repo].rev }));
+  for (const p of need) {
+    const device = p.dtype === "q4f16" ? "wasm" : gpu;
+    if (!device) throw new Error("rewriting needs WebGPU");
+    const opts = { revision: REPOS[p.repo].rev, dtype: p.dtype, device,
+      use_external_data_format: !!REPOS[p.repo].weights[p.dtype].data };
+    loaded.set(partKey(p), await AutoModelForCausalLM.from_pretrained(p.repo, opts));
+    if (!tokenizers.has(p.repo)) tokenizers.set(p.repo, await AutoTokenizer.from_pretrained(p.repo, { revision: REPOS[p.repo].rev }));
     post({ type: "progress", phase: "load", done: ++k, total: need.length });
   }
-  if (repos.includes(DETECTOR.observer)) tokenizer = tokenizers.get(DETECTOR.observer);
+  if (tokenizers.has(DETECTOR.observer)) tokenizer = tokenizers.get(DETECTOR.observer);
 }
 
-async function cachedRepos() {
-  const cache = await caches.open(CACHE);
+// Which parts are already on the device, as "repo@dtype".
+async function storedParts() {
   const out = [];
-  for (const repo of Object.keys(REPOS)) if (await cache.match(fileURL(repo, WEIGHTS))) out.push(repo);
+  for (const [repo, r] of Object.entries(REPOS)) {
+    for (const [dtype, w] of Object.entries(r.weights)) {
+      if (await stored(fileURL(repo, FILES[dtype])) && (!w.data || await stored(fileURL(repo, DATA(dtype))))) out.push(`${repo}@${dtype}`);
+    }
+  }
   return out;
 }
 
 async function forget() {
-  await caches.delete(CACHE);
+  try { await (await navigator.storage.getDirectory()).removeEntry(DIR, { recursive: true }); } catch {}
   loaded.clear();
   tokenizers.clear();
   tokenizer = null;
@@ -133,8 +194,8 @@ async function detect(text) {
     const starts = ids.map((_, i) =>
       i === 0 ? 0 : tokenizer.decode(ids.slice(0, i), { skip_special_tokens: false, clean_up_tokenization_spaces: false }).length);
     const feeds = { input_ids: int64(ids), attention_mask: int64(ids.map(() => 1)) };
-    const obs = (await loaded.get(DETECTOR.observer)(feeds)).logits;
-    const perf = (await loaded.get(DETECTOR.performer)(feeds)).logits;
+    const obs = (await loaded.get(`${DETECTOR.observer}@q4f16`)(feeds)).logits;
+    const perf = (await loaded.get(`${DETECTOR.performer}@q4f16`)(feeds)).logits;
     const V = obs.dims[2];
     return featuresFromRows(rows(obs.data, V), rows(perf.data, V), V, ids, starts, text);
   } finally {
@@ -152,10 +213,10 @@ const STRONG =
   "and keep every name, number, negation and quantifier exactly.\n\n";
 
 async function ask(rw, block, strong) {
-  const repo = rw.repos[0];
+  const repo = rw.parts[0].repo;
   const tok = tokenizers.get(repo);
   const messages = [
-    { role: "system", content: "You rewrite text in your own words. Reply with the rewritten text only." },
+    { role: "system", content: "You rewrite text in your own words. Reply with the rewritten text only, with no introduction and no comment." },
     { role: "user", content: RULES + (strong ? STRONG : "") + "TEXT:\n" + block },
   ];
   const inputs = tok.apply_chat_template(messages, {
@@ -163,12 +224,12 @@ async function ask(rw, block, strong) {
   });
   stopper = new InterruptableStoppingCriteria();
   const n = inputs.input_ids.dims[1];
-  const out = await loaded.get(repo).generate({
+  const out = await loaded.get(partKey(rw.parts[0])).generate({
     ...inputs, max_new_tokens: Math.min(2048, Math.ceil(n * 1.6) + 64), do_sample: false,
     stopping_criteria: stopper,
   });
   const text = tok.decode(out.slice(null, [n, out.dims[1]])[0], { skip_special_tokens: true });
-  return text.replace(/<think>[\s\S]*?<\/think>/g, "").replace(/^TEXT:\s*/, "").trim();
+  return cleanReply(text);
 }
 
 async function rewrite(text, lang, rewriterId) {
@@ -201,10 +262,10 @@ async function rewrite(text, lang, rewriterId) {
 self.onmessage = async ({ data: msg }) => {
   try {
     if (msg.type === "capabilities") {
-      post({ type: "capabilities", ...(await capabilities()), cached: await cachedRepos() });
+      post({ type: "capabilities", ...(await capabilities()), cached: await storedParts() });
     } else if (msg.type === "prepare") {
-      await prepare(msg.repos);
-      post({ type: "ready", repos: msg.repos });
+      await prepare(msg.parts);
+      post({ type: "ready" });
     } else if (msg.type === "forget") {
       await forget();
       post({ type: "forgotten" });

@@ -95,6 +95,21 @@ final class ContractTests: XCTestCase {
         XCTAssertEqual(receipt.seconds, 16.4, accuracy: 0.0001)
     }
 
+    /// The facts count travels with reflip's own sentence; an older reflip without the
+    /// field decodes as "not checked", never as zero changed.
+    func testTheFactsCountIsReadAndItsAbsenceIsNotZero() throws {
+        let checked = """
+        {"v":1,"ok":false,"transform":"paraphrase","model":"m","text":"x","words":10,"edits":7,"edit_ratio":0.7,"coverage":0.95,"llm_calls":1,"prompt_tokens":80,"completion_tokens":40,"seconds":1.2,"facts_altered":2,"facts_note":"2 facts changed (200 per 1,000 words).\\nNumbers: gone 18; new 16."}
+        """
+        let receipt = try JSONDecoder().decode(Receipt.self, from: Data(checked.utf8))
+        XCTAssertEqual(receipt.factsAltered, 2)
+        XCTAssertEqual(receipt.factsNote?.hasPrefix("2 facts changed"), true)
+        let older = """
+        {"v":1,"transform":"paraphrase","model":"m","text":"x","words":10,"edits":7,"edit_ratio":0.7,"coverage":0.95,"llm_calls":1,"prompt_tokens":80,"completion_tokens":40,"seconds":1.2}
+        """
+        XCTAssertNil(try JSONDecoder().decode(Receipt.self, from: Data(older.utf8)).factsAltered)
+    }
+
     /// Null coverage is not zero coverage, and the strip must never draw it as zero:
     /// zero means the detector recomputes every position it saw before, which is the
     /// one result worth shouting about.

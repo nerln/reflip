@@ -7,7 +7,7 @@
 import { install, isLocked, whileLocked } from "./guard.js";
 import { diff } from "./facts.js";
 import { assess, precheck } from "./assess.js";
-import { DETECTOR, REPOS, REWRITERS } from "./models.js";
+import { DETECTOR, REWRITERS, partBytes, partKey } from "./models.js";
 import { ENDPOINT, count, optedOut, sentBodies } from "./stats.js";
 import { LANGS, bytes, fill, num, pct, pickLanguage, strings } from "./i18n.js";
 
@@ -126,18 +126,18 @@ function setBusy(on) {
 }
 
 // Download (network on), then process (network locked on both sides).
-async function run({ repos, status, msg, cancelBtn }) {
+async function run({ parts, status, msg, cancelBtn }) {
   setBusy(true);
   try {
     // the worker skips what it already holds in memory; the network is open only here
-    const missing = repos.filter((r) => !cached.has(r));
-    await call({ type: "prepare", repos }, (d) => {
+    const missing = parts.filter((p) => !cached.has(partKey(p)));
+    await call({ type: "prepare", parts }, (d) => {
       $(status).textContent = d.phase === "download"
         ? fill(T.downloading, { done: bytes(d.done, ui), total: bytes(d.total, ui) })
         : fill(T.loading, { done: d.done, total: d.total });
     });
     if (missing.length) count("model_download", "-", msg.model);
-    missing.forEach((r) => cached.add(r));
+    missing.forEach((p) => cached.add(partKey(p)));
     renderStored();
     $(status).textContent = T.working;
     $(cancelBtn).hidden = false;
@@ -160,13 +160,13 @@ async function run({ repos, status, msg, cancelBtn }) {
 
 // ------------------------------------------------------------------ detect
 
-const detectorBytes = () => REPOS[DETECTOR.observer].size + REPOS[DETECTOR.performer].size;
-const detectorReady = () => cached.has(DETECTOR.observer) && cached.has(DETECTOR.performer);
+const detectorBytes = () => DETECTOR.parts.reduce((s, p) => s + partBytes(p), 0);
+const detectorReady = () => DETECTOR.parts.every((p) => cached.has(partKey(p)));
 
 function renderDetectControls() {
   $("detect-intro").textContent = fill(T.detect_intro, { size: bytes(detectorBytes(), ui) });
   const btn = $("detect");
-  const unavailable = !calib ? T.detect_no_calib : caps && caps.device !== "webgpu" ? T.no_gpu : "";
+  const unavailable = !calib ? T.detect_no_calib : "";
   $("detect-unavailable").hidden = !unavailable;
   $("detect-unavailable").textContent = unavailable;
   btn.textContent = detectorReady() ? T.check : fill(T.download_detector, { size: bytes(detectorBytes(), ui) });
@@ -215,7 +215,7 @@ $("detect").addEventListener("click", async () => {
     return;
   }
   try {
-    const res = await run({ repos: [DETECTOR.observer, DETECTOR.performer], status: "detect-status",
+    const res = await run({ parts: DETECTOR.parts, status: "detect-status",
       cancelBtn: "detect-cancel", msg: { model: DETECTOR.id, body: { type: "detect", text } } });
     renderAnswer(assess(text, res.features, calib));
     $("detect-status").textContent = "";
@@ -228,7 +228,7 @@ $("detect").addEventListener("click", async () => {
 // ------------------------------------------------------------------ rewrite
 
 function rewriterBytes(rw) {
-  return rw.repos.filter((r) => !cached.has(r)).reduce((s, r) => s + REPOS[r].size, 0);
+  return rw.parts.filter((p) => !cached.has(partKey(p))).reduce((s, p) => s + partBytes(p), 0);
 }
 
 function renderRewriteControls() {
@@ -237,14 +237,14 @@ function renderRewriteControls() {
   sel.replaceChildren(...REWRITERS.map((rw) => {
     const o = document.createElement("option");
     o.value = rw.id;
-    o.textContent = `${rw.label} (${bytes(REPOS[rw.repos[0]].size, ui)})`;
+    o.textContent = `${rw.label} (${bytes(rw.parts.reduce((s, p) => s + partBytes(p), 0), ui)})`;
     return o;
   }));
   if (keep) sel.value = keep;
   const rw = REWRITERS.find((r) => r.id === sel.value) || REWRITERS[0];
   const extra = rewriterBytes(rw);
   $("rewrite").textContent = extra ? fill(T.download_rewriter, { size: bytes(extra, ui) }) : T.rewrite;
-  const unavailable = caps && caps.device !== "webgpu" ? T.no_gpu : "";
+  const unavailable = caps && !caps.webgpu || caps && !caps.f16 ? T.no_gpu : "";
   $("rewrite-unavailable").hidden = !unavailable;
   $("rewrite-unavailable").textContent = unavailable;
   $("rewrite").disabled = busy || !!unavailable || !caps;
@@ -257,7 +257,7 @@ $("rewrite").addEventListener("click", async () => {
   const rw = REWRITERS.find((r) => r.id === $("rewriter").value);
   const lang = factLang(text);
   try {
-    const res = await run({ repos: rw.repos, status: "rewrite-status", cancelBtn: "rewrite-cancel",
+    const res = await run({ parts: rw.parts, status: "rewrite-status", cancelBtn: "rewrite-cancel",
       msg: { model: rw.id, body: { type: "rewrite", text, lang, rewriter: rw.id } } });
     $("rewrite-result").hidden = false;
     $("rewritten").value = res.text;
@@ -282,7 +282,7 @@ $("copy").addEventListener("click", async () => {
 // ------------------------------------------------------------------ stored models, sent panel
 
 function renderStored() {
-  const names = [...cached].map((r) => r.replace("onnx-community/", ""));
+  const names = [...cached].map((k) => k.replace("onnx-community/", "").replace("@", " "));
   $("stored").textContent = names.length ? fill(T.stored, { list: names.join(", ") }) : "";
   $("forget").hidden = !names.length || busy;
 }

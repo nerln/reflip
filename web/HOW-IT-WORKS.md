@@ -22,6 +22,9 @@ interface language either. This is enforced in code, in four places, each with a
    `connect-src 'self' https://huggingface.co https://*.hf.co https://reflip-stats.nerln.workers.dev`
    and nothing else. Model files come from Hugging Face; the counter is the worker. Scripts,
    styles, WebAssembly and workers come from the site itself (`'self'`), never a CDN.
+   Its limit, stated plainly: a policy in a `<meta>` tag covers the page, not a worker loaded
+   from its own URL, which takes its policy from its own response headers, and GitHub Pages
+   sends none. Inside the worker, the network lock is the wall, and the test exercises it.
 4. **The tests.** `web/test/privacy.test.mjs` runs the page in headless Chrome with every
    request recorded and the worker replaced by a hostile fake that tries to send the text out
    by fetch, sendBeacon, an image and a WebSocket while it "processes". It fails if any of

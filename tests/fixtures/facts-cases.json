@@ -163,5 +163,41 @@
   "a": "The committee in Brussels did not approve all of the 12 proposals.",
   "b": "THE COMMITTEE IN BRUSSELS DID NOT APPROVE ALL OF THE 12 PROPOSALS.",
   "altered": 0
+ },
+ {
+  "name": "list numbers are not facts",
+  "lang": "en",
+  "a": "Three steps:\n1. Measure the room.\n2. Buy the paint.",
+  "b": "Three steps:\n1. Buy the paint.\n2. Measure the room.\n3. Clean the brushes.",
+  "altered": 0
+ },
+ {
+  "name": "Title Case headings are style, not names",
+  "lang": "en",
+  "a": "## Preservation of Local History\n\nThe museum opened in 1990.\n\nOpportunities for Young Readers\n\nIt lends 4,000 books a year.",
+  "b": "## Keeping Local Memory Alive\n\nThe museum opened in 1990.\n\nChances for Young People\n\nIt lends 4,000 books a year.",
+  "altered": 0
+ },
+ {
+  "name": "a curly apostrophe is the same name",
+  "lang": "en",
+  "a": "The Landlord's reply came late, and I am still waiting.",
+  "b": "The Landlord’s reply came late, and I’m still waiting.",
+  "altered": 0
+ },
+ {
+  "name": "a name inside a sentence after a heading still counts",
+  "lang": "en",
+  "a": "# Report\n\nThe study was led by Okonjo in Accra.",
+  "b": "# Report\n\nThe study was led by Mensah in Accra.",
+  "altered": 2,
+  "names": {
+   "missing": [
+    "Okonjo"
+   ],
+   "added": [
+    "Mensah"
+   ]
+  }
  }
 ]

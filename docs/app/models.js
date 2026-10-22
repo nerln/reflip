@@ -1,49 +1,74 @@
 // The models the page offers, pinned by commit, with the SHA-256 of every weights file.
 //
-// The detector is fixed: its calibration (calibration-browser.json) was measured on exactly
-// these two files, and any other file would make every number on the page untrue. The
-// rewriters are a choice; the facts check runs on whatever they write.
+// Two kinds of weights file, for two jobs:
+// - q4f16 (4-bit weights, 16-bit arithmetic) for the detector, run on the processor. Its
+//   calibration (calibration-browser.json) was measured on exactly these files with
+//   onnxruntime, and the browser's CPU backend reproduces those scores to three decimals.
+// - q4 (4-bit weights, 32-bit arithmetic) for rewriting, run on WebGPU. On Apple's GPUs the
+//   16-bit files produced garbage ("Th Th Th") in Chrome 152 and in the app's own browser;
+//   the 32-bit files wrote the same text as the processor did, fifty times faster.
 
 export const HUB = "https://huggingface.co";
-export const WEIGHTS = "onnx/model_q4f16.onnx";
+export const FILES = { q4f16: "onnx/model_q4f16.onnx", q4: "onnx/model_q4.onnx" };
+// Gemma and Llama keep their weights in a second file beside the graph; onnxruntime reads
+// that file without copying it into WebAssembly memory, which is why a 1.7 GB Llama loads
+// where a 1.8 GB single-file Qwen2.5 1.5B stopped with std::bad_alloc.
+export const DATA = (dtype) => `${FILES[dtype]}_data`;
 // What transformers.js reads besides the weights. Small, and pinned by the commit.
 export const SMALL_FILES = ["config.json", "generation_config.json", "tokenizer.json", "tokenizer_config.json"];
 
 export const REPOS = {
   "onnx-community/Qwen2.5-0.5B": {
     rev: "bae5ceaee026f0d0592858b2bd27645a06f19c42",
-    size: 483003582,
-    sha256: "30a39f89fab8f30d0f99aa1e28d3e3be6fca66a3fab915f77584ac52a8361d25",
+    weights: { q4f16: { size: 483003582, sha256: "30a39f89fab8f30d0f99aa1e28d3e3be6fca66a3fab915f77584ac52a8361d25" } },
   },
   "onnx-community/Qwen2.5-0.5B-Instruct": {
     rev: "22942cb7d7ba4cc81bb4673549ca4d4614469b5e",
-    size: 483003582,
-    sha256: "b11c1dd99efd57e6c6e5bc4443a019931a5fbd5dd500d48644d8225f5ce0b2cb",
+    weights: {
+      q4f16: { size: 483003582, sha256: "b11c1dd99efd57e6c6e5bc4443a019931a5fbd5dd500d48644d8225f5ce0b2cb" },
+      q4: { size: 786156820, sha256: "09235a3b1c135cd04ef570e5053b5c079e028078a2cc5f76ba6a251e91bf3296" },
+    },
   },
-  "onnx-community/Qwen2.5-1.5B-Instruct": {
-    rev: "d54957e3af1be04546436e874a60fe386041b244",
-    size: 1221878940,
-    sha256: "19dec9f63488016185ba997d5e4492b5ac5b4f7ef1abb45243a91de958838dcd",
+  "onnx-community/gemma-3-1b-it-ONNX": {
+    rev: "a58439f40017d3b99c7d378ff525e54e0ba08ebf",
+    license: "https://ai.google.dev/gemma/terms",
+    weights: {
+      q4: {
+        size: 347363 + 859106816,
+        sha256: "69686023e5892376e38fcbcdd0c77af432c55b3bcd03aee6d561bd1f04507da0",
+        data: { size: 859106816, sha256: "c2370070be257a98d50e17d81be13e18304c39e7e6d9d1416f8f883681d2a17b" },
+      },
+    },
   },
-  "onnx-community/Qwen3-1.7B-ONNX": {
-    rev: "3231b522c6e703b2f9b3cd8ea27426a1289a02f2",
-    size: 1426069098,
-    sha256: "fb85b44defdf43ace50c7a4937127e889b9f8a0483eb87a6c4151a815c5da3b5",
+  "onnx-community/Llama-3.2-1B-Instruct-ONNX": {
+    rev: "14007543b6dc92de88daf96a9aa85d2f95ace6ef",
+    license: "https://www.llama.com/llama3_2/license/",
+    weights: {
+      q4: {
+        size: 149112 + 1692672000,
+        sha256: "a3a6f10916f79379d15cfa9270b7be0d09be2b80fe0872bd7030eaf9001baf46",
+        data: { size: 1692672000, sha256: "07cc629ef2cb7fdb18615ce2e4f3774f763e6fc840207d772a8b511eead36647" },
+      },
+    },
   },
 };
+
+// A piece of a model on the device: one repository's weights in one form.
+export const part = (repo, dtype) => ({ repo, dtype });
+export const partKey = ({ repo, dtype }) => `${repo}@${dtype}`;
+export const partBytes = ({ repo, dtype }) => REPOS[repo].weights[dtype].size;
 
 export const DETECTOR = {
   id: "qwen2.5-0.5b",
   observer: "onnx-community/Qwen2.5-0.5B",
   performer: "onnx-community/Qwen2.5-0.5B-Instruct",
+  parts: [part("onnx-community/Qwen2.5-0.5B", "q4f16"), part("onnx-community/Qwen2.5-0.5B-Instruct", "q4f16")],
 };
 
-// `repos` is what has to be on the device for this rewriter; the first one writes.
 export const REWRITERS = [
-  { id: "qwen2.5-0.5b", repos: ["onnx-community/Qwen2.5-0.5B-Instruct"], label: "Qwen2.5 0.5B Instruct" },
-  { id: "qwen2.5-1.5b-instruct", repos: ["onnx-community/Qwen2.5-1.5B-Instruct"], label: "Qwen2.5 1.5B Instruct" },
-  { id: "qwen3-1.7b", repos: ["onnx-community/Qwen3-1.7B-ONNX"], label: "Qwen3 1.7B", thinking: false },
+  { id: "qwen2.5-0.5b", label: "Qwen2.5 0.5B Instruct", parts: [part("onnx-community/Qwen2.5-0.5B-Instruct", "q4")] },
+  { id: "gemma-3-1b", label: "Gemma 3 1B", parts: [part("onnx-community/gemma-3-1b-it-ONNX", "q4")] },
+  { id: "llama-3.2-1b", label: "Llama 3.2 1B Instruct", parts: [part("onnx-community/Llama-3.2-1B-Instruct-ONNX", "q4")] },
 ];
 
 export const fileURL = (repo, file) => `${HUB}/${repo}/resolve/${REPOS[repo].rev}/${file}`;
-export const repoBytes = (repo) => REPOS[repo].size;

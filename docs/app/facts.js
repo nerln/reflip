@@ -23,6 +23,7 @@ function stripSet(s, set) {
 }
 
 // Words and numbers, each with whether it opens a sentence or a line.
+// Curly apostrophes are read as straight ones: "Landlord’s" and "Landlord's" are one name.
 export function tokens(text) {
   const starts = [0];
   for (const m of text.matchAll(SENTENCE_END)) starts.push(m.index + m[0].length);
@@ -30,9 +31,30 @@ export function tokens(text) {
   let k = 0;
   for (const m of text.matchAll(WORD)) {
     while (k + 1 < starts.length && starts[k + 1] <= m.index) k++;
-    out.push([m[0], stripSet(text.slice(starts[k], m.index), OPENERS) === ""]);
+    out.push([m[0].replaceAll("\u2019", "'"), stripSet(text.slice(starts[k], m.index), OPENERS) === "", m.index, m.index + m[0].length]);
   }
   return out;
+}
+
+const LIST_MARKER = /[.)](\s|$)/y;
+const TITLE_WORD = /\p{L}{4,}/gu;
+
+// Lines that are headings: markdown '#', a line in bold, or a short Title Case line without
+// closing punctuation. Their capitals are style, not names.
+export function headingSpans(text) {
+  const spans = [];
+  let pos = 0;
+  for (const line of text.split("\n")) {
+    const t = line.trim();
+    const long = t.match(TITLE_WORD) || [];
+    const title = t && !".!?:;,".includes(t[t.length - 1]) && t.split(/\s+/).filter(Boolean).length <= 12
+      && long.length >= 2 && long.filter((w) => isUpper(w[0])).length >= 0.6 * long.length;
+    if (t.startsWith("#") || (t.startsWith("**") && t.endsWith("**") && t.length > 4) || title) {
+      spans.push([pos, pos + line.length]);
+    }
+    pos += line.length + 1;
+  }
+  return spans;
 }
 
 export function digitValue(tok, lang) {
@@ -145,17 +167,22 @@ export function facts(text, lang) {
   const words = toks.map(([t]) => t.toLowerCase());
   f.words = toks.filter(([t]) => !isDigit(t)).length;
   const scales = LEXICON.numbers[lang].scales;
-  toks.forEach(([t], k) => {
+  toks.forEach(([t, opening, , end], k) => {
     if (!isDigit(t)) return;
+    // "1." or "2)" at the start of a line numbers a list; it is not a fact
+    LIST_MARKER.lastIndex = end;
+    if (opening && LIST_MARKER.test(text)) return;
     const v = digitValue(t, lang);
     // "3 million" is the number three million, as "three million" is
     if (v !== null) f.numbers.add(v * (scales[words[k + 1]] || 1));
   });
   const split = words.filter((w) => !isDigit(w)).flatMap((w) => w.split("-"));
   for (const v of wordNumbers(split, lang)) f.numbers.add(v);
-  for (const [t, opening] of toks) {
+  const heads = headingSpans(text);
+  for (const [t, opening, start] of toks) {
     f.lowered.add(t.toLowerCase());
-    if (isUpper(t[0]) && t.length > 1 && !opening) f.names.add(t);
+    if (isUpper(t[0]) && t.length > 1 && !opening && !(lang === "en" && t.startsWith("I'"))
+      && !heads.some(([x, y]) => x <= start && start < y)) f.names.add(t);
   }
   const neg = new Set(LEXICON.negations[lang]);
   f.negations = split.filter((w) => neg.has(w)).length;

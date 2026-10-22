@@ -220,6 +220,22 @@ class Detector:
         return enc["input_ids"], [s for s, _ in enc["offset_mapping"]]
 
     def features(self, text: str) -> Features:
+        # Apple's GPU shares memory with everything else on the machine, and the benchmark run
+        # of 21 October stopped at text 166 of 4,552 when other programs held 15 GB of it. A
+        # text that does not fit now usually fits a few seconds later, after the cache is freed.
+        import time
+
+        for wait in (5, 20, 60, None):
+            try:
+                return self._features(text)
+            except RuntimeError as e:
+                if "out of memory" not in str(e) or wait is None:
+                    raise
+                if self.device == "mps":
+                    self._torch.mps.empty_cache()
+                time.sleep(wait)
+
+    def _features(self, text: str) -> Features:
         torch = self._torch
         ids, starts = self.encode(text)
         if len(ids) < 2:
@@ -234,7 +250,13 @@ class Detector:
                 perf = self.performer.float().cpu()(input_ids=x.cpu()).logits[0, :-1]
                 self.observer.to(self.device, dtype=torch.bfloat16)
                 self.performer.to(self.device, dtype=torch.bfloat16)
-        return features_from_logits(obs, perf, torch.tensor(ids), starts, text)
+        out = features_from_logits(obs, perf, torch.tensor(ids), starts, text)
+        # Two 150 MB logit tensors per text; the allocator keeps them pooled unless asked,
+        # and the pool is what ran out at text 395 of the 22 October run.
+        del obs, perf
+        if self.device == "mps":
+            torch.mps.empty_cache()
+        return out
 
 
 # The browser downloads 4-bit ONNX files, and 4-bit weights move every logit a little. A

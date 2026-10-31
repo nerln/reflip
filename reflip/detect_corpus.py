@@ -78,6 +78,32 @@ LEARNERS_PER_LANG = 150
 
 LOCAL_GENERATORS = {"qwen3": "qwen3:4b-instruct-2507-q4_K_M", "gemma3": "gemma3:4b"}
 GENERATOR_SHARE = ("qwen3", "gemma3", "claude")   # round robin, about a third each
+AGENT_GENERATOR = ("claude", "claude-haiku-5-5")  # the texts agents write, and the model they ran on
+
+# --------------------------------------------------------------------------- rounds
+
+ROUND = 1
+SEED_OFFSET = 0
+TRIES = 40
+# Second round only: where a source runs out of documents, the next one fills (Il Post had
+# 120 long articles in the first round, against 200 needed).
+EXTRA_SOURCES: dict = {}
+
+
+def configure(round_: int) -> None:
+    """The second round (docs/detect/PREREG-v2.md): new files under data/detect/v2/, new seeds,
+    1,000 humans and 60 machine texts per cell, Claude Sonnet as the agent-written family."""
+    global ROUND, OUT, HUMAN_PER_CELL, AI_PER_CELL, GENERATOR_SHARE, AGENT_GENERATOR, SEED_OFFSET, TRIES
+    global EXTRA_SOURCES, LEARNERS
+    ROUND = round_
+    if round_ == 2:
+        OUT = ROOT / "data" / "detect" / "v2"
+        HUMAN_PER_CELL, AI_PER_CELL = 1000, 60
+        GENERATOR_SHARE = ("qwen3", "gemma3", "sonnet")
+        AGENT_GENERATOR = ("sonnet", "claude-sonnet-5-5")
+        SEED_OFFSET, TRIES = 10, 150
+        EXTRA_SOURCES = {("it", "news"): [("ARTeLab/fanpage", "default", "train", "source", "target", 67492)]}
+        LEARNERS = {}
 
 
 # --------------------------------------------------------------------------- io
@@ -156,10 +182,12 @@ def cut(text: str, lo: int, hi: int, rng: random.Random) -> tuple[str, int] | No
 
 
 def cmd_humans(args) -> int:
-    rng = random.Random(0)
+    rng = random.Random(0 + SEED_OFFSET)
     out = path("humans.jsonl")
     have = read_jsonl(out)
     seen = {(r["dataset"], r["config"], r["row_idx"]) for r in have}
+    if ROUND == 2:   # no document of the first round may come back
+        seen |= {(r["dataset"], r["config"], r["row_idx"]) for r in read_jsonl(ROOT / "data/detect/humans.jsonl")}
     count = {}
     for r in have:
         count[(r["lang"], r["bucket"], r["genre"])] = count.get((r["lang"], r["bucket"], r["genre"]), 0) + 1
@@ -194,46 +222,54 @@ def cmd_humans(args) -> int:
 
 
 def _fill(quota, need, count, seen, out, topics, rng) -> None:
-    for (lang, genre), (ds, cfg, split, field, tfield, total) in SOURCES.items():
-        tries = 0
-        while any(need(lang, b, genre) > 0 for b in BUCKETS) and tries < 40:
-            tries += 1
-            offset = rng.randrange(0, max(1, total - 100))
-            rows = fetch_rows(ds, cfg, split, offset)
-            for row in rows:
-                key = (ds, cfg, row["row_idx"])
-                if key in seen:
-                    continue
-                body = prose(str(row.get(field) or ""), genre)
-                w = word_count(body)
-                feasible = [b for b, (lo, _) in BUCKETS.items() if w >= lo and need(lang, b, genre) > 0]
-                if not feasible:
-                    continue
-                bucket = feasible[-1]          # the longest bucket the document can still fill
-                got = cut(body, *BUCKETS[bucket], rng)
-                if not got:
-                    continue
-                excerpt, n_sent = got
-                rec = {"id": f"h-{lang}-{genre}-{row['row_idx']}", "kind": "human", "lang": lang,
-                       "genre": genre, "bucket": bucket, "words": word_count(excerpt),
-                       "dataset": ds, "config": cfg, "split": split, "row_idx": row["row_idx"],
-                       "sentences": n_sent, "text": excerpt}
-                append_jsonl(out, rec)
-                topic = str(row.get(tfield) or "").strip()
-                if topic:
-                    append_jsonl(topics, {"lang": lang, "genre": genre, "topic": topic[:400],
-                                          "source": rec["id"]})
-                seen.add(key)
-                count[(lang, bucket, genre)] = count.get((lang, bucket, genre), 0) + 1
-            short = {b: need(lang, b, genre) for b in BUCKETS}
-            print(f"{lang} {genre}: batch {tries}, still needed {short}", file=sys.stderr)
+    for (lang, genre), first in SOURCES.items():
+        for source in [first] + EXTRA_SOURCES.get((lang, genre), []):
+            _fill_from(source, lang, genre, need, count, seen, out, topics, rng)
+
+
+def _fill_from(source, lang, genre, need, count, seen, out, topics, rng) -> None:
+    ds, cfg, split, field, tfield, total = source
+    tries = 0
+    while any(need(lang, b, genre) > 0 for b in BUCKETS) and tries < TRIES:
+        tries += 1
+        offset = rng.randrange(0, max(1, total - 100))
+        rows = fetch_rows(ds, cfg, split, offset)
+        for row in rows:
+            key = (ds, cfg, row["row_idx"])
+            if key in seen:
+                continue
+            body = prose(str(row.get(field) or ""), genre)
+            w = word_count(body)
+            feasible = [b for b, (lo, _) in BUCKETS.items() if w >= lo and need(lang, b, genre) > 0]
+            if not feasible:
+                continue
+            bucket = feasible[-1]          # the longest bucket the document can still fill
+            got = cut(body, *BUCKETS[bucket], rng)
+            if not got:
+                continue
+            excerpt, n_sent = got
+            # a second source for the same cell gets its name in the id: row numbers repeat
+            tag = "" if source == SOURCES[(lang, genre)] else ds.split("/")[-1] + "-"
+            rec = {"id": f"h-{lang}-{genre}-{tag}{row['row_idx']}", "kind": "human", "lang": lang,
+                   "genre": genre, "bucket": bucket, "words": word_count(excerpt),
+                   "dataset": ds, "config": cfg, "split": split, "row_idx": row["row_idx"],
+                   "sentences": n_sent, "text": excerpt}
+            append_jsonl(out, rec)
+            topic = str(row.get(tfield) or "").strip()
+            if topic:
+                append_jsonl(topics, {"lang": lang, "genre": genre, "topic": topic[:400],
+                                      "source": rec["id"]})
+            seen.add(key)
+            count[(lang, bucket, genre)] = count.get((lang, bucket, genre), 0) + 1
+        short = {b: need(lang, b, genre) for b in BUCKETS}
+        print(f"{lang} {genre} {ds}: batch {tries}, still needed {short}", file=sys.stderr)
 
 
 # --------------------------------------------------------------------------- machine text
 
 def cmd_requests(args) -> int:
     """One generation request per machine text, spread over generators, languages, lengths."""
-    rng = random.Random(1)
+    rng = random.Random(1 + SEED_OFFSET)
     topics = read_jsonl(path("topics.jsonl"))
     out = path("requests.jsonl")
     if out.is_file() and not args.force:
@@ -310,7 +346,7 @@ def cmd_generate(args) -> int:
 
 def cmd_claude_requests(args) -> int:
     """The Claude requests as one file per language, for the agents that write them."""
-    reqs = [r for r in read_jsonl(path("requests.jsonl")) if r["generator"] == "claude"]
+    reqs = [r for r in read_jsonl(path("requests.jsonl")) if r["generator"] == AGENT_GENERATOR[0]]
     for lang in LANGS:
         mine = [{"id": r["id"], "prompt": r["prompt"]} for r in reqs if r["lang"] == lang]
         path(f"requests-claude-{lang}.json").write_text(json.dumps(mine, ensure_ascii=False, indent=1))
@@ -340,10 +376,10 @@ def cmd_claude_ingest(args) -> int:
             text = tidy(rec["text"])
             w = word_count(text)
             append_jsonl(out, {"id": r["id"], "kind": "ai", "lang": r["lang"], "genre": r["genre"],
-                               "bucket": bucket_of(w), "words": w, "generator": "claude",
-                               "model": "claude-haiku-5-5", "topic": r["topic"], "text": text})
+                               "bucket": bucket_of(w), "words": w, "generator": AGENT_GENERATOR[0],
+                               "model": AGENT_GENERATOR[1], "topic": r["topic"], "text": text})
             added += 1
-    print(f"added {added} claude texts", file=sys.stderr)
+    print(f"added {added} {AGENT_GENERATOR[0]} texts", file=sys.stderr)
     return 0
 
 
@@ -384,6 +420,54 @@ def cmd_learners(args) -> int:
     return 0
 
 
+MERLIN_IT = "https://huggingface.co/datasets/aseifert/merlin/resolve/main/italian.jsonl"
+
+
+def detokenize(text: str) -> str:
+    """MERLIN's text is tokenised, with a space before every comma and full stop."""
+    text = re.sub(r"\s+([,.;:!?)»%])", r"\1", text)
+    text = re.sub(r"([(«])\s+", r"\1", text)
+    text = re.sub(r"(\w)\s+'\s*(\w)", r"\1'\2", text)
+    return " ".join(text.split())
+
+
+def cmd_learners_merlin(args) -> int:
+    """Italian learner essays from MERLIN, sentences joined back by document (PREREG-v2)."""
+    with urllib.request.urlopen(MERLIN_IT, timeout=120) as r:
+        lines = r.read().decode("utf-8").splitlines()
+    docs: dict = {}
+    for line in lines:
+        if not line.strip():
+            continue
+        rec = json.loads(line)
+        doc, _, k = str(rec["id"]).partition("-")
+        docs.setdefault(doc, []).append((int(k or 0), rec.get("original") or "", rec.get("corrected") or ""))
+    out = path("learners.jsonl")
+    seen = {r["id"] for r in read_jsonl(out)}
+    n = 0
+    for doc, sents in sorted(docs.items()):
+        rid = f"m-it-{doc}"
+        if rid in seen:
+            continue
+        sents.sort()
+        orig = detokenize(" ".join(o for _, o, _ in sents))
+        corr = detokenize(" ".join(c for _, _, c in sents))
+        w = word_count(orig)
+        if w < 40:
+            continue
+        base = {"lang": "it", "genre": "learner", "dataset": "aseifert/merlin", "config": "italian.jsonl",
+                "split": "train", "row_idx": doc}
+        append_jsonl(out, {"id": rid, "kind": "human_l2", "bucket": bucket_of(min(w, 600)), "words": w,
+                           "text": orig, **base})
+        wc = word_count(corr)
+        append_jsonl(out, {"id": rid + "-c", "kind": "human_l2_corrected",
+                           "bucket": bucket_of(min(wc, 600)) if wc >= 40 else None, "words": wc,
+                           "text": corr, **base})
+        n += 1
+    print(f"{n} Italian learner essays from {len(docs)} MERLIN documents", file=sys.stderr)
+    return 0
+
+
 def cmd_italian_long(args) -> int:
     """More long Italian requests for the two local models (PREREG amendment, point 5)."""
     rng = random.Random(5)
@@ -410,7 +494,7 @@ def cmd_italian_long(args) -> int:
 def cmd_rewrite(args) -> int:
     import subprocess
 
-    rng = random.Random(2)
+    rng = random.Random(2 + SEED_OFFSET)
     out = path("rewritten.jsonl")
     done = {r["source"] for r in read_jsonl(out)}
     ai = [r for r in read_jsonl(path("ai.jsonl")) if r["bucket"] in ("medium", "long")]
@@ -490,6 +574,7 @@ def cmd_manifest(args) -> int:
 
 def main(argv=None) -> int:
     ap = argparse.ArgumentParser(prog="reflip-detect-corpus", description=__doc__.split("\n\n")[0])
+    ap.add_argument("--round", type=int, choices=[1, 2], default=1, help="2: docs/detect/PREREG-v2.md")
     sub = ap.add_subparsers(dest="cmd", required=True)
     sub.add_parser("humans").set_defaults(fn=cmd_humans)
     r = sub.add_parser("requests")
@@ -505,12 +590,14 @@ def main(argv=None) -> int:
     w.add_argument("--per-lang", type=int, default=15)
     w.set_defaults(fn=cmd_rewrite)
     sub.add_parser("learners").set_defaults(fn=cmd_learners)
+    sub.add_parser("learners-merlin").set_defaults(fn=cmd_learners_merlin)
     il = sub.add_parser("italian-long")
     il.add_argument("--n", type=int, default=40)
     il.set_defaults(fn=cmd_italian_long)
     sub.add_parser("status").set_defaults(fn=cmd_status)
     sub.add_parser("manifest").set_defaults(fn=cmd_manifest)
     args = ap.parse_args(argv)
+    configure(args.round)
     return args.fn(args)
 
 

@@ -1,0 +1,69 @@
+# How well does the facts check see changed facts? The protocol, fixed before any number
+
+Written on 31 October 2026, before the sample was drawn and before any annotation existed.
+Anything changed after a result was seen is recorded at the bottom with the reason.
+
+## The question
+
+`reflip diff` (reflip/facts.py, and docs/app/facts.js line for line) counts numbers, names,
+negations and quantifiers that a rewrite dropped or added. Until now it was tested only on
+cases written by hand. On real rewrites: when it says a kind of fact changed, did it? When a
+fact of that kind changed, did it say so? And how often does a rewrite change the meaning in
+a way none of the four kinds covers, which the check cannot see at all?
+
+## The sample
+
+Paragraph pairs, original and rewrite, at least 30 words in the original, drawn with seed 0:
+
+| stratum | source | pairs |
+| --- | --- | --- |
+| paraphrase, before the guard | `data/results/main/paraphrase.jsonl` against `data/corpus.jsonl` | 30 |
+| infill, stride 3, with the guard | `data/results/facts/infill.jsonl` | 30 |
+| browser rewriters | `data/results/browser-rewriters.jsonl` (Qwen2.5 0.5B, Gemma 3 1B) | 30 |
+| reflip rewrites in Italian and Spanish | `data/detect/rewritten.jsonl` against `data/detect/ai.jsonl` | 30 |
+
+Paragraphs are aligned by position after splitting on blank lines; a pair is eligible only if
+original and rewrite have the same number of paragraphs. All texts are machine texts or the
+benchmark's own watermarked texts: no human excerpt from the detection corpus is used.
+
+The 120 pairs are split, with seed 0 and stratified, into a **development half** (60) and a
+**held-out half** (60).
+
+## The reference: two blind annotators, a third to settle
+
+Each pair is annotated by two Claude Sonnet 5.5 agents working independently, who never see
+the facts check's output. For each pair they list, in the original's language:
+
+- numbers dropped or added (a figure written as digits or as words is the same number);
+- names dropped or added (people, places, organisations, works; a name moved or re-cased is kept);
+- whether a negation was lost or added, so that a statement's polarity flipped;
+- quantifiers whose strength changed (all, most, some, only, at least, about, and the like);
+- any other change of meaning, in one line each.
+
+Where the two disagree on whether a kind changed, a third Sonnet 5.5 agent, shown both
+annotations and the texts, decides by majority. The reference is that majority. The agents'
+instructions are in `docs/facts/annotation-instructions.md`, written with this file.
+
+## What is measured
+
+On all 120 pairs, for the facts check as it stands at commit time of this file:
+
+- per kind (numbers, names, negations, quantifiers): pair-level **precision** (the check says
+  the kind changed, and the reference agrees) and **recall** (the reference says it changed,
+  and the check agrees), with Wilson 95% intervals;
+- the same for "any of the four kinds";
+- the **share of pairs whose meaning changed only in ways outside the four kinds**, with its
+  interval: what the check cannot see. A pair counts when both first annotators list another
+  change of meaning and the reference has none of the four kinds;
+- agreement between the first two annotators, Cohen's kappa per kind.
+
+## Improving it without fooling ourselves
+
+The errors of the development half may be read and the check changed to fix them. Every such
+change is listed below with the error that prompted it. The changed check is then measured once
+on the held-out half, whose errors are not read before that number exists. The README reports
+the first measurement on all 120 pairs and the held-out one, and says which is which.
+
+## Changes after seeing results
+
+None yet.

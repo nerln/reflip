@@ -108,12 +108,15 @@ def cmd_sample(args) -> int:
 
 
 def changed(a: dict) -> dict[str, bool]:
-    """Which of the four kinds an annotation says changed."""
+    """Which of the four kinds an annotation says changed. A quantifier the annotator marked
+    "(same)" is one they listed while saying it did not change (decided after reading the
+    development half: see Changes after seeing results in docs/facts/PROTOCOL.md)."""
+    quant = [q for q in a["quantifiers"] if "(same)" not in q.lower()]
     return {
         "numbers": bool(a["numbers"]["missing"] or a["numbers"]["added"]),
         "names": bool(a["names"]["missing"] or a["names"]["added"]),
         "negation": bool(a["negation_flip"]),
-        "quantifiers": bool(a["quantifiers"]),
+        "quantifiers": bool(quant),
     }
 
 
@@ -122,6 +125,7 @@ def tool_changed(p: dict) -> dict[str, bool]:
     return {
         "numbers": bool(d["numbers"]["missing"] or d["numbers"]["added"]),
         "names": bool(d["names"]["missing"] or d["names"]["added"]),
+        # shown to the reader but no longer counted (see PROTOCOL.md): measured as the reader would see it
         "negation": d["negations"]["before"] != d["negations"]["after"],
         "quantifiers": bool(d["quantifiers"]["missing"] or d["quantifiers"]["added"]),
     }

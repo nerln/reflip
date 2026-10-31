@@ -1,0 +1,182 @@
+{
+ "model": "claude-sonnet-5-5",
+ "pairs": [
+  {
+   "id": "fe-012",
+   "numbers": false,
+   "names": false,
+   "negation": false,
+   "quantifiers": false,
+   "reason": "'certain institutions' -> 'some firms' is the same strength. The '3.' marker is in both. 'did not fit' -> 'failed to meet' keeps the polarity. Only 'moral hazard' -> 'hidden risks' is a non-quantifier change."
+  },
+  {
+   "id": "fe-032",
+   "numbers": false,
+   "names": false,
+   "negation": false,
+   "quantifiers": false,
+   "reason": "The original is garbled. 'only occasionally given attention' -> 'often overlooked' says roughly the same thing, so I did not count it as a strength change. 'every single day' -> 'each day' is only a loss of emphasis. 'fry' -> 'burn' is an 'other' change."
+  },
+  {
+   "id": "fe-040",
+   "numbers": false,
+   "names": false,
+   "negation": false,
+   "quantifiers": false,
+   "reason": "-2 °C and 5 °C are kept. Atlántico is kept. 'escasas' -> 'muy pocas' and 'muchos' -> 'numerosos' are equivalent, as are 'todo el año' -> 'todo periodo'. The changes are in 'other': ocean -> sea, shrubs and grasses -> ferns and herbs."
+  },
+  {
+   "id": "fe-061",
+   "numbers": false,
+   "names": false,
+   "negation": false,
+   "quantifiers": false,
+   "reason": "Pyongyang is in both. Dropping 'main' from 'los principales motores' is borderline and 'main' is not a listed quantifier, so I left it out. 'una cierta' -> 'a certain' is the same. The hedge 'sugiere' becoming 'reveal' is an 'other' change."
+  },
+  {
+   "id": "fe-086",
+   "numbers": false,
+   "names": true,
+   "negation": false,
+   "quantifiers": true,
+   "reason": "The stall's name 'Eternal Noodle Dream' is replaced by the generic 'enduring noodle fantasy', so the name is lost. 'only hint' -> 'a gentle, subtle suggestion' drops 'only'. Phoenixville is kept, and 'not merely' -> 'isn't just' is not a flip."
+  },
+  {
+   "id": "fe-095",
+   "numbers": false,
+   "names": false,
+   "negation": false,
+   "quantifiers": false,
+   "reason": "There is no quantifier in either text. 'even if unknown roles may emerge' -> 'despite potential new assignments' is a change of logic, not of quantity. The other changes are 'other': pride in contributing dropped, understanding where I fit -> aligning myself."
+  },
+  {
+   "id": "fe-102",
+   "numbers": false,
+   "names": false,
+   "negation": false,
+   "quantifiers": false,
+   "reason": "'durante años' -> 'durante décadas' stretches the duration but is neither a specific number nor a listed quantifier, so it is an 'other' change. The negations ('no se trata', 'no será', 'no solo') are kept. Emiratos is in both."
+  },
+  {
+   "id": "fe-013",
+   "numbers": false,
+   "names": false,
+   "negation": false,
+   "quantifiers": false,
+   "reason": "Emily, April and Washington D.C. are in both texts. 'each corner' -> 'every area' keeps the same strength. The other changes (barn/shed, orchard/grove, dawn/morning) are synonym-level."
+  },
+  {
+   "id": "fe-036",
+   "numbers": false,
+   "names": false,
+   "negation": false,
+   "quantifiers": false,
+   "reason": "The text is garbled. 'even small amounts' -> 'any small sums' is close enough in meaning that I left it out. 'Later in life' -> 'mid in life' is a change, but it is a time reference, not a quantifier. 'Sheridan Yvitore' is in both."
+  },
+  {
+   "id": "fe-044",
+   "numbers": true,
+   "names": false,
+   "negation": false,
+   "quantifiers": false,
+   "reason": "The word 'cinque' is in both, but 'cinque secondi' became 'cinque minuti'. That is a different amount, and amounts count as numbers. 'Spesso', 'solo' and 'sempre' are unchanged. Months -> days and the food changes are other changes, not numbers."
+  },
+  {
+   "id": "fe-076",
+   "numbers": false,
+   "names": false,
+   "negation": false,
+   "quantifiers": false,
+   "reason": "$6 billion and Bear Stearns are kept, and Lehman's -> Lehman Brothers is the same company. 'Overnight' was dropped, but it is a temporal word, not a quantifier. The softer 'worthless' and the new 'withdrawal' are other changes."
+  },
+  {
+   "id": "fe-092",
+   "numbers": false,
+   "names": false,
+   "negation": false,
+   "quantifiers": false,
+   "reason": "'Siglo XIX' = '19th century', so the number is unchanged. The place and nationality names are the same. 'escasas/pocas' -> 'limited/rare' is equivalent, and 'limitado' -> 'minimal' is too small a shift to count. 'No hay registros precisos' -> 'exact records are absent' keeps the same polarity."
+  },
+  {
+   "id": "fe-097",
+   "numbers": false,
+   "names": false,
+   "negation": false,
+   "quantifiers": false,
+   "reason": "The list number '3' is in both texts. 'Usually' is kept. The headings are not names. The rewrite is ungrammatical and swaps terms (bill -> act, citizens -> members), but none of that is a quantifier change."
+  },
+  {
+   "id": "fe-114",
+   "numbers": false,
+   "names": false,
+   "negation": false,
+   "quantifiers": true,
+   "reason": "The '1.' is in both texts and Australia is kept. 'Typically' -> 'often' is a frequency quantifier that is a little weaker. Both annotators flagged it, so I count it as a change, though it is borderline. 'First stage' -> 'initial phase' is equivalent."
+  },
+  {
+   "id": "fe-025",
+   "numbers": false,
+   "names": false,
+   "negation": false,
+   "quantifiers": true,
+   "reason": "The restriction 'nothing left but retrieve' (only X remains) is lost: the rewrite has 'wasn't nothing remaining to be attempt the package', with no 'but'. The double negative is garbled and could be read either way, so negation is left false. The rewrite also changes ceilings to walls and retrieve to attempt."
+  },
+  {
+   "id": "fe-037",
+   "numbers": true,
+   "names": false,
+   "negation": false,
+   "quantifiers": true,
+   "reason": "The amounts 'thousands, even millions of dollars' are replaced by 'significant sums / astronomical amounts', so the stated magnitudes are gone. 'Many years' becomes 'decades' and 'substantial accumulation', which changes the quantity. The hedge 'can be' also becomes 'proves'. 'Twenties' is in both texts."
+  },
+  {
+   "id": "fe-057",
+   "numbers": false,
+   "names": false,
+   "negation": false,
+   "quantifiers": false,
+   "reason": "The Italian paraphrase keeps every quantifier at the same strength: sempre, una certa, ampia/vasta, più...che. 'Non è un nome noto' -> 'non ampiamente riconosciuto' is a close paraphrase, so I did not count it as a change. Both negations keep their polarity. The names Pietro di Porto, Porto, Puglia and Italia are in both. Minor drift ('pubblicato' -> 'realizzato') is not a quantifier."
+  },
+  {
+   "id": "fe-083",
+   "numbers": false,
+   "names": false,
+   "negation": false,
+   "quantifiers": true,
+   "reason": "'for a goodly amount' is dropped. 'Have long taken their flights' becomes 'about to make their annual migration', which changes the timing and adds a frequency. There is no negation and no numbers or names. The direction reversal (south to warmer -> north to cooler), the time of day and the added biodiversity claim are all changes, but they are not quantifier changes."
+  },
+  {
+   "id": "fe-094",
+   "numbers": false,
+   "names": false,
+   "negation": false,
+   "quantifiers": false,
+   "reason": "'Lone' -> 'single' and 'sheaf' -> 'pile' keep the same quantity. The changes (moor/field, gray/faded, letters/notes) are not quantifiers, numbers, names or negation."
+  },
+  {
+   "id": "fe-099",
+   "numbers": false,
+   "names": false,
+   "negation": false,
+   "quantifiers": false,
+   "reason": "The rewrite is an English translation. 'Solo' -> 'Only' is the same strength, and all the negations (no, sin) are kept. I treated 'hotel de los líos' -> 'hotel of troubles' as the same name translated."
+  },
+  {
+   "id": "fe-116",
+   "numbers": false,
+   "names": false,
+   "negation": false,
+   "quantifiers": false,
+   "reason": "'One of only a few' -> 'one of just a handful' is the same strength, and 'without sacrificing' is kept as a negation. 'Designed exclusively' is slightly stronger than 'specifically tailored', but I judged it borderline and left it out. The other differences are paraphrase."
+  },
+  {
+   "id": "fe-100",
+   "numbers": false,
+   "names": false,
+   "negation": false,
+   "quantifiers": false,
+   "reason": "No numbers, names or negations in either text. 'all reflections' became 'all the thoughts and feelings', 'all daunting tasks' became 'all difficult challenges', 'quite vital' became 'quite important', and 'fully prepared' became 'completely ready', so the quantifiers keep their strength. Annotator 2's 'a general clearer insight' -> 'a broad, clear view' swaps one descriptive adjective for another and is not a quantifier change. The shifts in meaning (weeks -> periods, experiences -> recollections, advice -> understanding, professionally -> in my career) fall under 'other', not these four kinds."
+  }
+ ],
+ "note": "21 settled first; the rest after the '(same)' entries stopped counting (PROTOCOL.md, change 4)"
+}

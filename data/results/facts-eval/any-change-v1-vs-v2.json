@@ -1,0 +1,62 @@
+{
+ "dev / v1 check (four kinds counted)": {
+  "tp": 17,
+  "fp": 16,
+  "fn": 8,
+  "precision": 0.5151515151515151,
+  "precision_ci": [
+   0.3521810458621024,
+   0.6749621835307578
+  ],
+  "recall": 0.68,
+  "recall_ci": [
+   0.48409913734576715,
+   0.8279501248310887
+  ]
+ },
+ "dev / v2 check (negation shown, not counted)": {
+  "tp": 16,
+  "fp": 13,
+  "fn": 9,
+  "precision": 0.5517241379310345,
+  "precision_ci": [
+   0.37547667068067625,
+   0.715870888512542
+  ],
+  "recall": 0.64,
+  "recall_ci": [
+   0.44518154601046633,
+   0.7975234356826436
+  ]
+ },
+ "heldout / v1 check (four kinds counted)": {
+  "tp": 18,
+  "fp": 15,
+  "fn": 7,
+  "precision": 0.5454545454545454,
+  "precision_ci": [
+   0.3798565794374957,
+   0.701573108741085
+  ],
+  "recall": 0.72,
+  "recall_ci": [
+   0.5242302810344169,
+   0.8571632616261843
+  ]
+ },
+ "heldout / v2 check (negation shown, not counted)": {
+  "tp": 15,
+  "fp": 11,
+  "fn": 10,
+  "precision": 0.5769230769230769,
+  "precision_ci": [
+   0.3894829692111983,
+   0.744558100972706
+  ],
+  "recall": 0.6,
+  "recall_ci": [
+   0.40739127785127344,
+   0.7659694233580909
+  ]
+ }
+}

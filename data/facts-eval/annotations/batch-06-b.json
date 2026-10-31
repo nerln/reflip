@@ -1,0 +1,191 @@
+{
+ "annotator": "b",
+ "model": "claude-sonnet (workflow agent)",
+ "pairs": [
+  {
+   "id": "fe-051",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [
+    "may call themselves -> often identify as"
+   ],
+   "other": [
+    "Hedge 'others like me might have planned their own day-to-day life' became definite 'have also built their routines around it', which adds a claim that those routines centre on the bay"
+   ],
+   "notes": "The original calls the place 'Meloria Town' once and 'Meliora Bay' once (a typo). The rewrite says 'the town' and always 'Meloria Bay'. I treated these as the same names and left them out. 'Aren't referring to catch fish any more' became 'once tied to anchovy fishermen ... Today, however', which I judged the same meaning, so no negation flip. 'Old photographs' and 'historic' are small additions I left out. 'Perfect escape' is stronger than 'appealing', which I counted as style."
+  },
+  {
+   "id": "fe-052",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [],
+   "other": [
+    "Dropped the comparison 'respect others' differences as much as we respect our own beliefs'",
+    "Dropped 'appreciate all those coming to join you' (the welcoming of newcomers)",
+    "Added a claim: 'everyone brings something unique to the table'"
+   ],
+   "notes": "'Regardless of background, culture, ethnicity' was reduced to the general 'inclusivity' and 'diversity'. I left that out as a claim dropped because the idea survives in general form. 'All those' -> 'everyone' and 'every tomorrow' -> 'every day' keep the same strength."
+  },
+  {
+   "id": "fe-053",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [],
+   "other": [],
+   "notes": "'Never ... beyond observation' and 'never ... beyond a glance' keep the same polarity. 'Quite late afternoon' -> 'well past mid-afternoon' is close, so I left it out. 'Drives off' -> 'heads' and 'always alerts' -> 'constant notifications' are minor shifts that I treated as wording. 'Beekeeping' is an ordinary word, not a name."
+  },
+  {
+   "id": "fe-054",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [
+     "Thomas"
+    ],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [],
+   "other": [],
+   "notes": "The original is Spanish and the rewrite is English, so it is a translation. The named subject 'Thomas' became 'His life', so the person is no longer identified. 'Muchos europeos' -> 'many Europeans' and 'pequeños placeres' -> 'subtle joys' keep the meaning."
+  },
+  {
+   "id": "fe-055",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [],
+   "other": [],
+   "notes": "'Two trunks' appears in both. The only loss is 'deep' (between two trunks), a small location detail that I left out. 'Often' is kept. The parenthesis turned into a separate sentence, which is style."
+  },
+  {
+   "id": "fe-056",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [
+    "everyone -> individuals (universal dropped)",
+    "Many feel overwhelmed -> Several report feeling crushed",
+    "some think -> others believe",
+    "no matter how many modules they take -> adding more courses",
+    "lots of distinction -> clear differences (amount became clarity)"
+   ],
+   "other": [
+    "'Physical space' narrowed to 'living room'",
+    "'Approach daily life' became 'live each day', and 'entering university' became 'university life'"
+   ],
+   "notes": "'Doesn't get expanded' -> 'won't stretch' keeps the polarity, so no negation flip. 'Most' and 'sometimes/occasionally' are equivalent. 'Several report' adds a reporting source, which I left out as minor."
+  },
+  {
+   "id": "fe-057",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [
+    "non è un nome noto -> non è un nome ampiamente riconosciuto (a 'widely' hedge appears, so 'not known' is weaker)"
+   ],
+   "other": [
+    "'Non ha mai pubblicato opere a carattere internazionale' became 'non ha mai realizzato opere' (published -> made), which changes the claim"
+   ],
+   "notes": "The lowercase 'mezzogiorno' became 'sud del paese'. I treated it as a common noun and left it out of names. 'Pensatori' -> 'studiosi', 'comune' -> 'cittadina' and 'eredità del pensiero classico' -> 'pensiero antico' are close synonyms that I left out. 'Che non si limiti' -> 'che vada oltre' keeps the same polarity. 'Significativo' is a mild evaluative addition."
+  },
+  {
+   "id": "fe-058",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [
+    "ocasional (semáforo) -> rare (traffic light)"
+   ],
+   "other": [
+    "'Se prepara para el trabajo' (gets ready for work) became 'heads off to the workplace' (leaves), a different moment in the sequence"
+   ],
+   "notes": "The original is Spanish and the rewrite is English, so it is a translation. I did not count 'un yogur y una fruta' -> 'yogurt and a piece of fruit' as a number change because they are articles. 'Coches' -> 'vehicles' is a hypernym, so I left it out. 'Cierta precisión' -> 'a fair degree of consistency' is close enough."
+  },
+  {
+   "id": "fe-059",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [
+    "only occasionally -> (dropped; the rewrite just says 'I ignored')",
+    "hours -> (dropped; 'idly waiting for my dinner to arrive')"
+   ],
+   "other": [
+    "Dropped the claim of 'throwing clothes all around the household'",
+    "Dropped the location 'at the nearby dining halls'",
+    "Dropped the two quoted lines ('Why not do anything?' and 'The pasta will eventually heat up enough to fry.')",
+    "The duration 'waiting hours' is gone"
+   ],
+   "notes": "'Italian Pastas' is in both and is an adjective, not a name. The original is garbled, so I judged only what the rewrite visibly dropped. 'Didn't' -> 'did not' keeps the polarity."
+  },
+  {
+   "id": "fe-060",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [],
+   "other": [],
+   "notes": "'Without fail' -> 'consistently' is slightly weaker, and 'potential swarming weather' -> 'possible swarming seasons' shifts weather to season. Both are borderline wording, so I left them out. 'Everything is flowing smoothly' -> 'all operations run seamlessly' keeps the same strength."
+  }
+ ]
+}

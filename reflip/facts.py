@@ -24,7 +24,8 @@ LEXICON = json.loads((Path(__file__).resolve().parent / "facts_lexicon.json").re
 
 # a number with thousands groups and decimals, or a word with inner apostrophes and hyphens
 WORD = re.compile(r"[0-9]+(?:[.,'  ][0-9]{3})*(?:[.,][0-9]+)?%?|[^\W\d_]+(?:['’-][^\W\d_]+)*")
-SENTENCE_END = re.compile(r"[.!?…]+[\"'”»)\]]*\s+|\n")
+# a colon followed by a space opens a clause too: "Tip 3: Putting the lid on" has no name in it
+SENTENCE_END = re.compile(r"[.!?…:]+[\"'”»)\]]*\s+|\n")
 OPENERS = " \t\r\n\"'“‘«([-–—*#>•"
 NEGATIVE_CONTRACTION = re.compile(r"n['’]t\b", re.IGNORECASE)
 
@@ -52,6 +53,18 @@ def tokens(text: str) -> list[tuple[str, bool, int, int]]:
 
 LIST_MARKER = re.compile(r"[.)](\s|$)")
 TITLE_WORD = re.compile(r"[^\W\d_]{4,}")
+BOLD = re.compile(r"\*\*[^*\n]+\*\*")
+
+
+def name_key(word: str) -> str:
+    """How a name is compared: case, a possessive and a plural s do not make another name."""
+    k = re.sub(r"'s?$", "", word.lower())
+    return k[:-1] if len(k) > 3 and k.endswith("s") and not k.endswith("ss") else k
+
+
+def name_parts(token: str) -> list[str]:
+    """A hyphenated capitalised token is read part by part: "Tax-Free" is "Tax" and "Free"."""
+    return [p for p in token.split("-") if p]
 
 
 def heading_spans(text: str) -> list[tuple[int, int]]:
@@ -66,6 +79,8 @@ def heading_spans(text: str) -> list[tuple[int, int]]:
         if t.startswith("#") or (t.startswith("**") and t.endswith("**") and len(t) > 4) or title:
             spans.append((pos, pos + len(line)))
         pos += len(line) + 1
+    # a label in bold inside a line ("- **Drafting Proposals:** the committee...") is a heading too
+    spans += [(m.start(), m.end()) for m in BOLD.finditer(text)]
     return spans
 
 
@@ -194,11 +209,17 @@ def facts(text: str, lang: str) -> Facts:
     for v in word_numbers(split, lang):
         f.numbers[v] += 1
     heads = heading_spans(text)
+    function = set(LEXICON["function_words"][lang])
     for t, opening, a, b in toks:
-        f.lowered.add(t.lower())
-        if (t[0].isupper() and len(t) > 1 and not opening and not (lang == "en" and t.startswith("I'"))
-                and not any(x <= a < y for x, y in heads)):
-            f.names[t] += 1
+        for part in name_parts(t):
+            f.lowered.add(name_key(part))
+        if not t[0].isupper() or len(t) < 2 or opening or any(x <= a < y for x, y in heads):
+            continue
+        if lang == "en" and (t.startswith("I'") or (t.endswith("ing") and len(t) > 5)):
+            continue                        # "I'm"; a gerund opening a clause ("Putting", "Following")
+        for part in name_parts(t):
+            if part[0].isupper() and len(part) > 1 and part.lower() not in function:
+                f.names[part] += 1
     neg = set(LEXICON["negations"][lang])
     f.negations = sum(1 for w in split if w in neg)
     if lang == "en":
@@ -261,12 +282,13 @@ def diff(original: str, rewritten: str, lang: str) -> dict:
     missing_num, added_num = a.numbers - b.numbers, b.numbers - a.numbers
     # a name is kept if the word appears anywhere in the other text, in any case: moved to the
     # start of a sentence, or written in capitals, it is the same name
-    missing_names = Counter({k: v for k, v in (a.names - b.names).items() if k.lower() not in b.lowered})
-    added_names = Counter({k: v for k, v in (b.names - a.names).items() if k.lower() not in a.lowered})
+    missing_names = Counter({k: v for k, v in (a.names - b.names).items() if name_key(k) not in b.lowered})
+    added_names = Counter({k: v for k, v in (b.names - a.names).items() if name_key(k) not in a.lowered})
     missing_q, added_q = a.quantifiers - b.quantifiers, b.quantifiers - a.quantifiers
+    # Negation words are reported and not counted: on 120 annotated rewrites their count changed
+    # in 22 pairs and a statement's polarity flipped in one (docs/facts/PROTOCOL.md).
     altered = (sum(missing_num.values()) + sum(added_num.values()) + sum(missing_names.values())
-               + sum(added_names.values()) + abs(a.negations - b.negations)
-               + sum(missing_q.values()) + sum(added_q.values()))
+               + sum(added_names.values()) + sum(missing_q.values()) + sum(added_q.values()))
     return {
         "lang": lang,
         "words": a.words,
@@ -292,9 +314,10 @@ def sentences(d: dict) -> list[str]:
         return f"{label}: {'; '.join(bits)}." if bits else None
 
     head = (f"{d['altered']} facts changed ({d['per_1000_words']:g} per 1,000 words)." if d["altered"]
-            else "No number, name, negation or quantifier changed.")
+            else "No number, name or quantifier changed.")
     n = d["negations"]
     lines = [head, pair("Numbers", d["numbers"]), pair("Names", d["names"]),
-             f"Negations: {n['before']} before, {n['after']} after." if n["before"] != n["after"] else None,
+             (f"Negation words: {n['before']} before, {n['after']} after; not counted above, worth a look."
+              if n["before"] != n["after"] else None),
              pair("Quantifiers", d["quantifiers"], lambda q: q.replace("_", " "))]
     return [x for x in lines if x]

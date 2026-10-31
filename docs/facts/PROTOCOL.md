@@ -66,4 +66,22 @@ the first measurement on all 120 pairs and the held-out one, and says which is w
 
 ## Changes after seeing results
 
-None yet.
+Measured first, on all 120 pairs, as fixed above: `data/results/facts-eval/summary-all-v1-check.md`.
+Then the development half's errors were read (only those) and these changes made:
+
+1. **Names.** Fourteen false alarms on the development half. A colon followed by a space now
+   opens a clause ("Tip 3: Putting..."); words inside a label in bold are not names; in English
+   a word ending in -ing is not a name, nor is a capitalised function word (By, During, Some, a
+   short list per language in facts_lexicon.json); a possessive, a plural s and a hyphen no
+   longer make a different name (Amazon's, RRSPs, Tax-Free).
+2. **Negations are shown, not counted.** Ten false alarms on the development half and one flip
+   in all 120 pairs: the count of negation words changes whenever a rewrite says "failed to"
+   for "did not", "lacking" for "without". The check still reports the counts, as a line to look
+   at, and no longer adds them to the facts changed or re-asks a paragraph over them. Its
+   negation row below is still measured the way a reader would see it.
+3. **Quantifiers.** A few words seen in the errors joined the lexicon: handful, countless,
+   plenty, virtually, practically; scarsi, talora; escasos, ocasional, rara vez.
+4. **The reference.** Some annotators listed a quantifier while writing "(same)" next to it;
+   those entries no longer count as a change. This applies to both halves.
+
+The changed check was then measured once on the held-out half, below.

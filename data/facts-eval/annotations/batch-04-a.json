@@ -1,0 +1,190 @@
+{
+ "annotator": "a",
+ "model": "claude-sonnet (workflow agent)",
+ "pairs": [
+  {
+   "id": "fe-031",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [],
+   "other": [],
+   "notes": "Faithful translation. 'competición' -> 'the sport' is a minor wording shift, not counted."
+  },
+  {
+   "id": "fe-032",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [],
+   "other": [
+    "'the pasta will eventually heat up enough to fry' -> 'warm enough to burn': fry changed to burn"
+   ],
+   "notes": "Original is garbled. 'only occasionally given attention' vs 'often overlooked' says roughly the same thing (rarely attended = often ignored), so no quantifier change was reported. 'didn't realize' -> 'never truly grasped' is the same polarity. 'every single day' -> 'each day' is only a loss of emphasis."
+  },
+  {
+   "id": "fe-033",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [
+     "Eternal Noodle Dream"
+    ],
+    "added": [
+     "Timeless Noodle Dream"
+    ]
+   },
+   "negation_flip": false,
+   "quantifiers": [],
+   "other": [
+    "'omnipresent' dropped",
+    "'cultural phenomenon' -> 'social phenomenon'",
+    "'igniting an age-old longing for' cuisine -> 'sparking an age-ancient a ... food': 'longing' lost, the clause is broken",
+    "'slightly longer' -> 'a longer': 'slightly' lost"
+   ],
+   "notes": "Both texts are garbled. The rewrite turns 'not merely a stall ... but a phenomenon' into 'not merely stand ... not just social phenomenon' (an extra 'not', 'but' lost). That does not clearly deny the phenomenon claim, so negation_flip is false. The name change is Eternal -> Timeless in the product name. Phoenixville and 'classic Japanese' are in both."
+  },
+  {
+   "id": "fe-034",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [
+    "without fail (always) -> without ever (truncated, no longer says always)"
+   ],
+   "other": [
+    "'nectar resources' -> 'sugar resources': nectar changed to sugar"
+   ],
+   "notes": "'eager hands' -> 'welcoming hands', 'protective' -> 'defensive', 'ensuring' -> 'confirming' treated as synonyms. The final 'without ever' is an unfinished phrase, so the quantifier entry is a best reading."
+  },
+  {
+   "id": "fe-035",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [],
+   "other": [],
+   "notes": "'no solo ... sino que también' -> 'isn't just ... but also' keeps the same polarity. 'preguntas importantes' -> 'serious concerns' and 'intensa' -> 'extreme' are slight intensity shifts, not counted. 'en los últimos años' -> 'recently' is equivalent. Noah and FIBA are in both."
+  },
+  {
+   "id": "fe-036",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [],
+   "other": [
+    "'slows down accumulation until later in life' -> 'reduces down growth until mid in life': later changed to mid",
+    "'to smooth future streams' -> 'ensures future income': purpose changed from smoothing to ensuring"
+   ],
+   "notes": "Original is garbled nonsense. 'even small amounts' -> 'any small sums' was treated as equivalent. 'Sheridan Yvitoreכ' is the same in both. 'rest periods' -> 'lulls periods' is too unclear to judge."
+  },
+  {
+   "id": "fe-037",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [
+    "many years -> decades (more specific)"
+   ],
+   "other": [
+    "'thousands, even millions of dollars' -> 'significant sums ... astronomical amounts': concrete magnitudes and the currency dropped",
+    "'can be extremely beneficial' (possibility) -> 'proves immensely advantageous' (stated as certain)",
+    "'during these formative years' -> 'over time ... by adulthood': time frame changed"
+   ],
+   "notes": "'twenties' is in both. 'thousands' and 'millions' are vague magnitudes, not exact numbers, so they are reported under other rather than numbers. 'understanding and actively managing' -> 'mastering' not counted."
+  },
+  {
+   "id": "fe-038",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [],
+   "other": [
+    "'potatura alfa-beta' (pruning) -> 'pratica alfa-beta' (practice): the technique's key term changed",
+    "'condizioni favorevoli' -> 'casi ottimali': favourable became optimal",
+    "'elemento standard' -> 'elemento essenziale': standard became essential",
+    "'determinano l'efficienza' -> 'influiscono direttamente sull'efficacia': efficiency became effectiveness, determine became influence"
+   ],
+   "notes": "1950s and 1960s, minimax, alfa/beta, two players are all in both. 'migliorare la decisione' -> 'alterare la scelta' and 'qualità' -> 'precisione' are subtle shifts, left out as probably style. 'soprattutto' -> 'principalmente' is equivalent."
+  },
+  {
+   "id": "fe-039",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [],
+   "other": [
+    "'defilee sfarzosi' (lavish fashion shows) -> 'flashy celebrities': the object of Cunningham's disinterest changed"
+   ],
+   "notes": "1981, New York Times, Cunningham, New York and 'real people' are in both. 'non si interessava' -> 'showed no interest' is the same polarity. 'spesso' -> 'often' and 'di ogni genere' -> 'all sorts' are equivalent."
+  },
+  {
+   "id": "fe-040",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [],
+   "other": [
+    "'océano Atlántico' -> 'mar Atlántico': ocean became sea",
+    "'matorrales y gramíneas endémicas' -> 'helechos y hierbas originales': shrubs became ferns, and endemic became original"
+   ],
+   "notes": "-2 °C and 5 °C are in both, and Atlántico is the same name. 'promedios anuales' -> 'valores anuales' (averages lost) and 'adaptada' -> 'diseñada' were left out as minor. 'escasas' -> 'muy pocas' and 'muchos' -> 'numerosos' are equivalent."
+  }
+ ]
+}

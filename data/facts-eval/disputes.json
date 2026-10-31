@@ -1,0 +1,997 @@
+[
+ {
+  "id": "fe-012",
+  "lang": "en",
+  "original": "3. **Credit rating downgrade and moral hazard**: Poor credit scoring led to misjudgement in how mortgages were rated, but then certain institutions bought risky underwater mortgages believing them highly-rated because they did not fit standard criteria to determine risk or profit. This allowed such questionable assets to be lent out again at higher interest rates than proper lending should have received.",
+  "rewrite": "3. **Credit score drop and hidden risks**: Low credit evaluations caused wrong assumptions about mortgage quality, yet some firms purchased dangerous underwater loans, thinking they were safe because they failed to meet standard risk or return guidelines. This enabled those dubious investments to be reused at elevated interest rates, exceeding what responsible lending ought to allow.",
+  "disputed": [
+   "quantifiers"
+  ],
+  "annotator_1": {
+   "id": "fe-012",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [
+    "certain institutions -> some firms (same strength)"
+   ],
+   "other": [
+    "Heading concept 'moral hazard' is replaced by 'hidden risks', so the named economic concept is dropped"
+   ],
+   "notes": "The '3.' list marker is in both texts, so no number changed. 'did not fit standard criteria' -> 'failed to meet standard risk or return guidelines' keeps the polarity. Left out as borderline: 'believing them highly-rated' -> 'thinking they were safe' (rating vs safety), and 'lent out again' -> 'reused' (the lending is not stated)."
+  },
+  "annotator_2": {
+   "id": "fe-012",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [],
+   "other": [
+    "Heading 'moral hazard' replaced by 'hidden risks' (the specific concept is dropped)"
+   ],
+   "notes": "The leading '3.' is a list marker present in both, so not counted. 'did not fit' -> 'failed to meet' is the same polarity. 'certain institutions' -> 'some firms' treated as equivalent. Left out as uncertain: 'believing them highly-rated' -> 'thinking they were safe', 'lent out again' -> 'reused', 'rated' -> 'quality'."
+  }
+ },
+ {
+  "id": "fe-013",
+  "lang": "en",
+  "original": "In the crisp, golden glow of early April, Emily, a seasoned beekeeper, begins her morning routine at her quaint wooden hive barn nestled in the heart of a lush apple orchard just outside of Washington D.C. As dawn breaks through the dense canopy of trees, her eyes scan each corner for signs of activity and warning of bees.",
+  "rewrite": "In the clear, warm light of early April, Emily, a skilled beekeeper, starts her daily schedule at her small wooden hive shed situated deep within a vibrant apple grove just beyond Washington D.C. As morning seeps through the thick branches of trees, her gaze sweeps every area for clues of movement and alerts about bees.",
+  "disputed": [
+   "quantifiers"
+  ],
+  "annotator_1": {
+   "id": "fe-013",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [
+    "each corner -> every area (same strength)"
+   ],
+   "other": [],
+   "notes": "Emily, Washington D.C. and early April are kept. Left out as synonym-level changes: barn -> shed, quaint -> small, orchard -> grove, dawn -> morning, 'morning routine' -> 'daily schedule'."
+  },
+  "annotator_2": {
+   "id": "fe-013",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [],
+   "other": [],
+   "notes": "Emily, April, Washington D.C. in both. 'each corner' -> 'every area' equivalent. Left out as style or near-synonym: barn -> shed, quaint -> small, golden -> warm, dawn -> morning, 'in the heart of' -> 'deep within', orchard -> grove."
+  }
+ },
+ {
+  "id": "fe-025",
+  "lang": "en",
+  "original": "At last his fingers fell silent and heavy down onto carpeting of white paint stretched far over dark ceilings; there wasn't anything left to be done but retrieve the parcel that lay before him neatly tucked down with fresh white wax seal affixed.",
+  "rewrite": "At final his fingers dropped silent and heavily down onto carpet of white layer spread far over shades walls; there wasn't nothing remaining to be attempt the package that placed carefully folded down with new white wax stamp affixed.",
+  "disputed": [
+   "quantifiers"
+  ],
+  "annotator_1": {
+   "id": "fe-025",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [
+    "nothing left to be done 'but' retrieve (the only remaining task) -> nothing remaining to be attempt the package (the 'but/only' restriction is lost)"
+   ],
+   "other": [
+    "setting changed: 'dark ceilings' -> 'shades walls'",
+    "'carpeting of white paint' -> 'carpet of white layer' (paint -> layer)",
+    "action changed or lost: 'retrieve the parcel' -> 'be attempt the package'",
+    "'neatly tucked down' -> 'carefully folded down' (tucked -> folded)"
+   ],
+   "notes": "'wasn't anything left ... but retrieve' became 'wasn't nothing remaining', a double negative. Read strictly it would reverse the claim, and read colloquially it would not, so I left negation_flip false rather than guess. The rewrite is heavily garbled."
+  },
+  "annotator_2": {
+   "id": "fe-025",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [],
+   "other": [
+    "'dark ceilings' -> 'shades walls': ceilings became walls and 'dark' is lost; 'white paint' -> 'white layer' also loses the paint",
+    "'there wasn't anything left to be done but retrieve the parcel' -> 'there wasn't nothing remaining to be attempt the package': the exclusive 'nothing but retrieve' is gone and 'retrieve' became 'attempt'"
+   ],
+   "notes": "Negation flip left false: 'wasn't nothing' is a double negative, which read literally says something remained, but the original also says one thing (retrieving) remained, so I could not call the polarity reversed. I did not list 'nothing but' as a quantifier and put it in 'other'. 'tucked' -> 'folded' and 'seal' -> 'stamp' are close enough to leave out."
+  }
+ },
+ {
+  "id": "fe-032",
+  "lang": "en",
+  "original": "I didn't realize as much before, even though my new environment was replete with opportunities every single day at the nearby dining halls only occasionally given such an attention that I ignored them. I remember watching golden brown Italian Pastas trickling in trays while throwing clothes all around the household idly waiting hours until my dinner arrived - \"Why not do anything?\" \"The pasta will eventually heat up enough to fry.\"",
+  "rewrite": "I never truly grasped it earlier, even though my fresh surroundings brimmed with chances each day at the adjacent meal rooms, often overlooked so I simply brushed them aside. I recall seeing rich amber Italian noodles pouring into trays as I tossed garments about the home, idly lingering for hours till my food showed up — \"Why not attempt something?\" \"The pasta will eventually warm enough to burn.\"",
+  "disputed": [
+   "quantifiers"
+  ],
+  "annotator_1": {
+   "id": "fe-032",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [],
+   "other": [
+    "'the pasta will eventually heat up enough to fry' -> 'warm enough to burn': fry changed to burn"
+   ],
+   "notes": "Original is garbled. 'only occasionally given attention' vs 'often overlooked' says roughly the same thing (rarely attended = often ignored), so no quantifier change was reported. 'didn't realize' -> 'never truly grasped' is the same polarity. 'every single day' -> 'each day' is only a loss of emphasis."
+  },
+  "annotator_2": {
+   "id": "fe-032",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [
+    "only occasionally -> often"
+   ],
+   "other": [
+    "'heat up enough to fry' -> 'warm enough to burn': different outcome (fry vs burn)"
+   ],
+   "notes": "'didn't realize as much before' -> 'never truly grasped it earlier' kept as same polarity. 'every single day' -> 'each day' judged equivalent. The original sentence is garbled, so the quantifier change is a best reading. 'dinner' -> 'food' and 'dining halls' -> 'meal rooms' treated as synonyms."
+  }
+ },
+ {
+  "id": "fe-036",
+  "lang": "en",
+  "original": "Setting aside even small amounts each week instill savings into habituation -compounded interest slows down accumulation until later in lifeto smooth future streams being drawnfrom rest periods.Finding ways to save includes making wise choices when shopping and scheduling dedicated times to financially plateplayerspersepsitively into budget from month –sensitively planning everyday economic scenarios so present realities factor influencing future trajectory accordingly. Sheridan Yvitoreכ.",
+  "rewrite": "Setting aside any small sums each week creates savings into behavior -compounded interest reduces down growth until mid in lifeto ensures future income being drawnfrom lulls periods.Finding means to save involves making wise decisions when purchases and scheduling set times to financial plateplayerspersepsitively into plan from month –carefully planning everyday conditions scenarios so current realities factor shaping future trajectory then. Sheridan Yvitoreכ.",
+  "disputed": [
+   "quantifiers"
+  ],
+  "annotator_1": {
+   "id": "fe-036",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [],
+   "other": [
+    "'slows down accumulation until later in life' -> 'reduces down growth until mid in life': later changed to mid",
+    "'to smooth future streams' -> 'ensures future income': purpose changed from smoothing to ensuring"
+   ],
+   "notes": "Original is garbled nonsense. 'even small amounts' -> 'any small sums' was treated as equivalent. 'Sheridan Yvitoreכ' is the same in both. 'rest periods' -> 'lulls periods' is too unclear to judge."
+  },
+  "annotator_2": {
+   "id": "fe-036",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [
+    "even small amounts -> any small sums"
+   ],
+   "other": [
+    "'until later in life' -> 'until mid in life': different point in life",
+    "'to smooth future streams' -> 'ensures future income': the smoothing idea is replaced by a guarantee",
+    "'into budget' -> 'into plan': budget replaced by plan"
+   ],
+   "notes": "Both texts are heavily garbled, so other-category items are a best reading. 'Sheridan Yvitore' appears in both. 'slows down accumulation' -> 'reduces down growth', 'rest periods' -> 'lulls periods', 'shopping' -> 'purchases' treated as wording changes."
+  }
+ },
+ {
+  "id": "fe-037",
+  "lang": "en",
+  "original": "For someone in their twenties, understanding and actively managing compound interest can be extremely beneficial because many years of growth accumulate before they retire. If saved and invested wisely, thousands, even millions of dollars could be amassed during these formative years.",
+  "rewrite": "For a person in their twenties, mastering compound interest proves immensely advantageous due to the substantial accumulation of wealth over decades leading up to retirement. By prudent saving and investment, significant sums could be accumulated over time, potentially reaching astronomical amounts by adulthood.",
+  "disputed": [
+   "numbers"
+  ],
+  "annotator_1": {
+   "id": "fe-037",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [
+    "many years -> decades (more specific)"
+   ],
+   "other": [
+    "'thousands, even millions of dollars' -> 'significant sums ... astronomical amounts': concrete magnitudes and the currency dropped",
+    "'can be extremely beneficial' (possibility) -> 'proves immensely advantageous' (stated as certain)",
+    "'during these formative years' -> 'over time ... by adulthood': time frame changed"
+   ],
+   "notes": "'twenties' is in both. 'thousands' and 'millions' are vague magnitudes, not exact numbers, so they are reported under other rather than numbers. 'understanding and actively managing' -> 'mastering' not counted."
+  },
+  "annotator_2": {
+   "id": "fe-037",
+   "numbers": {
+    "missing": [
+     "thousands",
+     "millions"
+    ],
+    "added": [
+     "decades"
+    ]
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [
+    "can be extremely beneficial -> proves immensely advantageous (hedge 'can be' lost, now stated as fact)",
+    "many years -> decades",
+    "thousands, even millions of dollars -> significant sums / astronomical amounts"
+   ],
+   "other": [
+    "'understanding and actively managing' -> 'mastering': a different claim",
+    "'during these formative years' -> 'over time ... by adulthood': different time frame",
+    "the stated amount 'thousands, even millions of dollars' becomes 'astronomical amounts', a different claim"
+   ],
+   "notes": "'twenties' is in both. 'decades' counted as an added number-like quantity replacing 'many years'. 'if saved and invested wisely' -> 'by prudent saving and investment' judged equivalent."
+  }
+ },
+ {
+  "id": "fe-040",
+  "lang": "es",
+  "original": "Desde un punto de vista geográfico, la isla se encuentra en una región de transición entre el océano Atlántico y las corrientes frías del sur, lo que influye en su clima, caracterizado por temperaturas bajas durante todo el año, con promedios anuales que oscilan entre -2 °C y 5 °C. Las precipitaciones son escasas, lo que contribuye a la presencia de ecosistemas áridos y desérticos, con vegetación principalmente compuesta por matorrales y gramíneas endémicas. La vegetación es de bajo crecimiento, adaptada a condiciones de sequía prolongada y a la escasez de agua, y en muchos puntos la superficie está cubierta por capas de barro y sedimentos sedimentarios.",
+  "rewrite": "Desde un punto geográfico, la isla se sitúa en una zona de cambio entre el mar Atlántico y las corrientes frías del sur, lo que modula su clima, marcado por temperaturas bajas en todo periodo, con valores anuales que varían desde -2 °C hasta 5 °C. Las lluvias son muy pocas, lo que fomenta la existencia de hábitats secos y desérticos, donde la flora se compone principalmente de helechos y hierbas originales. La cobertura vegetal es baja, diseñada para sobrevivir en condiciones de sequía continua y en escasos recursos hídricos, y en numerosos lugares la tierra está recubierta por capas de lodo y sedimentos depositados.",
+  "disputed": [
+   "quantifiers"
+  ],
+  "annotator_1": {
+   "id": "fe-040",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [],
+   "other": [
+    "'océano Atlántico' -> 'mar Atlántico': ocean became sea",
+    "'matorrales y gramíneas endémicas' -> 'helechos y hierbas originales': shrubs became ferns, and endemic became original"
+   ],
+   "notes": "-2 °C and 5 °C are in both, and Atlántico is the same name. 'promedios anuales' -> 'valores anuales' (averages lost) and 'adaptada' -> 'diseñada' were left out as minor. 'escasas' -> 'muy pocas' and 'muchos' -> 'numerosos' are equivalent."
+  },
+  "annotator_2": {
+   "id": "fe-040",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [
+    "escasas -> muy pocas (slightly stronger)"
+   ],
+   "other": [
+    "'matorrales y gramineas endemicas' (shrubs and endemic grasses) -> 'helechos y hierbas originales' (ferns and native herbs): the plant types are changed",
+    "'promedios anuales' (annual averages) -> 'valores anuales': 'averages' lost",
+    "'oceano Atlantico' -> 'mar Atlantico': ocean vs sea"
+   ],
+   "notes": "The temperature range -2 C to 5 C is kept. Atlantico is kept. 'durante todo el ano' -> 'en todo periodo' and 'en muchos puntos' -> 'en numerosos lugares' judged equivalent. 'sequia prolongada' -> 'sequia continua' and 'sedimentos sedimentarios' -> 'sedimentos depositados' treated as wording changes. 'contribuye' -> 'fomenta' left out as unsure."
+  }
+ },
+ {
+  "id": "fe-044",
+  "lang": "it",
+  "original": "Il processo dell'improvvisazione si trova all'interno dei mesi della coltivazione, abbia profumo, le vitamine lo sanno, sono sempre maturi. Spesso ci metiamo solo cinque secondi a prepararli e sappiamo che un'altra aspetto importante consiste nel formaggio liquido fruttato o le crêpes coloratissime.",
+  "rewrite": "Il moto dell'improvvisazione si è all'interno dei giorni della coltivazione, avendo profumo, le nutrienti lo conoscono, sono sempre pronti. Spesso ci mettiamo solo cinque minuti a preparare e capiamo che un'altra lato importante include nel formaggio crema dolce o le frittelle coloratissime.",
+  "disputed": [
+   "numbers"
+  ],
+  "annotator_1": {
+   "id": "fe-044",
+   "numbers": {
+    "missing": [
+     "5 seconds"
+    ],
+    "added": [
+     "5 minutes"
+    ]
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [],
+   "other": [
+    "mesi della coltivazione -> giorni della coltivazione: months became days",
+    "maturi -> pronti: ripe became ready",
+    "formaggio liquido fruttato -> formaggio crema dolce: the cheese's attributes changed",
+    "crepes -> frittelle: a different dish",
+    "consiste nel -> include nel: 'consists of' became 'includes'"
+   ],
+   "notes": "Both texts are near-gibberish, so the judgments are literal. 'cinque' appears in both, but the unit changed from seconds to minutes, which is a different amount, so I listed it in numbers. 'Spesso', 'solo' and 'sempre' are unchanged. Grammatical breakage in the rewrite (si e, un'altra lato, le nutrienti) was left out as style."
+  },
+  "annotator_2": {
+   "id": "fe-044",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [],
+   "other": [
+    "time unit changed: 'cinque secondi' (5 seconds) -> 'cinque minuti' (5 minutes)",
+    "time unit changed: 'mesi della coltivazione' (months) -> 'giorni della coltivazione' (days)",
+    "described foods changed: 'formaggio liquido fruttato' (liquid, fruity cheese) -> 'formaggio crema dolce' (sweet cream cheese), and 'crepes' -> 'frittelle' (fritters)"
+   ],
+   "notes": "The number 5 is the same in both texts, so numbers are empty. The change of unit (seconds -> minutes) is reported under other instead. The source text is partly incoherent, so I kept only clear content swaps. Left out: 'vitamine' -> 'nutrienti', 'maturi' -> 'pronti', 'sappiamo' -> 'capiamo', 'consiste nel' -> 'include nel', 'processo' -> 'moto'. 'Spesso', 'sempre', 'solo' are unchanged."
+  }
+ },
+ {
+  "id": "fe-057",
+  "lang": "it",
+  "original": "Pietro di Porto è un nome che emerge nel panorama culturale e storico della regione del sud Italia, in particolare nel territorio del mezzogiorno, dove le tradizioni locali e le figure di intellettuale hanno sempre mantenuto un ruolo centrale. Nato a Porto, comune del territorio pugliese, Pietro di Porto si inserisce nel contesto di una serie di pensatori che hanno cercato di riunire l’eredità del pensiero classico con le esigenze del presente. Non è un nome noto in ambito accademico internazionale, ma nel suo territorio di origine ha raggiunto una certa visibilità attraverso opere scritte su storia locale, letteratura e formazione dei giovani. Le sue opere, scritte in un linguaggio diretto e profondo, riflettono un’attenzione particolare per le radici culturali della provincia, il ruolo del paesaggio nel formare l’identità e la necessità di un’educazione che non si limiti al sapere teorico. Ha collaborato con istituzioni locali per promuovere la scuola e il patrimonio storico. Non ha mai pubblicato opere a carattere internazionale, ma il suo impatto si è manifestato in un’ampia rete di insegnanti e studenti che hanno tratto ispirazione dalle sue riflessioni. La sua figura è quindi più un esempio di impegno civile che di produzione accademica, incarnando un’idea di conoscenza legata alla comunità e alla terra.",
+  "rewrite": "Pietro di Porto si presenta come un nome significativo nel panorama culturale e storico della zona meridionale dell’Italia, soprattutto nel sud del paese, dove le tradizioni locali e i pensatori hanno sempre mantenuto un ruolo fondamentale. Nato a Porto, cittadina del territorio pugliese, Pietro di Porto si colloca tra una serie di studiosi che hanno tentato di unire il pensiero antico alle esigenze del tempo attuale. Non è un nome ampiamente riconosciuto nell’ambito accademico mondiale, ma nel suo territorio di origine ha acquisito una certa notorietà grazie a scritti dedicati alla storia locale, alla letteratura e alla formazione dei giovani. I suoi testi, scritti in un linguaggio chiaro e profondo, esprimono un’attenta cura per le radici culturali della provincia, il ruolo del paesaggio nel plasmare l’identità e la necessità di un’educazione che vada oltre il sapere teorico. Ha lavorato in collaborazione con istituzioni locali per promuovere la scuola e il patrimonio storico. Non ha mai realizzato opere con carattere internazionale, ma il suo effetto si è visto in una vasta rete di insegnanti e studenti che hanno trovato ispirazione nelle sue riflessioni. La sua figura è quindi più un esempio di impegno civile che di produzione accademica, incarnando un’idea di conoscenza legata alla comunità e alla terra.",
+  "disputed": [
+   "quantifiers"
+  ],
+  "annotator_1": {
+   "id": "fe-057",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [],
+   "other": [],
+   "notes": "Names (Pietro di Porto, Porto, pugliese, Italia) appear in both texts. 'mezzogiorno' (lowercase) became 'sud del paese', read as a synonym, not a name change. Both 'Non è un nome noto' and 'Non ha mai...' keep their polarity. Left out as borderline: 'mai pubblicato opere' -> 'mai realizzato opere' (published -> made), 'pensatori' -> 'studiosi', 'diretto' -> 'chiaro', 'classico' -> 'antico'."
+  },
+  "annotator_2": {
+   "id": "fe-057",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [
+    "non è un nome noto -> non è un nome ampiamente riconosciuto (a 'widely' hedge appears, so 'not known' is weaker)"
+   ],
+   "other": [
+    "'Non ha mai pubblicato opere a carattere internazionale' became 'non ha mai realizzato opere' (published -> made), which changes the claim"
+   ],
+   "notes": "The lowercase 'mezzogiorno' became 'sud del paese'. I treated it as a common noun and left it out of names. 'Pensatori' -> 'studiosi', 'comune' -> 'cittadina' and 'eredità del pensiero classico' -> 'pensiero antico' are close synonyms that I left out. 'Che non si limiti' -> 'che vada oltre' keeps the same polarity. 'Significativo' is a mild evaluative addition."
+  }
+ },
+ {
+  "id": "fe-061",
+  "lang": "es",
+  "original": "En un mundo saturado de información, donde la novedad y el espectáculo parecen ser los principales motores del interés público, resulta alarmante que un régimen tan represivo pueda captar la atención mundial.  La insistencia en seguir las noticias de Pyongyang, en analizar sus discursos y en especular sobre sus planes, sugiere una cierta complacencia, una forma de entretenimiento macabra que nos ha llevado a aceptarlo como un actor político relevante.",
+  "rewrite": "In a world flooded with information, where novelty and spectacle appear to drive public attention, it's concerning that such a repressive regime could command global interest. The persistent focus on Pyongyang's updates, the detailed examination of its speeches, and the wild guessing about its intentions reveal a certain indulgence, a grim form of entertainment that has led us to treat it as a significant political player.",
+  "disputed": [
+   "quantifiers"
+  ],
+  "annotator_1": {
+   "id": "fe-061",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [],
+   "other": [
+    "'sugiere una cierta complacencia' (suggests) became 'reveal a certain indulgence': a hedged inference became a flat assertion"
+   ],
+   "notes": "Language changed from Spanish to English; Pyongyang is in both. 'los principales motores' (the main drivers) became plain 'drive', so the primacy is lost, but I judged it too minor to list. 'wild guessing' for 'especular' is a harsher tone, left out as style. 'alarmante' to 'concerning' is a softer word, left out as a synonym."
+  },
+  "annotator_2": {
+   "id": "fe-061",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [
+    "los principales motores (the main drivers) -> drive (\"main\" dropped)"
+   ],
+   "other": [
+    "sugiere una cierta complacencia (suggests) -> reveal a certain indulgence (hedge turned into assertion)",
+    "especular sobre sus planes -> wild guessing about its intentions (pejorative \"wild\" added)"
+   ],
+   "notes": "Original is Spanish, rewrite is English; translation alone not counted. Pyongyang is in both. \"alarmante\" -> \"concerning\" treated as tone, not counted. The \"principales\" item is borderline."
+  }
+ },
+ {
+  "id": "fe-076",
+  "lang": "en",
+  "original": "It all came crashing down when Bear Stearns' investment arm lost $6 billion, making its parent company worthless overnight; this triggered the onset of Lehman's bankruptcy as it sought rescue from international investors whose confidence evaporated.",
+  "rewrite": "It all fell apart when Bear Stearns' investment division suffered a loss worth $6 billion, leading to the collapse of its parent company, which now stands as a mere shadow of its former self. This event precipitated the bankruptcy of Lehman Brothers, where the trust of international investors was severely undermined, resulting in their withdrawal of support.",
+  "disputed": [
+   "quantifiers"
+  ],
+  "annotator_1": {
+   "id": "fe-076",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [],
+   "other": [
+    "making its parent company worthless overnight -> leading to the collapse of its parent company, which now stands as a mere shadow of its former self: 'overnight' is dropped and 'worthless' is softened to a surviving shadow",
+    "Lehman sought rescue from international investors -> dropped; the rewrite instead adds that the investors withdrew their support",
+    "confidence evaporated -> trust was severely undermined (weaker), plus a new claim of withdrawal of support"
+   ],
+   "notes": "$6 billion and Bear Stearns are in both. Lehman's -> Lehman Brothers is the same company, so I did not count it as a name change. No negation is added or lost."
+  },
+  "annotator_2": {
+   "id": "fe-076",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [
+    "'overnight' dropped"
+   ],
+   "other": [
+    "'worthless overnight' became 'collapse ... mere shadow of its former self'; this is weaker and not the same claim",
+    "Lehman 'sought rescue from international investors' is dropped",
+    "investors' confidence 'evaporated' became 'severely undermined, resulting in their withdrawal of support'; withdrawal is a new claim",
+    "'Lehman' became 'Lehman Brothers' (same entity)"
+   ],
+   "notes": "$6 billion is kept."
+  }
+ },
+ {
+  "id": "fe-083",
+  "lang": "en",
+  "original": "With final grooming duties complete, the day winds down particularly momentarily close to noon when the bees have long taken their obligatory flights south to warmer climates today – this safety measure naturally takes precedence for a goodly amount",
+  "rewrite": "With the final grooming tasks completed, the afternoon draws to a close, and the sun begins to set, signaling that the bees are about to make their annual migration northward towards cooler regions. This precautionary measure has its purpose, and it stands out as an essential aspect of maintaining biodiversity and ecosystem health.",
+  "disputed": [
+   "quantifiers"
+  ],
+  "annotator_1": {
+   "id": "fe-083",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [],
+   "other": [
+    "time of day changed: close to noon -> afternoon, sun beginning to set",
+    "bees' flight direction reversed: south to warmer climates -> northward to cooler regions",
+    "bees have already taken their flights -> bees are about to migrate",
+    "'obligatory' flights -> 'annual' migration",
+    "added claim that this is essential to biodiversity and ecosystem health",
+    "'today' and 'for a goodly amount' dropped"
+   ],
+   "notes": "The original is garbled; the rewrite changes several concrete facts and adds a new claim."
+  },
+  "annotator_2": {
+   "id": "fe-083",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [
+    "a goodly amount -> dropped",
+    "bees have long taken their flights -> bees are about to migrate"
+   ],
+   "other": [
+    "direction flipped: flights south to warmer climates -> migration northward towards cooler regions",
+    "time changed: close to noon -> afternoon, sun beginning to set",
+    "flights already long taken (today) -> flights about to begin, described as annual",
+    "added claim that the measure is essential to biodiversity and ecosystem health"
+   ],
+   "notes": "The original is garbled. The rewrite reverses direction and climate and adds a new claim. There is no negation."
+  }
+ },
+ {
+  "id": "fe-086",
+  "lang": "en",
+  "original": "Eternal Noodle Dream is not merely a stall in *[Phoenixville], ]* but an omnipresent cultural phenomenon igniting an age-old longing for [classic Japanese] cuisine unadulterated and reverently practiced. Each mouth-watering eat between tables thereafter lingers slightly longer—evermore swirling delight reminiscent of distant childhood sunsets, slowly melting away – encouraging yet only hint",
+  "rewrite": "The enduring noodle fantasy isn’t just a shop in *[Phoenixville]*, but a widespread, powerful trend that stirs a deep, nostalgic desire for traditional Japanese food, presented in a pure and heartfelt manner. Each delectable morsel that’s offered there seems to linger a little longer—evermore, softly, swirling delight reminiscent of far-off, beautiful sunsets, gradually fading away – encouraging a gentle, subtle suggestion.",
+  "disputed": [
+   "quantifiers"
+  ],
+  "annotator_1": {
+   "id": "fe-086",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [
+     "Eternal Noodle Dream"
+    ],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [
+    "only hint -> gentle, subtle suggestion (the 'only' is gone)"
+   ],
+   "other": [
+    "'omnipresent cultural phenomenon' -> 'widespread, powerful trend'",
+    "'classic Japanese' -> 'traditional Japanese'; the bracketed 'classic Japanese' is not a name"
+   ],
+   "notes": "The named stall 'Eternal Noodle Dream' becomes the generic 'enduring noodle fantasy', so I listed it as a missing name. Phoenixville is kept. 'Not merely' -> 'isn't just' is not a flip."
+  },
+  "annotator_2": {
+   "id": "fe-086",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [
+     "Eternal Noodle Dream"
+    ],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [],
+   "other": [
+    "the stall's name 'Eternal Noodle Dream' became a generic 'enduring noodle fantasy'",
+    "'distant childhood sunsets' -> 'far-off, beautiful sunsets' (childhood dropped, 'beautiful' added)",
+    "'between tables' dropped"
+   ],
+   "notes": "Phoenixville is in both. 'not merely' -> 'isn't just' is the same polarity. The original ends abruptly ('only hint') and the rewrite completes it as 'a gentle, subtle suggestion'; I treated that as equivalent."
+  }
+ },
+ {
+  "id": "fe-092",
+  "lang": "es",
+  "original": "En cuanto a su historia, la Isla San Rafael ha sido objeto de escasas exploraciones científicas, y su uso por parte de la humanidad ha sido limitado. Se registran pocas referencias históricas, y su descubrimiento se atribuye a navegantes argentinos del siglo XIX, aunque no hay registros precisos. Desde entonces, ha sido objeto de estudios biológicos y ambientales, especialmente por instituciones científicas argentinas que buscan comprender el impacto del cambio climático en ecosistemas aislados.",
+  "rewrite": "Regarding its past, San Rafael Island has undergone limited scientific investigations, and human engagement with it has remained minimal. Historical mentions are rare, and its discovery is credited to Argentine sailors from the 19th century, though exact records are absent. Since then, it has been the focus of biological and environmental research, particularly by Argentine scientific organizations aiming to grasp the effects of climate change on isolated ecosystems.",
+  "disputed": [
+   "numbers",
+   "quantifiers"
+  ],
+  "annotator_1": {
+   "id": "fe-092",
+   "numbers": {
+    "missing": [
+     "XIX"
+    ],
+    "added": [
+     "19"
+    ]
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [
+    "escasas exploraciones -> limited investigations (same)",
+    "pocas referencias -> rare mentions (same)"
+   ],
+   "other": [
+    "Rewrite is in English while original is Spanish (translation)",
+    "'su uso por parte de la humanidad ha sido limitado' -> 'minimal' (slightly stronger)"
+   ],
+   "notes": "XIX and 19th are the same number. Names Isla San Rafael / Argentine unchanged. Quantifiers equivalent so not listed as changes."
+  },
+  "annotator_2": {
+   "id": "fe-092",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [
+    "escasas (scarce) -> limited",
+    "limitado -> minimal (slightly stronger)",
+    "pocas referencias -> rare mentions"
+   ],
+   "other": [],
+   "notes": "The rewrite is an English translation of the Spanish original. 'siglo XIX' = '19th century', so no number change. Meaning otherwise preserved."
+  }
+ },
+ {
+  "id": "fe-095",
+  "lang": "en",
+  "original": "The feeling of finally understanding where I fit within the bigger company structure provided relief coupled with heightened pride in making a contribution even if unknown roles may emerge later.",
+  "rewrite": "The realization that aligning myself with the broader organizational framework offered comfort and enhanced self-assurance despite potential new assignments to come.",
+  "disputed": [
+   "quantifiers"
+  ],
+  "annotator_1": {
+   "id": "fe-095",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [
+    "even if unknown roles may emerge later -> despite potential new assignments to come"
+   ],
+   "other": [
+    "Original: understanding where I fit; rewrite: aligning myself with the framework (a different act)",
+    "'pride in making a contribution' -> 'enhanced self-assurance' (pride/contribution dropped)",
+    "'relief' -> 'comfort'",
+    "'even if' (concession) -> 'despite' (different logic)"
+   ],
+   "notes": "Rewrite is also a sentence fragment."
+  },
+  "annotator_2": {
+   "id": "fe-095",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [],
+   "other": [
+    "'understanding where I fit within the company structure' became 'aligning myself with the broader organizational framework'",
+    "'heightened pride in making a contribution' became 'enhanced self-assurance'; the contribution element was dropped",
+    "'even if unknown roles may emerge later' became 'despite potential new assignments to come'"
+   ],
+   "notes": "The rewrite is a sentence fragment, and the relief/pride pairing is softened to comfort/self-assurance."
+  }
+ },
+ {
+  "id": "fe-097",
+  "lang": "en",
+  "original": "3. **Committee Stage**: During committee hearings, representatives scrutinize different clauses of the bill. They may request amendments or additions related to issues of public interest, ethics, due process concerns, or political alignment. Submissions usually come from citizens, advocacy groups, or other interested parties. These presentations summarize an attempt to understand a given issue transparently so it can be better reviewed within a context appropriate for consideration in further proceedings.",
+  "rewrite": "3. **Panel Stage**: During panel hearings, representatives examine different sections of the act. They may ask amendments or changes related to matters of public concerns, ethics, due procedures concerns, or partisan alignment. Inputs usually come members, advocacy organizations, or other relevant parties. These speeches summarize an effort to grasp a given topic clearly so it interpreted assessed within a setting appropriate for evaluation in further steps.",
+  "disputed": [
+   "numbers"
+  ],
+  "annotator_1": {
+   "id": "fe-097",
+   "numbers": {
+    "missing": [
+     "3"
+    ],
+    "added": [
+     "3"
+    ]
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [],
+   "other": [
+    "'Committee Stage' -> 'Panel Stage' (term changed)",
+    "'bill' -> 'act' (a bill is not yet law)",
+    "'Submissions usually come from citizens' -> 'Inputs usually come members' (citizens replaced by 'members', garbled)",
+    "'political alignment' -> 'partisan alignment'",
+    "'so it can be better reviewed' -> 'so it interpreted assessed' (garbled)",
+    "'amendments or additions' -> 'amendments or changes'"
+   ],
+   "notes": "The number 3 appears in both, so number lists should be empty; leaving it in both lists is a mistake. Correct reading: no number change. Rewrite is partly ungrammatical."
+  },
+  "annotator_2": {
+   "id": "fe-097",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [],
+   "other": [
+    "Submissions come from 'citizens' became Inputs come from 'members'",
+    "bill -> act",
+    "'amendments or additions' -> 'amendments or changes'",
+    "transparently -> clearly",
+    "'can be better reviewed' became 'interpreted assessed', so the 'better' element is lost",
+    "Committee Stage -> Panel Stage"
+   ],
+   "notes": "The rewrite is partly ungrammatical. 'usually' is kept. 'Committee Stage' is a heading and not counted as a name."
+  }
+ },
+ {
+  "id": "fe-100",
+  "lang": "en",
+  "original": "In conclusion, the weeks have become quite vital in building a coherent bridge between my past experiences and aligning them under a common goal-oriented framework. Looking back so far, all reflections provided invaluable advice, offering a general clearer insight on facing all daunting tasks ahead confidently. And thus, looking forward, I'm fully prepared and well-equipped for whatever comes next professionally.",
+  "rewrite": "Ultimately, the periods have become quite important for constructing a solid link between my earlier recollections and organizing them into a structured, goal-driven structure. Considering what’s happened so far, all the thoughts and feelings revealed a helpful understanding, offering a broad, clear view on tackling all difficult challenges with assurance. Consequently, looking ahead, I’m completely ready and well-prepared for whatever is coming next in my career.",
+  "disputed": [
+   "quantifiers"
+  ],
+  "annotator_1": {
+   "id": "fe-100",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [
+    "the weeks -> the periods (same)",
+    "all reflections -> all the thoughts and feelings (same)",
+    "all daunting tasks -> all difficult challenges (same)",
+    "fully prepared -> completely ready (same)"
+   ],
+   "other": [
+    "'past experiences' -> 'earlier recollections' (experiences vs memories)",
+    "'aligning them under a common goal-oriented framework' -> 'organizing them into a structured, goal-driven structure' ('common' dropped)",
+    "'reflections provided invaluable advice' -> 'revealed a helpful understanding' (advice -> understanding; 'invaluable' weakened to 'helpful')",
+    "'professionally' -> 'in my career'"
+   ],
+   "notes": "Largely paraphrase; small shifts of meaning."
+  },
+  "annotator_2": {
+   "id": "fe-100",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [
+    "a general clearer insight -> a broad, clear view"
+   ],
+   "other": [
+    "'the weeks' became 'the periods', so the specific time unit is lost",
+    "'past experiences' -> 'earlier recollections'",
+    "'reflections provided invaluable advice' -> 'thoughts and feelings revealed a helpful understanding' (weaker, no advice)",
+    "'professionally' -> 'in my career'"
+   ],
+   "notes": "'all', 'quite' and 'fully/completely' are preserved."
+  }
+ },
+ {
+  "id": "fe-102",
+  "lang": "es",
+  "original": "Los jóvenes de los Emiratos están frente a un cambio profundo en el mundo del trabajo. Las instituciones públicas, que durante años ofrecieron empleos estables y con poca exigencia, ahora deben adaptarse a una realidad en la que las tareas se vuelven más exigentes y las oportunidades menos fáciles de obtener. No se trata de una medida aislada, sino de una transformación general del sistema laboral. Las empresas públicas, que antes priorizaban la estabilidad sobre el desempeño, ahora enfrentan presión para modernizarse y aumentar la eficiencia. Los jóvenes que buscan inserción laboral deben entender que el trabajo público ya no es lo que era: menos puestos, más exigencias, más responsabilidades. La transición es dolorosa, pero también es inevitable. Los jóvenes deben prepararse no solo para trabajar, sino para hacerlo con capacidad, iniciativa y compromiso. El futuro del empleo en los Emiratos no será de comodidades, sino de esfuerzo, aprendizaje constante y adaptabilidad. No hay más espacio para expectativas pasivas. Si quieren una carrera, deben moverse, aprender y actuar. El mundo del trabajo está cambiando, y cada joven debe ser parte de ese cambio, no solo espectador.",
+  "rewrite": "Los jóvenes de los Emiratos se encuentran ante una transformación profunda en el ámbito laboral. Las instituciones gubernamentales, que durante décadas brindaron puestos estables y con baja exigencia, ahora deben reajustarse a un entorno en el que las tareas se vuelven más demandantes y las posibilidades menos accesibles. No se trata de una modificación aislada, sino de una evolución general del sistema de empleo. Las empresas estatales, que en el pasado valoraban la estabilidad más que el rendimiento, ahora enfrentan presión para evolucionar y mejorar su eficiencia. Los jóvenes que buscan entrar al mercado laboral deben darse cuenta de que el empleo público ya no es lo que era: menos puestos, más exigencias, más responsabilidades. Esta transición es dolorosa, pero también es inevitable. Los jóvenes deben prepararse no solo para laborar, sino para hacerlo con capacidad, iniciativa y compromiso. El futuro del empleo en los Emiratos no será de comodidades, sino de esfuerzo, aprendizaje constante y adaptabilidad. No hay más espacio para expectativas pasivas. Si quieren una carrera, deben moverse, aprender y actuar. El mundo del trabajo está cambiando, y cada joven debe ser parte de ese cambio, no solo espectador.",
+  "disputed": [
+   "quantifiers"
+  ],
+  "annotator_1": {
+   "id": "fe-102",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [],
+   "other": [
+    "'durante años' -> 'durante décadas': the duration of stable public jobs is stretched from years to decades"
+   ],
+   "notes": "Otherwise a faithful paraphrase. Emiratos is in both. público/gubernamental/estatal are treated as synonyms."
+  },
+  "annotator_2": {
+   "id": "fe-102",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [
+    "durante años -> durante décadas"
+   ],
+   "other": [
+    "'years' of stable public jobs became 'decades' (longer period)"
+   ],
+   "notes": "Otherwise a faithful paraphrase (instituciones públicas -> gubernamentales, empresas públicas -> estatales, empleos -> puestos). 'años'->'décadas' not counted as a number because it is not specific."
+  }
+ },
+ {
+  "id": "fe-114",
+  "lang": "en",
+  "original": "1. **Proposal**: The first stage comes when a member of the parliament (MP), typically either a legislator (in countries like Australia) or a senator, proposes a bill. This might happen during initial discussions on government business meetings where proposals are debated or initiated for the first time.",
+  "rewrite": "1. **Suggestion**: The initial phase begins when a representative in the legislature (MP), often either a lawmaker (such as in Australia) or a senator, introduces a piece of legislation. This can occur during early talks on official parliamentary sessions where new ideas are discussed or first presented.",
+  "disputed": [
+   "numbers"
+  ],
+  "annotator_1": {
+   "id": "fe-114",
+   "numbers": {
+    "missing": [
+     "1"
+    ],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [
+    "typically -> often",
+    "first (stage) -> initial (phase)"
+   ],
+   "other": [
+    "'government business meetings where proposals are debated or initiated for the first time' became 'official parliamentary sessions where new ideas are discussed or first presented'"
+   ],
+   "notes": "The '1.' is list numbering, but listed as a number since it is dropped? Actually '1.' remains in the rewrite, so it is not missing."
+  },
+  "annotator_2": {
+   "id": "fe-114",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [
+    "typically -> often"
+   ],
+   "other": [],
+   "notes": "Australia is in both. 'government business meetings' became 'official parliamentary sessions', and 'proposals' became 'new ideas'. I treated both as paraphrase."
+  }
+ },
+ {
+  "id": "fe-116",
+  "lang": "en",
+  "original": "The ergonomic design includes keycaps with built-in rubber bumpers reducing fatigue while allowing rapid reconfiguration through intuitive programming software and libraries provided by the manufacturer. This high-performance keyboard delivers unparalleled value for professional coders seeking performance on par with their personal computers but without sacrificing portability or intuitive ergonomics. Start your code with confidence knowing you have chosen one of only a few custom keyboards specifically tailored for the world's most creative coders and thinkers!",
+  "rewrite": "The user-friendly layout features keycaps equipped with integrated rubber cushions, easing strain during long typing sessions and enabling quick adjustments via straightforward software and toolsets from the brand. This top-tier keyboard offers exceptional balance for skilled developers who demand speed matching their PCs—without compromising on portability or natural comfort. Begin your coding journey with assurance, since you've picked one of just a handful of custom models designed exclusively for the brightest minds in programming and innovation!",
+  "disputed": [
+   "quantifiers"
+  ],
+  "annotator_1": {
+   "id": "fe-116",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [
+    "only a few -> just a handful (same)",
+    "the world's most creative coders and thinkers -> the brightest minds in programming and innovation"
+   ],
+   "other": [
+    "'reducing fatigue' became 'easing strain during long typing sessions'",
+    "'performance on par with their personal computers' became 'speed matching their PCs'",
+    "'intuitive ergonomics' became 'natural comfort'",
+    "'specifically tailored' became 'designed exclusively'",
+    "'libraries provided by the manufacturer' became 'toolsets from the brand'"
+   ],
+   "notes": "Mostly paraphrase; 'exclusively' slightly stronger than 'specifically tailored'."
+  },
+  "annotator_2": {
+   "id": "fe-116",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [],
+   "other": [
+    "'unparalleled value' became 'exceptional balance' (different claim)",
+    "'long typing sessions' added as the context for reduced fatigue",
+    "'tailored for' became 'designed exclusively for' (exclusivity added)",
+    "'performance on par with' became 'speed matching'"
+   ],
+   "notes": "'one of only a few' and 'one of just a handful' are the same strength. The negation 'without sacrificing' is kept."
+  }
+ }
+]

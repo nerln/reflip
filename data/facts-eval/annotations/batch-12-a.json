@@ -1,0 +1,233 @@
+{
+ "annotator": "a",
+ "model": "claude-sonnet-5-5 (claude -p, no tools; first run's agent could not read its file)",
+ "pairs": [
+  {
+   "id": "fe-111",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [
+    "a single keyboard (this ... keyboard) -> generic plural 'keyboards'",
+    "added: 'at least some of the key features'"
+   ],
+   "other": [
+    "Original describes one specific product ('optical mechanical'); rewrite generalizes to a class of keyboards and drops 'optical mechanical'",
+    "Rewrite adds a claim that these features set the keyboards apart from others"
+   ],
+   "notes": "'at least some' is a quantifier added in the closing clause."
+  },
+  {
+   "id": "fe-112",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [
+    "many operations -> operations (unquantified)",
+    "most common operation -> dropped",
+    "frequent searches unnecessary -> reducing the need for frequent lookups (all -> reduced)"
+   ],
+   "other": [
+    "'size' of keys became 'length' of keys",
+    "'rows mapped to a bucket' became 'entries in the same bucket'",
+    "Original says frequent searches become unnecessary; rewrite only says need is reduced"
+   ],
+   "notes": "Original is garbled; negation 'does not determine' / 'doesn't predict' judged equivalent."
+  },
+  {
+   "id": "fe-113",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [],
+   "other": [
+    "'acusación' became 'denuncia' (minor shift)",
+    "'seriedad' became 'intensidad' (minor)"
+   ],
+   "notes": "Essentially faithful. FIBA kept. Synonym-level shifts left out of other except the mild ones noted."
+  },
+  {
+   "id": "fe-114",
+   "numbers": {
+    "missing": [
+     "1"
+    ],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [
+    "typically -> often",
+    "first (stage) -> initial (phase)"
+   ],
+   "other": [
+    "'government business meetings where proposals are debated or initiated for the first time' became 'official parliamentary sessions where new ideas are discussed or first presented'"
+   ],
+   "notes": "The '1.' is list numbering, but listed as a number since it is dropped? Actually '1.' remains in the rewrite, so it is not missing."
+  },
+  {
+   "id": "fe-115",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [],
+   "other": [
+    "'both new perspectives and familiar expectations' became 'new ideas and old habits' (expectations -> habits)",
+    "Rewrite uses 'we' as subject instead of unspecified interaction",
+    "'took time and effort' became 'required patience and work'",
+    "'improved communication skills accelerated' became 'it helped us improve communication, speeding things up' (what accelerates is unclear in original)"
+   ],
+   "notes": "Original is garbled; differences are mild."
+  },
+  {
+   "id": "fe-116",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [
+    "only a few -> just a handful (same)",
+    "the world's most creative coders and thinkers -> the brightest minds in programming and innovation"
+   ],
+   "other": [
+    "'reducing fatigue' became 'easing strain during long typing sessions'",
+    "'performance on par with their personal computers' became 'speed matching their PCs'",
+    "'intuitive ergonomics' became 'natural comfort'",
+    "'specifically tailored' became 'designed exclusively'",
+    "'libraries provided by the manufacturer' became 'toolsets from the brand'"
+   ],
+   "notes": "Mostly paraphrase; 'exclusively' slightly stronger than 'specifically tailored'."
+  },
+  {
+   "id": "fe-117",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [
+    "sempre -> sempre (found as 'i sempre found'; kept)",
+    "più che possibile -> più che at (garbled)"
+   ],
+   "other": [
+    "Rewrite mixes English and Italian words, producing partly unintelligible text",
+    "'eccome se sapete' became 'sure se sapete'",
+    "'insomma' became 'in'",
+    "'stile o creativo' became 'style o creative'",
+    "'arti aperte' became 'open aperte'",
+    "'stato' translated as 'condition'"
+   ],
+   "notes": "Meaning broadly preserved but text is a corrupted code-switch of the original."
+  },
+  {
+   "id": "fe-118",
+   "numbers": {
+    "missing": [
+     "20"
+    ],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [
+    "extremely beneficial -> highly useful",
+    "many years -> many long",
+    "thousands, even millions -> thousands, also millions"
+   ],
+   "other": [
+    "'twenties' became 'late' (age span lost, truncated)",
+    "'compound interest' became 'compound returns'",
+    "'dollars' became 'pounds' (currency changed)",
+    "'retire' became 'exit'",
+    "'formative years' became 'early years'",
+    "'many years of growth' became 'many long of growth' (years dropped)"
+   ],
+   "notes": "'twenties' counted as the number 20 missing. 'if saved' became 'if set'."
+  },
+  {
+   "id": "fe-119",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [
+     "Japan"
+    ],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [],
+   "other": [
+    "Original's claim of craft tradition linked to Japan's custom-crafted craftsmanship is dropped",
+    "'dedication and passion' became 'dedication and excitement of the cooks' (cooks added as subject)",
+    "'served dishes' became 'food was prepared'",
+    "'hints' became 'smells' of sesame and soy sauce"
+   ],
+   "notes": "Phoenixville kept (brackets removed)."
+  },
+  {
+   "id": "fe-120",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [
+    "all new developments -> every fresh project (same)",
+    "everyone -> broad support",
+    "must -> should / need to (obligation weaker for cities)"
+   ],
+   "other": [
+    "'resilience design principles and inclusive practices' became 'adaptable design and fair methods'",
+    "'inclusion' became 'equity'",
+    "'advocacy' became 'support for sustainable actions'",
+    "'separated paths' became 'dedicated lanes'"
+   ],
+   "notes": "Largely faithful; 'must' -> 'should' for cities is a mild weakening."
+  }
+ ]
+}

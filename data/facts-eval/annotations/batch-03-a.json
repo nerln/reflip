@@ -1,0 +1,202 @@
+{
+ "annotator": "a",
+ "model": "claude-sonnet (workflow agent)",
+ "pairs": [
+  {
+   "id": "fe-021",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [],
+   "other": [],
+   "notes": "Original is Italian, rewrite is English; judged on meaning only. 'vera e propria rivoluzione' -> 'genuine transformation' is slightly softer, but I treated it as a synonym and left it out. Elements and Amazon are in both texts."
+  },
+  {
+   "id": "fe-022",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [
+    "enough game -> prey (enough dropped)"
+   ],
+   "other": [
+    "subject changed: 'final star' -> 'last spark'",
+    "concession turned into sequence: 'despite having just managed to bring down game' -> 'after securing prey'",
+    "time changed: 'during the evening meal' -> 'at dusk'",
+    "activity turned into an object: 'hazelnut chiseling' -> 'using hazelnut-tipped tools'"
+   ],
+   "notes": "The original is near-nonsense word salad, so every judgement here is uncertain. I left out 'faint rattle' -> 'soft buzz' (a different sound, but too minor to be sure) and 'clear skies' -> 'bright sky'. The final clause 'first-bringing-joined' is garbled in the original and has no clear counterpart, so I did not count it as dropped."
+  },
+  {
+   "id": "fe-023",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [],
+   "other": [
+    "time changed: 'wrap up Monday afternoon' -> 'finish up Monday session'",
+    "range lost: 'Tuesdays through Fridays' -> 'Tuesdays between Fridays'",
+    "object changed: 'prioritizing meeting deadlines' -> 'ensuring meeting goals'",
+    "'those who prefer more structured start times' -> 'those that more organized start times' (the 'prefer' idea is dropped)"
+   ],
+   "notes": "'there will no set policy' -> 'there does no set guideline': both are ungrammatical, but 'no set' is in both, so I judged the polarity unchanged. Weekday names appear in both and are not counted as numbers or names."
+  },
+  {
+   "id": "fe-024",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [],
+   "other": [
+    "time changed: 'celebratory evenings' -> 'celebratory afternoons'",
+    "antonym swap: 'no moment feels less significant' -> 'no instant feels less minor', which inverts the sense of the claim ('less minor' means more important)"
+   ],
+   "notes": "The 'less minor' swap reverses the meaning, but no negation was lost or added ('no' is in both), so I did not mark negation_flip. Left out as style or near-synonyms: plush -> soft, personal -> individual, ethos -> tradition, experience -> feeling, casual lunch trade -> simple lunch deal, uniquely -> distinct."
+  },
+  {
+   "id": "fe-025",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [
+    "nothing left to be done 'but' retrieve (the only remaining task) -> nothing remaining to be attempt the package (the 'but/only' restriction is lost)"
+   ],
+   "other": [
+    "setting changed: 'dark ceilings' -> 'shades walls'",
+    "'carpeting of white paint' -> 'carpet of white layer' (paint -> layer)",
+    "action changed or lost: 'retrieve the parcel' -> 'be attempt the package'",
+    "'neatly tucked down' -> 'carefully folded down' (tucked -> folded)"
+   ],
+   "notes": "'wasn't anything left ... but retrieve' became 'wasn't nothing remaining', a double negative. Read strictly it would reverse the claim, and read colloquially it would not, so I left negation_flip false rather than guess. The rewrite is heavily garbled."
+  },
+  {
+   "id": "fe-026",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [],
+   "other": [],
+   "notes": "Original is Italian, rewrite is English; judged on meaning. Cunningham and New York are in both. Raramente/seldom, per sempre/forever, costante/relentless and infinita/boundless are equivalent. I left out iconicità -> fame, amore -> deep affection and fine di un'era -> end of an age as minor nuances or synonyms."
+  },
+  {
+   "id": "fe-027",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [],
+   "other": [
+    "ingredient changed: 'sesame' -> 'nut'",
+    "dish made generic: 'spicy tonkotsu' -> 'spicy pork'",
+    "subject changed: 'you experience' -> 'we feel'",
+    "'each noodle' -> 'each strands' (noodle -> strands)",
+    "'classic' -> 'timeless'; 'elements' -> 'ingredients'"
+   ],
+   "notes": "Phoenixville and Japan are in both (the apostrophe style change in Japan's is the same name). I did not count 'tonkotsu' as a name because it is a dish type, not a proper noun, but it is lost in the rewrite and is listed under other. Both texts are garbled with markdown and bracket debris."
+  },
+  {
+   "id": "fe-028",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [],
+   "other": [
+    "subject changed: 'public libraries' -> 'public bookstores' (twice)",
+    "claim garbled: 'investing in them can yield significant benefits' -> 'involves in them digital significant outcomes' (the investment-yields-benefits claim is lost and 'digital' is added)",
+    "'the community as a whole' -> 'its as a population' (garbled)"
+   ],
+   "notes": "'several' is kept as 'several' (grammar 'is several' is wrong but the quantity is the same). 'any' is kept. Left out: reasons -> arguments, residents -> individuals, investment -> spending."
+  },
+  {
+   "id": "fe-029",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [],
+   "other": [
+    "claim dropped: 'keen interest in the role' -> 'request an opportunity to explore the potential of the position'",
+    "hedge turned into certainty: 'I believe' -> 'I am confident'",
+    "claim changed: 'possess the necessary qualifications to contribute effectively' -> 'bring valuable insights and innovative solutions' (new claim of innovation)",
+    "'your team' -> 'your esteemed organization' (team -> organization)"
+   ],
+   "notes": "Junior Data Analyst and [Company] are in both. 'Statistics' and 'Programming' are only capitalised in the rewrite, so they are not names. 'strong foundation' -> 'solid background / expertise' I took as near-equivalent and left out."
+  },
+  {
+   "id": "fe-030",
+   "numbers": {
+    "missing": [],
+    "added": [
+     "66"
+    ]
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [
+    "any previously accumulated interest -> already gained accumulated income (any dropped)"
+   ],
+   "other": [
+    "baseline mislabeled: 'simple interest' -> 'basic compound', so the comparison becomes compound vs compound",
+    "stray insertion: \"#66: 'provide'\" appears in the rewrite",
+    "'amount you invested or borrowed' -> 'initial deposit you provide or sum' (borrowed side lost, garbled)",
+    "comparison broken: 'grow much faster than' -> 'grow rapidly significantly than'"
+   ],
+   "notes": "'not just ... but also' -> 'not just ... but already' keeps the 'not just' negation structure, so no flip. 'much faster' -> 'rapidly significantly' keeps the degree, but the comparative form is garbled, so I mentioned it only under other."
+  }
+ ]
+}

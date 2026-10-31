@@ -20,7 +20,7 @@ def test_shared_cases(case):
 def test_the_same_text_changes_nothing():
     text = CASES[1]["a"]
     d = diff(text, text, "en")
-    assert d["altered"] == 0 and sentences(d) == ["No number, name, negation or quantifier changed."]
+    assert d["altered"] == 0 and sentences(d) == ["No number, name or quantifier changed."]
 
 
 def test_sentences_say_what_changed():

@@ -1,0 +1,192 @@
+{
+ "annotator": "a",
+ "model": "claude-sonnet (workflow agent)",
+ "pairs": [
+  {
+   "id": "fe-011",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [],
+   "other": [],
+   "notes": "All names (Astoria, Jock Head, Tully Castle, Petrorus Point, North Mountain Breakers, Thunderer's Guardian) are kept. Left out as borderline paraphrases: 'without complaint' -> 'silently', and 'missing from his life' -> 'left out of his story'. 'no one could see him well' -> 'nobody could clearly spot him' keeps the same polarity."
+  },
+  {
+   "id": "fe-012",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [
+    "certain institutions -> some firms (same strength)"
+   ],
+   "other": [
+    "Heading concept 'moral hazard' is replaced by 'hidden risks', so the named economic concept is dropped"
+   ],
+   "notes": "The '3.' list marker is in both texts, so no number changed. 'did not fit standard criteria' -> 'failed to meet standard risk or return guidelines' keeps the polarity. Left out as borderline: 'believing them highly-rated' -> 'thinking they were safe' (rating vs safety), and 'lent out again' -> 'reused' (the lending is not stated)."
+  },
+  {
+   "id": "fe-013",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [
+    "each corner -> every area (same strength)"
+   ],
+   "other": [],
+   "notes": "Emily, Washington D.C. and early April are kept. Left out as synonym-level changes: barn -> shed, quaint -> small, orchard -> grove, dawn -> morning, 'morning routine' -> 'daily schedule'."
+  },
+  {
+   "id": "fe-014",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [],
+   "other": [
+    "'reconsider the role of bicycles' becomes the garbled 'explore the focused of bikes', so the call to reconsider their role is lost",
+    "'balance urban development with sustainable practices' becomes 'achieve urban growth with sustainable initiatives', so the idea of balancing two aims is lost",
+    "'reliance on private vehicles increasing with economic growth' becomes '...personal vehicles on with economic advancement', so the claim that car reliance increases with growth is lost",
+    "'public bicycles would be instrumental' becomes 'public public would be vital', so the subject (bicycles) is lost"
+   ],
+   "notes": "The rewrite is partly garbled ('to to', 'an rise', 'public public'). 'numerous' and 'significantly -> greatly' are kept. 'commuting reliance' -> 'journeys reliance' is a minor shift and I did not count it separately."
+  },
+  {
+   "id": "fe-015",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [
+    "numerous ecological benefits -> ecological advantages (numerous dropped)"
+   ],
+   "other": [
+    "The call to 'reconsider the role of bicycles in our daily lives' is reduced to 'emphasizing the importance of bicycles', so 'reconsider' and 'in our daily lives' are dropped",
+    "'public bicycles would be instrumental' (conditional) becomes 'public bicycles serve as a potent tool' (stated as fact)"
+   ],
+   "notes": "Left out as borderline: 'commuting reliance on private vehicles' -> 'personal vehicle usage' (commuting dropped, reliance -> usage); 'we strive to balance' -> 'we aim to harmonize'; 'significantly' -> 'pivotal' (same strength). No names or numbers in either text."
+  },
+  {
+   "id": "fe-016",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [],
+   "other": [
+    "The wax seal on the parcel ('fresh white wax seal affixed') is dropped",
+    "'floor' is added: the fingers rest on 'a carpeted floor' and the parcel is 'placed neatly on the floor', whereas the original has no floor and the parcel 'lay before him'",
+    "'fell silent and heavy' becomes 'ceased to move and rested', so 'heavy' is lost",
+    "The surface changes from 'carpeting of white paint stretched far over dark ceilings' to 'a carpeted floor covered by white paint', with different spatial meaning"
+   ],
+   "notes": "'there wasn't anything left to be done but' -> 'There was nothing else to do but' keeps the polarity. Singular 'ceiling' vs plural 'ceilings' is not counted as a quantifier change."
+  },
+  {
+   "id": "fe-017",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [],
+   "other": [],
+   "notes": "The meaning is preserved. Left out as borderline: 'mantenimiento periódico' -> 'revisión regular' (maintenance narrowed to inspection); 'tensión de operación' -> 'presión eléctrica en funcionamiento' (odd term for voltage); 'interferencia eléctrica' -> 'ruido electromagnético'; 'seguridad ... garantizarse' -> 'protección ... mantenerse'. 'menos frecuentes' -> 'menos común' and 'especialmente' -> 'en especial' keep the same strength."
+  },
+  {
+   "id": "fe-018",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [
+    "multiple steps -> specific steps"
+   ],
+   "other": [
+    "'high performance at low latency' is garbled to 'very highly at low low', so the performance and latency requirement is lost",
+    "'should be instant' becomes 'should be within', so the instant-response requirement is lost",
+    "'other database tables' becomes 'other a set', so the database tables are lost",
+    "'a hash table would be ideal' becomes 'a hash a would be perfect', so the data structure name is lost"
+   ],
+   "notes": "The '1.' list marker is in both. 'without additional complications' -> 'without additional extra' keeps 'without', so no polarity flip. 'Performance Requirements' -> 'Speed Requirements' is a heading synonym."
+  },
+  {
+   "id": "fe-019",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [],
+   "other": [
+    "'overnight' is dropped: 'worthless overnight' becomes 'worthless within', so the timing claim is lost",
+    "'came crashing down when' becomes 'collapsed ... because', so a temporal link becomes a causal one",
+    "'it sought rescue from international investors' becomes 'it to rescue from global investors', so the verb is lost and the sentence is ungrammatical",
+    "'lost $6 billion' becomes 'suffered $6 billion' and 'Lehman's bankruptcy' becomes 'Lehman's collapse' (small shifts)"
+   ],
+   "notes": "$6 billion appears in both. Bear Stearns and Lehman are in both. 'investment arm' -> 'venture arm' and 'confidence' -> 'trust' are treated as synonym-level. 'All' is kept ('It all')."
+  },
+  {
+   "id": "fe-020",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [],
+   "other": [
+    "The 'gestora' (the interim management body) is rendered as 'la dirección' and then as 'la figura encargada' (a single person), so the subject changes from a body to a figure, although 'La gestora' returns later",
+    "Final sentence: 'la credibilidad del proyecto dependerá de su capacidad' becomes 'su confianza dependerá de la capacidad de la dirección', so what depends on what changes; 'conscientes de que' (aware that) becomes 'ya que' (because)"
+   ],
+   "notes": "No numbers. Names (Partido Socialista Obrero Español, PSOE, España, Gobierno en funciones) are all present in both; PSOE just appears twice in the rewrite. Negations ('no se limita' -> 'no se reduce', 'sin renunciar' -> 'sin abandonar') keep the polarity. 'Algunos/otros', 'cualquier' and 'una parte' are unchanged. Left out as borderline: 'debate' -> 'conflicto' (a bit stronger); 'mayorías parlamentarias' -> 'bloques parlamentarios'; 'pasar factura' -> 'costar votos'; 'dimisión de su anterior secretario general' -> 'salida de su antiguo jefe' (title lost, though the original also says 'salida' elsewhere); 'se ha propuesto preparar' -> 'ha anunciado', and 'anunciado' -> 'confirmado'; 'ilusionar' -> 'atraer'; 'electorado' -> 'público'; 'debate interno' -> 'reuniones internas'; 'asumió el control' -> 'tomó el poder'."
+  }
+ ]
+}

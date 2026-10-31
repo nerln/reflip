@@ -1,0 +1,192 @@
+{
+ "annotator": "b",
+ "model": "claude-sonnet (workflow agent)",
+ "pairs": [
+  {
+   "id": "fe-021",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [],
+   "other": [],
+   "notes": "Original is Italian, rewrite is English; I judged only the facts, not the language. 'vera e propria rivoluzione' -> 'genuine transformation' is a possible mild softening; I treated it as a synonym and left it out."
+  },
+  {
+   "id": "fe-022",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [
+    "enough (game) -> dropped ('securing prey')"
+   ],
+   "other": [
+    "'despite having just managed to bring down enough game' became 'after securing prey': the concessive relation is lost",
+    "'hazelnut chiseling' (an action) became 'hazelnut-tipped tools' (an instrument)"
+   ],
+   "notes": "The original is garbled, so I only report the clear shifts. I left out these uncertain ones: 'fruit of the evening meal' -> 'dusk' (time), 'star' -> 'spark', and 'night end drew closer' -> 'Night slipped in' (end of night vs arrival of night). 'Only' is kept."
+  },
+  {
+   "id": "fe-023",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [],
+   "other": [
+    "'wrap up Monday afternoon' -> 'finish up Monday session': the specific time (afternoon) is lost",
+    "'prioritizing meeting deadlines' -> 'ensuring meeting goals': deadlines became goals",
+    "'those who prefer more structured start times' -> 'those that more organized start times': the preference is lost in the garbling"
+   ],
+   "notes": "The weekday names are in both texts. I left out 'Tuesdays through Fridays' -> 'Tuesdays between Fridays' (garbled range, intent seems kept), 'new schedule' -> 'this schedule', and 'there will no set policy' -> 'there does no set guideline' (the 'no' is kept, so no flip)."
+  },
+  {
+   "id": "fe-024",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [],
+   "other": [
+    "'celebratory evenings' -> 'celebratory afternoons': the time of day changed",
+    "'no moment feels less significant or important' -> 'no instant feels less minor or crucial': 'significant' was replaced by its antonym 'minor' under the same 'less', which literally reverses that part"
+   ],
+   "notes": "Negation is false because no negation was lost or added; the reversal comes from an antonym swap, so I put it in 'other'. 'casual lunch trade' -> 'simple lunch deal', 'plush' -> 'soft' and 'ethos' -> 'tradition' are synonym-level."
+  },
+  {
+   "id": "fe-025",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [],
+   "other": [
+    "'dark ceilings' -> 'shades walls': ceilings became walls and 'dark' is lost; 'white paint' -> 'white layer' also loses the paint",
+    "'there wasn't anything left to be done but retrieve the parcel' -> 'there wasn't nothing remaining to be attempt the package': the exclusive 'nothing but retrieve' is gone and 'retrieve' became 'attempt'"
+   ],
+   "notes": "Negation flip left false: 'wasn't nothing' is a double negative, which read literally says something remained, but the original also says one thing (retrieving) remained, so I could not call the polarity reversed. I did not list 'nothing but' as a quantifier and put it in 'other'. 'tucked' -> 'folded' and 'seal' -> 'stamp' are close enough to leave out."
+  },
+  {
+   "id": "fe-026",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [],
+   "other": [],
+   "notes": "Original is Italian, rewrite is English. 'Raramente' -> 'seldom', 'per sempre' -> 'forever' and 'infinita' -> 'boundless' keep their strength. 'iconicità' -> 'fame' and 'costante' -> 'relentless' are slight shifts that I treated as synonyms."
+  },
+  {
+   "id": "fe-027",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [],
+   "other": [
+    "'you experience' -> 'we feel': the subject changed from the diner to the restaurant/narrator",
+    "'tonkotsu' -> 'pork': the named dish is lost",
+    "'sesame' -> 'nut': a specific ingredient became a different generic one",
+    "'classic and modern elements' -> 'timeless and modern ingredients': elements became ingredients"
+   ],
+   "notes": "Phoenixville and Japan appear in both. I treated 'tonkotsu' as a dish term and not as a name, so I put it in 'other'. 'every stroke' and 'each noodle' keep their quantifiers. I left out 'your very senses' -> 'your senses', 'miso-soup' -> 'miso-broth' and 'tender' -> 'mild' as style."
+  },
+  {
+   "id": "fe-028",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [],
+   "other": [
+    "'Public libraries' -> 'Public bookstores' (twice): the subject of the paragraph changed to a different institution",
+    "'investing in them can yield significant benefits' -> 'involves in them digital significant outcomes': the claim that investment yields benefits is lost and the 'can' modality is gone"
+   ],
+   "notes": "'any' and 'several' are kept. 'community as a whole' -> 'its as a population' and 'residents' -> 'individuals' are garbled but I read them as intent-preserving."
+  },
+  {
+   "id": "fe-029",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [],
+   "other": [
+    "claim added: 'bring valuable insights and innovative solutions'",
+    "claim dropped: 'possess the necessary qualifications to contribute effectively'",
+    "'express my keen interest in the role' -> 'request an opportunity to explore the potential of the position': the purpose of the sentence shifted"
+   ],
+   "notes": "Junior Data Analyst and [Company] are in both. Borderline, left out: 'I believe' -> 'I am confident' (stronger confidence, not on the quantifier list) and 'your team' -> 'your esteemed organization'."
+  },
+  {
+   "id": "fe-030",
+   "numbers": {
+    "missing": [],
+    "added": [
+     "66"
+    ]
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [
+    "any (previously accumulated interest) -> dropped",
+    "much faster than -> 'rapidly significantly than' (the comparison is garbled)"
+   ],
+   "other": [
+    "comparison baseline 'simple interest' -> 'basic compound': compound interest is now compared with something compound",
+    "'the original amount you invested or borrowed' -> 'initial deposit you #66: provide or sum': 'borrowed' is lost",
+    "a stray '#66' appears in the rewrite and not in the original"
+   ],
+   "notes": "'not just ... but also' -> 'not just ... but already' keeps the 'not just' structure, so no flip. 'interest' -> 'income' and 'money' -> 'capital' are synonym-level. The '66' is junk text in the rewrite, but it is a number not found in the original, so I listed it."
+  }
+ ]
+}

@@ -1,0 +1,195 @@
+{
+ "annotator": "a",
+ "model": "claude-sonnet (workflow agent)",
+ "pairs": [
+  {
+   "id": "fe-001",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [
+    "relatively insulated -> remained separate (hedge 'relatively' dropped)"
+   ],
+   "other": [
+    "'meant that' -> 'required that': a consequence/possibility turned into a requirement"
+   ],
+   "notes": "The '5.' list number is in both. 'financial'->'economic', 'economies'->'markets', 'part of the world'->'region of the system', 'crises'->'shocks' look like loose synonyms or small scope shifts; left out. 'many' is unchanged."
+  },
+  {
+   "id": "fe-002",
+   "numbers": {
+    "missing": [
+     "1"
+    ],
+    "added": [
+     "2"
+    ]
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [],
+   "other": [
+    "'evening meal' -> 'afternoon meal': time of day changed",
+    "'hazelnut' -> 'walnut': different object",
+    "'night end' -> 'watch end': 'night' replaced by 'watch'"
+   ],
+   "notes": "Text is near-gibberish. Ordinals read as numbers: 'first-bringing-joined' -> 'second-bringing-joined', so first (1) is missing and second (2) is added. 'final'->'last', 'game'->'prey', 'clear'->'open', 'faint'->'slight', 'guard'->'watch' and 'alarms'->'beeps' treated as synonyms or too garbled to judge."
+  },
+  {
+   "id": "fe-003",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [],
+   "other": [],
+   "notes": "'3.' and the heading 'Committee Stage' are in both. 'may'->'might' and 'usually'->'typically' are equivalent. Left out as too small or ambiguous: 'different clauses'->'individual sections', 'advocacy groups'->'campaigns', 'summarize an attempt to understand ... transparently'->'aim to clearly reveal', 'further proceedings'->'ongoing debate'. The original is vague, and the rewrite reads as a fair paraphrase."
+  },
+  {
+   "id": "fe-004",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [],
+   "other": [],
+   "notes": "'no moment feels less significant' -> 'every instance holds equal weight' is a negation reworded with the same meaning, not a flip. 'one of their plush seats'->'a sumptuous chair' only changes wording. Left out as minor: 'casual lunch trade'->'simple meal' loses 'lunch', and 'celebratory evenings'->'a festive dinner' goes from plural to singular."
+  },
+  {
+   "id": "fe-005",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [
+    "many wondered -> several questioned (many weakened to several)"
+   ],
+   "other": [
+    "'for decades' -> 'for years': duration weakened"
+   ],
+   "notes": "'Johnny Longbottom' is in both. 'first light'->'initial spark' is the same idea, so no number change. Left out as minor: 'Each night'->'Every evening', 'lighthouse keeper'->'keeper' (the tower and beacons still imply it), and 'weatheredg'->'ruggedness' (the original word is garbled)."
+  },
+  {
+   "id": "fe-006",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [
+    "Regularly assessing -> Continuously monitoring (frequency strengthened)",
+    "'can result in' / 'can cause' -> 'disrupt' / 'lead to' (possibility turned into a flat assertion)",
+    "'possible culprits' -> 'these threats' (possibility dropped)"
+   ],
+   "other": [
+    "'ensures a smooth user experience' -> 'guarantees an uninterrupted user experience': outcome claim strengthened",
+    "'API rate limiting issues' -> 'excessive API usage': different cause",
+    "'cross-site scripting vulnerabilities' -> 'exploits' and 'brute force attempts' -> 'attacks': weakness or attempt turned into an actual attack",
+    "'or' list -> 'and' list of causes",
+    "'immediate logouts' result and 'after certain intervals' dropped; 'disrupt the flow of users' interactions' added"
+   ],
+   "notes": "'without proper refreshing' -> 'unrefreshed' is a reworded negation, not a flip. 'API' is an acronym, not a name."
+  },
+  {
+   "id": "fe-007",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [],
+   "other": [
+    "'heightened pride' -> 'heightened greater': the pride claim is lost",
+    "'unknown roles may emerge later' -> 'unknown unseen may emerge in': 'roles' and 'later' dropped"
+   ],
+   "notes": "The rewrite is garbled. 'even if' -> 'still if' may change the concession, but it is too unclear to judge, so it is left out. 'bigger'->'overall' and 'fit within'->'position' also left out."
+  },
+  {
+   "id": "fe-008",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [],
+   "other": [
+    "'pre-made' added to the hot dogs and french fries"
+   ],
+   "notes": "'one thought' -> 'a single idea' is the same number. 'each day'->'every day' is equivalent. Left out as minor: 'those of you who'->'anyone who', 'just basic ingredients'->'minimal ingredients', 'food'->'meals', 'which is better'->'is it wiser', and the added 'Therefore'."
+  },
+  {
+   "id": "fe-009",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [],
+   "other": [
+    "'nearby dining halls' -> 'nearby dining dining': 'halls' lost, so the place is no longer named"
+   ],
+   "notes": "'didn't' and 'Why not' are unchanged, so no negation flip. 'every single day', 'only occasionally' and 'hours' are unchanged. 'Italian Pastas' is in both. 'Why not do anything?' -> 'Why not anything?' drops 'do' but the question keeps roughly the same sense, so it is left out. 'realized'->'realize' is grammar only."
+  },
+  {
+   "id": "fe-010",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [
+    "'una funzione certamente universale' -> 'a definitely widespread role' (universal weakened to widespread)",
+    "'le sole molte cose' -> 'many things' ('sole/only' dropped)",
+    "'tra alcuni dolci' -> 'among sweets' ('alcuni' dropped from sweets; 'some' now qualifies 'nights')"
+   ],
+   "other": [
+    "'the sun' appears as a new subject of the comparison; the original has 'sole' (only/sole) as a modifier of 'molte cose'"
+   ],
+   "notes": "The original is Italian and the rewrite is English. I judged the content as a translation and did not count the language switch as a fact change. The original is partly garbled ('anni tristiti nell'emoticon umano'), so 'difficult years of human feeling' is accepted. 'arancione'->'golden-orange' and 'dolci'->'sweets' treated as equivalent. The 'the sun' reading of 'sole' is uncertain but the rewrite does add a new subject."
+  }
+ ]
+}

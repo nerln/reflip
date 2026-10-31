@@ -1,0 +1,201 @@
+{
+ "annotator": "a",
+ "model": "claude-sonnet-5-5 (claude -p, no tools; first run's agent could not read its file)",
+ "pairs": [
+  {
+   "id": "fe-081",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [],
+   "other": [
+    "original says the scan runs until the desired segment is found; rewrite says it scans every file or page (slightly stronger)"
+   ],
+   "notes": "The list number 2 is in both. 'every piece of information' -> 'each data item' and 'generally' -> 'typically' are equivalent. The 'random location indices' detail is dropped; I treated it as minor."
+  },
+  {
+   "id": "fe-082",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [],
+   "other": [],
+   "notes": "'This past week' -> 'Last week' and 'first job in the corporate world' -> 'debut role in a business setting' read as the same facts. 'Overwhelmed' is softened to 'felt a mix of emotions'; that is style, so I left it out."
+  },
+  {
+   "id": "fe-083",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [],
+   "other": [
+    "time of day changed: close to noon -> afternoon, sun beginning to set",
+    "bees' flight direction reversed: south to warmer climates -> northward to cooler regions",
+    "bees have already taken their flights -> bees are about to migrate",
+    "'obligatory' flights -> 'annual' migration",
+    "added claim that this is essential to biodiversity and ecosystem health",
+    "'today' and 'for a goodly amount' dropped"
+   ],
+   "notes": "The original is garbled; the rewrite changes several concrete facts and adds a new claim."
+  },
+  {
+   "id": "fe-084",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [],
+   "other": [
+    "source of the data changed: 'servicios de protección civil' -> 'servicios de emergencias'",
+    "'contener' los focos más peligrosos -> 'evitar' los focos (contain vs prevent)"
+   ],
+   "notes": "2013 is in both. 'La mayoría', 'varios', 'algunas/ciertas' and 'casi exclusivamente/casi toda' are unchanged in strength. 'Datos definitivos' -> 'resultados oficiales' and 'imprudencias' -> 'errores' are near-synonyms, so I left them out."
+  },
+  {
+   "id": "fe-085",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [
+    "difficile da dimenticare -> quasi impossibile da dimenticare"
+   ],
+   "other": [
+    "'libro/romanzo' -> 'manuale' in the opening: the book is called a manual",
+    "critica 'di lingua inglese' -> 'critica inglese' (English-language -> English)",
+    "'insolita e divertente' -> 'straordinaria e piacevole' (unusual -> extraordinary)",
+    "'sorpresa' -> 'emozione' as what the Italian reader may find",
+    "'prova di stile' becomes 'assoluto prova di stile' (adds 'absolute')"
+   ],
+   "notes": "Names (Interrogative Mood, Padgett Powell, Guanda) are the same. 'Ironia' -> 'scherzo' and 'ritmo' -> 'andamento' are synonym-level, so I left them out."
+  },
+  {
+   "id": "fe-086",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [
+     "Eternal Noodle Dream"
+    ],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [
+    "only hint -> gentle, subtle suggestion (the 'only' is gone)"
+   ],
+   "other": [
+    "'omnipresent cultural phenomenon' -> 'widespread, powerful trend'",
+    "'classic Japanese' -> 'traditional Japanese'; the bracketed 'classic Japanese' is not a name"
+   ],
+   "notes": "The named stall 'Eternal Noodle Dream' becomes the generic 'enduring noodle fantasy', so I listed it as a missing name. Phoenixville is kept. 'Not merely' -> 'isn't just' is not a flip."
+  },
+  {
+   "id": "fe-087",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [],
+   "other": [
+    "language changed from Spanish to English (a translation, not a same-language rewrite)"
+   ],
+   "notes": "The content matches: location in protection systems, fault propagation, faster than breakers, limited by manual replacement. 'Comúnmente' -> 'typically' has the same strength."
+  },
+  {
+   "id": "fe-088",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [
+    "never should've happened -> shouldn't have been the case (the 'never' is dropped)"
+   ],
+   "other": [
+    "added claim: the shift brought appreciation and creativity into the kitchen, like a friend introducing a new flavor",
+    "dropped detail: going back home for the classes and new friends joining this summer",
+    "'it won't be pretty' (future) -> 'it didn't go as planned' (past)",
+    "'lack of seasoning or skill' -> 'lack of preparation skills'",
+    "'a really beautiful mindset' -> 'a fresh perspective'; the change moves from inside the speaker to 'within the realm of cooking classes'"
+   ],
+   "notes": "'Won't be pretty' and 'didn't go as planned' are both negative, so I did not count a polarity flip."
+  },
+  {
+   "id": "fe-089",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [],
+   "other": [
+    "language changed from Spanish to English",
+    "'equipos mejor clasificados enfrentándose en cuartos' -> 'top teams advancing to the quarterfinals' (slightly different)"
+   ],
+   "notes": "16 teams, Japan, Australia and the stages (group, quarterfinals, semifinals, final) are the same. Names match across the two languages."
+  },
+  {
+   "id": "fe-090",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [],
+   "other": [
+    "subject changed: the keys' size -> the values' length",
+    "'hash functions' -> 'mapping functions'",
+    "'bucket' -> 'group slot'",
+    "'Memory Efficiency' -> 'Space Efficiency'"
+   ],
+   "notes": "The list number 4 is in both. The negation 'does not determine/affects' is kept despite the broken grammar. 'Many', 'most' and 'frequent' keep their strength."
+  }
+ ]
+}

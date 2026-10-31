@@ -1,0 +1,203 @@
+{
+ "annotator": "b",
+ "model": "claude-sonnet (workflow agent)",
+ "pairs": [
+  {
+   "id": "fe-061",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [
+    "los principales motores (the main drivers) -> drive (\"main\" dropped)"
+   ],
+   "other": [
+    "sugiere una cierta complacencia (suggests) -> reveal a certain indulgence (hedge turned into assertion)",
+    "especular sobre sus planes -> wild guessing about its intentions (pejorative \"wild\" added)"
+   ],
+   "notes": "Original is Spanish, rewrite is English; translation alone not counted. Pyongyang is in both. \"alarmante\" -> \"concerning\" treated as tone, not counted. The \"principales\" item is borderline."
+  },
+  {
+   "id": "fe-062",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [
+    "Spesso (often) -> usually"
+   ],
+   "other": [
+    "prepararli (prepare them) -> getting ready (object lost, reflexive sense)",
+    "formaggio liquido (liquid cheese) -> creamy cheese"
+   ],
+   "notes": "Original is Italian, rewrite English. \"cinque\" = \"five\" (same). \"sempre\" = \"always\", \"solo\" = \"just\" unchanged. Original is near-nonsense; improvvisazione -> spontaneity and processo -> act left out as near-synonyms."
+  },
+  {
+   "id": "fe-063",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [
+    "Every task assigned -> The assignments (universal quantifier dropped)"
+   ],
+   "other": [
+    "ready for its execution -> diligently undertaken (different claim)",
+    "sometimes felt like setbacks -> occasionally hindered progress (perception turned into actual hindrance)",
+    "each mistake taught valuable insights -> yielded significant improvements in how we approach tasks (learning turned into realized improvement)"
+   ],
+   "notes": "\"at times\"/\"sometimes\" -> \"occasionally\" treated as equivalent. \"rigorous\" -> \"considerable challenge\" left out as close."
+  },
+  {
+   "id": "fe-064",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [],
+   "other": [],
+   "notes": "Italian to English. Amazon in both. Alcuni -> Some and Altri -> Others are the same. Left out as too small: reazioni contrastanti -> varied responses, consumatori -> users, offerte promesse -> advertised deals, perdita di scelta -> reduced options."
+  },
+  {
+   "id": "fe-065",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [],
+   "other": [
+    "my first job in the corporate world -> embarked on my career path (first job and corporate setting dropped)",
+    "overwhelmed with mixed feelings -> felt both excited and apprehensive (overwhelmed dropped)",
+    "eye-opening experience -> exhilarating journey (different characterization)",
+    "excitement for challenges and opportunities -> excited about potential growth and challenges (opportunities replaced by growth)"
+   ],
+   "notes": "I treated \"first\" in \"first job\" as a descriptive ordinal and put it in other, not numbers. If ordinals count as numbers, \"first\" is missing from the rewrite."
+  },
+  {
+   "id": "fe-066",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [],
+   "other": [],
+   "notes": "Cunningham, New York and \"quattro decenni\"/\"quattro decadi\" are the same; \"quasi\" kept. Spesso -> molte volte, senza pause -> senza interruzioni, ogni angolo -> ogni strada treated as equivalent. Left out as style: dedizione -> passione, archivio vivente -> archivio in movimento, moda di strada -> moda urbana, ufficio -> studio, per terra -> dal pavimento."
+  },
+  {
+   "id": "fe-067",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [],
+   "other": [
+    "nessuno li ha guardati (no one looked at them) -> no one has stared at them (weaker claim)",
+    "ancora sullo schermo -> still flicker on the screen (flickering added)"
+   ],
+   "notes": "Italian to English. \"I numeri di ieri\" -> \"Yesterday's figures\" has no numeric values. \"nessuno\" -> \"no one\" and \"non parlare\" -> \"stay silent\" keep the same polarity. Hai fatto scorrere -> swept aside is a possible shift but I left it out as figurative."
+  },
+  {
+   "id": "fe-068",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [
+    "(none) -> generally (hedge added to \"supporters generally refrain from using the veto\")"
+   ],
+   "other": [
+    "the bill falls out for the year resulting in re-filing that year -> shelved for the year and must be reintroduced later (when it can be refiled changed)",
+    "veto powers explicitly provided for -> veto rights established (\"explicitly\" dropped)",
+    "by another chamber -> by another body (chamber generalized)"
+   ],
+   "notes": "\"4.\" and \"one chamber\" are in both; \"at least one\" -> \"a minimum one\" is the same. \"unless all alternatives fail\" -> \"unless no viable alternatives remain\" treated as equivalent. Headings changed wording but are not names. Section names (Second Reading, General Notice, Committee, House, UK/Canada, Resolution) are all in both."
+  },
+  {
+   "id": "fe-069",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [
+    "the weeks -> the past few weeks (\"few\" added)",
+    "fully prepared and well-equipped -> both ready and armed (\"fully\" dropped)"
+   ],
+   "other": [
+    "invaluable advice -> meaningful guidance (weaker)",
+    "whatever comes next professionally -> any professional challenge (scope narrowed to challenges)"
+   ],
+   "notes": "all reflections -> each thought, all daunting tasks -> any challenging work, whatever -> any treated as the same universal strength. quite vital -> essential and reflections -> what's been shared left out as tone or close."
+  },
+  {
+   "id": "fe-070",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [
+    "The final star (singular) -> The concluding stars (plural)",
+    "enough game -> ample sustenance (stronger)",
+    "only faint rattle -> steady beeping (\"only\" dropped)",
+    "(none) -> everyone (added: \"kept everyone awake\")"
+   ],
+   "other": [
+    "faded during the fruit of the evening meal -> dimmed after it (time changed)",
+    "bring down enough game (hunting) -> sustenance for a game of hide-and-seek (meaning of \"game\" changed)",
+    "clear skies dropped",
+    "ended peacefully / muted alarms -> quiet of night broken by steady beeping alarm systems (peaceful and muted turned loud)",
+    "added: soft ticking of clocks, day winding down, silent vigil, group safety maintained"
+   ],
+   "notes": "The original is close to word salad, so I judged only what it states. No negation word is lost or added. The hyphenated \"first-bringing-joined\" was not counted as a number."
+  }
+ ]
+}

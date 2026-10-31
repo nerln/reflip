@@ -1,0 +1,177 @@
+{
+ "annotator": "a",
+ "model": "claude-sonnet (workflow agent)",
+ "pairs": [
+  {
+   "id": "fe-051",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [
+    "may call themselves -> often identify as"
+   ],
+   "other": [],
+   "notes": "Meloria Town became 'the town' and the original's typo 'Meliora Bay' is read as Meloria Bay, so I reported no name change. Left out as borderline: 'could be found appealing' -> 'perfect escape for anyone' (stronger claim), 'might have planned' -> 'have also built' (hedge lost), 'within its walls' dropped, 'old' photographs added."
+  },
+  {
+   "id": "fe-052",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [],
+   "other": [
+    "dropped the comparison 'respect others' differences as much as we respect our own beliefs'",
+    "dropped 'regardless of background, culture, ethnicity'",
+    "added the claim that everyone brings something unique to the table"
+   ],
+   "notes": "'all those coming to join you' -> 'each person/everyone' and 'every tomorrow' -> 'Every day' are equivalent universals, so not reported."
+  },
+  {
+   "id": "fe-053",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [],
+   "other": [],
+   "notes": "Only synonym-level shifts: drives off -> heads, doorsides -> doorways, alerts -> notifications, marvels -> treasures, quite late afternoon -> well past mid-afternoon, hoping...could be spotted -> searching for. 'Never' is preserved. Left out as too minor: loss of the 'drives' mode of travel."
+  },
+  {
+   "id": "fe-054",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [
+     "Thomas"
+    ],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [],
+   "other": [],
+   "notes": "The original is in Spanish and the rewrite is in English (a translation), which I did not count as a change of meaning. Thomas is replaced by 'His life', which is why the name is reported missing. 'muchos europeos' -> 'many Europeans' and the other intensity words are equivalent."
+  },
+  {
+   "id": "fe-055",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [],
+   "other": [],
+   "notes": "'two trunks' is in both texts. 'all vital' -> 'all essential' and 'often' -> 'often' are unchanged. The word 'deep' is dropped, which I judged to be style. The parenthesis became its own sentence, with no change of meaning."
+  },
+  {
+   "id": "fe-056",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [
+    "Many feel overwhelmed -> Several report feeling crushed",
+    "everyone -> individuals",
+    "lots of distinction -> clear differences (the 'lots of' quantity is gone)"
+   ],
+   "other": [],
+   "notes": "The negation 'doesn't get expanded' -> 'won't stretch' keeps the same polarity. 'most' and 'sometimes' (-> occasionally) are equivalent. Left out as borderline: 'physical space' -> 'living room' (narrower) and 'modules' -> 'courses'."
+  },
+  {
+   "id": "fe-057",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [],
+   "other": [],
+   "notes": "Names (Pietro di Porto, Porto, pugliese, Italia) appear in both texts. 'mezzogiorno' (lowercase) became 'sud del paese', read as a synonym, not a name change. Both 'Non è un nome noto' and 'Non ha mai...' keep their polarity. Left out as borderline: 'mai pubblicato opere' -> 'mai realizzato opere' (published -> made), 'pensatori' -> 'studiosi', 'diretto' -> 'chiaro', 'classico' -> 'antico'."
+  },
+  {
+   "id": "fe-058",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [
+    "ocasional semáforo -> rare traffic light"
+   ],
+   "other": [],
+   "notes": "The original is in Spanish and the rewrite is in English (a translation), which I did not count as a change of meaning. 'un yogur y una fruta' are read as articles, not numbers. Left out as minor: 'se prepara para el trabajo' -> 'one heads off to the workplace', 'coches' -> 'vehicles', 'estrés' -> 'pressure'."
+  },
+  {
+   "id": "fe-059",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [
+    "only occasionally -> (dropped)"
+   ],
+   "other": [
+    "dropped the detail of throwing clothes all around the household",
+    "dropped the quoted thoughts ('Why not do anything?' / 'The pasta will eventually heat up enough to fry.')",
+    "dropped the setting 'at the nearby dining halls'",
+    "dropped the duration: 'waiting hours' -> 'waiting'"
+   ],
+   "notes": "The original is garbled. 'didn't realize' -> 'did not realize' is the same polarity. 'every single day' -> 'daily' is equivalent. 'Italian' is in both texts."
+  },
+  {
+   "id": "fe-060",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [],
+   "other": [],
+   "notes": "'everything' -> 'all operations' and 'without fail' -> 'consistently' are read as equivalent. Left out as borderline: 'swarming weather' -> 'swarming seasons', 'nectar resources' -> 'stored nectar', 'brood floors' -> 'brood trays'."
+  }
+ ]
+}

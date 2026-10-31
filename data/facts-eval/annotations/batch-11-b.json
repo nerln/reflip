@@ -1,0 +1,224 @@
+{
+ "annotator": "b",
+ "model": "claude-sonnet-5-5 (claude -p, no tools; first run's agent could not read its file)",
+ "pairs": [
+  {
+   "id": "fe-101",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [
+    "as many as two squares -> two spaces",
+    "only move one square at a time -> proceed one square at a time (only lost)",
+    "any number of squares -> dropped",
+    "bishops any distance -> any direction",
+    "in any direction (kings) -> dropped; 'always' added"
+   ],
+   "other": [
+    "Pawn condition 'if they've never moved before' dropped; replaced with 'without needing to retrace their steps'",
+    "Kings: 'in any direction' dropped; new claim 'always maintaining their current location' (contradicts moving)",
+    "Queens: diagonal movement dropped; now only horizontal/vertical",
+    "Rooks: now move diagonally (original: along ranks or files only)",
+    "Knights: 'L' shape and 'take another knight' replaced by 'diagonal leap'",
+    "Bishops: 'diagonally any distance' -> 'diagonally in any direction'"
+   ],
+   "notes": "The list marker '2.' and heading 'Initial Movement' are not in the rewrite; I treated the marker as numbering, not a number. Pawn 'never moved' vs 'without needing to retrace' is not a clean negation flip, so negation is false."
+  },
+  {
+   "id": "fe-102",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [
+    "durante años -> durante décadas"
+   ],
+   "other": [
+    "'years' of stable public jobs became 'decades' (longer period)"
+   ],
+   "notes": "Otherwise a faithful paraphrase (instituciones públicas -> gubernamentales, empresas públicas -> estatales, empleos -> puestos). 'años'->'décadas' not counted as a number because it is not specific."
+  },
+  {
+   "id": "fe-103",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [
+    "local air quality improving -> 'noticeable improvement' (strength added)",
+    "encourages cycling activity among residents -> motivates more people to cycle"
+   ],
+   "other": [
+    "'motorized routes' -> 'car-based travel' (narrower)",
+    "Point 2: 'save time and money on road maintenance' -> 'time and funds freed up for road upkeep' (as congestion drops; roughly same)",
+    "Point 3: 'boost neighbourhood health outcomes' -> 'improving community wellness'; 'pedestrians living near bicycle access areas' -> 'walkers in nearby zones'"
+   ],
+   "notes": "Mostly a faithful paraphrase; differences are small. Numbering 1) 2) 3) is the same in both."
+  },
+  {
+   "id": "fe-104",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [
+    "very first time -> a few nights (a few added)",
+    "Probably indulging -> Engaging (hedge dropped)"
+   ],
+   "other": [
+    "'living away from home for the very first time' became 'spending a few nights away from home' (first-time dropped, duration added)",
+    "Rhetorical 'Who can blame anyone?' dropped",
+    "'daily schedule' dropped"
+   ],
+   "notes": "'a few nights' is vague, so not listed as a number."
+  },
+  {
+   "id": "fe-105",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [
+    "il peggiore degli stomaci infantili -> il più degli stomaci bambini (superlative 'worst' lost)",
+    "molto basso -> estremamente basso"
+   ],
+   "other": [
+    "'coccoeusio' -> 'caldo', 'fuoco infatuoso' -> 'fiamma sottomano', 'dolce' -> 'sapore'; garbled source, meaning unclear",
+    "'il peggiore' (worst) no longer stated"
+   ],
+   "notes": "Source is garbled nonsense; only clear differences listed. 'Og' and 'Cuc' kept in both."
+  },
+  {
+   "id": "fe-106",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [
+    "for decades -> for years"
+   ],
+   "other": [
+    "'burnered high' -> 'burnered low' (reversed)",
+    "'old stone tower' -> 'ancient spire'",
+    "coals -> logs; lanterns -> beacons; broke -> shattered",
+    "Each night -> Each evening",
+    "'many wondered about the weatheredg' -> 'many questioned about the weathered' (object partly lost in both)",
+    "'faithfully' -> 'dedicately'; 'coat' -> 'cloak'"
+   ],
+   "notes": "Johnny Longbottom in both. 'decades' not a precise number."
+  },
+  {
+   "id": "fe-107",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [],
+   "other": [
+    "Stage title 'Proposal' -> 'Initiative'",
+    "'legislator ... or a senator' -> 'official ... or member' (roles changed)",
+    "'member of the parliament' -> 'representative of the body'",
+    "'proposes a bill' -> 'suggests a measure'",
+    "'government business meetings where proposals are debated' -> 'government sessions meetings where ideas are discussed'",
+    "'early on' added"
+   ],
+   "notes": "Rewrite is ungrammatical; Australia and MP present in both. Marker '1.' same."
+  },
+  {
+   "id": "fe-108",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [],
+   "other": [
+    "'restrictive notions about car-centric ideologies' -> 'outdated views of car-driven planning' (restrictive -> outdated)",
+    "'bike lanes' -> 'bike paths'; 'necessary elements' -> 'a vital part'",
+    "Clause about opening opportunities for innovations to emerge dropped; 'a world feasible' -> 'a livable future'",
+    "'civic wellbeing goals' -> 'community health'"
+   ],
+   "notes": "Largely faithful paraphrase; differences are nuance."
+  },
+  {
+   "id": "fe-109",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [],
+   "other": [
+    "Heading 'Castling' replaced by 'King movement'; verb 'Castle your king' replaced by 'move your king'",
+    "'no obstacles' -> 'no pieces block the path'",
+    "'pawn still further onto' -> 'advancing your pawn beyond'"
+   ],
+   "notes": "Both texts are incoherent chess rules; 'Castling' treated as a rule term, not a name."
+  },
+  {
+   "id": "fe-110",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [
+    "two of the most widely used languages -> languages that dominate the tech field (stronger)"
+   ],
+   "other": [
+    "'laid out the groundwork for understanding databases and big data technologies' -> 'introduced me to the principles of' (weaker)",
+    "'perform large-scale computations efficiently' -> 'extensive data processing with precision and speed' (precision added)",
+    "'solid grasp' -> 'strong foundation'"
+   ],
+   "notes": "'two' appears in both."
+  }
+ ]
+}

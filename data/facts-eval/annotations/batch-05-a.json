@@ -1,0 +1,211 @@
+{
+ "annotator": "a",
+ "model": "claude-sonnet (workflow agent)",
+ "pairs": [
+  {
+   "id": "fe-041",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [
+    "generally -> often"
+   ],
+   "other": [],
+   "notes": "The rewrite is grammatically damaged ('much swift than', 'because need to scanned', 'random location locations', heading 'Key-Built'). I treated hash tables/hash maps, file/disk, pages/blocks and file systems/storage systems as near-synonyms and did not list them. 'generally -> often' is a slight weakening; I listed it because the quantifier word changed. The list marker '2.' is in both texts."
+  },
+  {
+   "id": "fe-042",
+   "numbers": {
+    "missing": [
+     "19"
+    ],
+    "added": [
+     "10"
+    ]
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [],
+   "other": [
+    "oficial de la marina -> empleado de la armada: the admiral's rank and role is now a generic employee",
+    "urbanismo de finales del XIX -> estilo arquitectonico de finales del XIX: urban planning became architectural style"
+   ],
+   "notes": "In the sentence on the naming practice, 'siglo XIX' became 'siglo X' (19th -> 10th century). Other mentions of XIX and XX are intact, so 19 is missing only for that one claim, which is why I listed it. Names Petit Thouars, Abel Aubert du Petit-Thouars, Francia, Pacifico and Polinesia are all kept. I treated 'buena parte -> mucho' and 'muchas -> numerosas' as equal strength. Smaller shifts such as avenida/calle, influencia/presencia, figuras/personal and barrios/zonas residenciales were left out as near-synonyms."
+  },
+  {
+   "id": "fe-043",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [],
+   "other": [
+    "built-in rubber bumpers -> integrated shock-absorbing bumpers: the rubber material is dropped and a shock-absorbing function is claimed",
+    "keycaps -> bespoke keycaps: a claim that the keycaps are custom-made is added",
+    "performance on par with their personal computers -> exceptional performance on par with their personal high-end computers: the comparison target is raised to high-end machines and 'exceptional' is added"
+   ],
+   "notes": "'only a few' -> 'only a select few' and 'most creative' -> 'most visionary' keep the same quantifier strength. 'without sacrificing' and 'without compromising' mean the same, so there is no flip. 'programming software' -> 'software', 'provided' -> 'crafted' and 'creative' -> 'visionary' are minor and left out."
+  },
+  {
+   "id": "fe-044",
+   "numbers": {
+    "missing": [
+     "5 seconds"
+    ],
+    "added": [
+     "5 minutes"
+    ]
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [],
+   "other": [
+    "mesi della coltivazione -> giorni della coltivazione: months became days",
+    "maturi -> pronti: ripe became ready",
+    "formaggio liquido fruttato -> formaggio crema dolce: the cheese's attributes changed",
+    "crepes -> frittelle: a different dish",
+    "consiste nel -> include nel: 'consists of' became 'includes'"
+   ],
+   "notes": "Both texts are near-gibberish, so the judgments are literal. 'cinque' appears in both, but the unit changed from seconds to minutes, which is a different amount, so I listed it in numbers. 'Spesso', 'solo' and 'sempre' are unchanged. Grammatical breakage in the rewrite (si e, un'altra lato, le nutrienti) was left out as style."
+  },
+  {
+   "id": "fe-045",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [],
+   "other": [
+    "not just a secondary consideration -> primary mode of transportation: a stronger claim than the original",
+    "for short distances dropped, and so is the comparison of lower costs against motorized routes",
+    "save time and money on road maintenance -> lower costs associated with road infrastructure: the time saving is gone and maintenance became infrastructure",
+    "cause dropped: the original ties the savings to reduced congestion and pollution, while the rewrite ties them to cycling becoming the primary mode",
+    "improving air quality locally -> improved air quality within walking distance",
+    "obesity effect on pedestrians living near bicycle access areas -> on those who choose to walk instead of using cars: the affected group changed"
+   ],
+   "notes": "The enumeration markers 1) 2) 3) disappear because the three points were merged into prose. I treated them as formatting, not facts, and left them out. 'or reserves them from traffic' -> 'and ... within designated bike lanes' is a small shift and was not listed. 'not just secondary' -> 'primary' is a strengthening, not a polarity flip."
+  },
+  {
+   "id": "fe-046",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [],
+   "other": [],
+   "notes": "The rewrite is an English rendering of the Spanish original. The facts match: Joakim Noah, a 20-game ban, FIBA anti-doping rules, announced this morning, and reactions inside and outside basketball. The change of language is not a change of meaning."
+  },
+  {
+   "id": "fe-047",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [],
+   "other": [
+    "practicing -> working: the activity changed",
+    "tomorrow -> next: the time reference is truncated",
+    "magic happens -> occurs in: the magic is gone",
+    "to get your licence -> to obtain: the licence object is dropped",
+    "finally able -> now can: 'finally' is lost",
+    "give up on yourself -> stop up on your: garbled"
+   ],
+   "notes": "The rewrite is heavily garbled. 'Don't' stays negated, so there is no flip. 'so much studying' -> 'so so studying' is unclear, so I did not list it as a quantifier change."
+  },
+  {
+   "id": "fe-048",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [],
+   "other": [
+    "annual rate -> fixed rate: a different property of the simple-interest rate"
+   ],
+   "notes": "'not just on the original ... but also on' -> 'on both ... and on' means the same, so there is no flip. 'any previously accumulated interest' -> 'all the interest that has been added before' and 'only applied' -> 'only applies' keep the same strength. 'grow much faster than simple interest' -> 'increase significantly ... unlike simple interest' turns a speed comparison into a contrast. I treated that as near-equivalent and did not list it."
+  },
+  {
+   "id": "fe-049",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [
+     "Tully Castle"
+    ],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [
+    "much respect and admiration -> the respect and admiration"
+   ],
+   "other": [
+    "see him well through squinting window panes -> peer into his eyes through the dimly lit windows: what could not be seen and the window quality changed",
+    "without complaint -> flawlessly: a different claim about how he did the work",
+    "Petrorus Point and North Mountain Breakers described as 'petrified fortress' and 'imposing fortress': they were towers in the original",
+    "bits and pieces missing from his life -> lapses and omissions, much like the absence of his life itself: an odd shift from missing parts of a life to its total absence"
+   ],
+   "notes": "'turnney towers' -> 'turny Towers' is a garbled common noun, not a new name, so I left it out of added names. 'no one' -> 'none' and 'not immune' -> 'not exempt' keep the same polarity. 'not even his tenure' -> 'his tenure ... not exempt' loses the emphasis of 'even'. I counted that as minor and did not list it."
+  },
+  {
+   "id": "fe-050",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [
+    "exclusively -> specifically",
+    "fully (programmable) -> highly (adaptable)",
+    "various lighting conditions -> any environment"
+   ],
+   "other": [
+    "industrial-grade -> professional-grade: the build grade changed",
+    "fully programmable dropped in favour of highly adaptable: the claim of full programmability is lost"
+   ],
+   "notes": "'anti-slip' and 'non-slip' mean the same. 'maximum comfort' -> 'unmatched comfort' changes the claim from a maximum to a comparison but I left it out as unsure. Programmers/developers, readability/visibility and everyday use/daily work are near-synonyms."
+  }
+ ]
+}

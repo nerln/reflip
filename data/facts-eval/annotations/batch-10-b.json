@@ -1,0 +1,213 @@
+{
+ "annotator": "b",
+ "model": "claude-sonnet-5-5 (claude -p, no tools; first run's agent could not read its file)",
+ "pairs": [
+  {
+   "id": "fe-091",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [
+    "no moment feels less significant -> every moment feels more meaningful and significant"
+   ],
+   "other": [
+    "'lunch trade or celebratory evenings' became 'casual dining' and 'memorable celebrations'; 'evenings' dropped"
+   ],
+   "notes": "'No moment feels less significant' and 'every moment feels more meaningful' are close but not identical (less/more); I did not count it as a polarity flip."
+  },
+  {
+   "id": "fe-092",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [
+    "escasas (scarce) -> limited",
+    "limitado -> minimal (slightly stronger)",
+    "pocas referencias -> rare mentions"
+   ],
+   "other": [],
+   "notes": "The rewrite is an English translation of the Spanish original. 'siglo XIX' = '19th century', so no number change. Meaning otherwise preserved."
+  },
+  {
+   "id": "fe-093",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [
+    "a trial -> a bit of a struggle (weaker)",
+    "adapt efficiently -> much better at handling things",
+    "gradually developed -> began to create (gradualness dropped)"
+   ],
+   "other": [
+    "subject changed from first person singular (I/my) to first person plural (we/our)",
+    "tense changed from past to present for the first part",
+    "'steep yet encouraging' learning curve became 'significant hurdle'; the 'encouraging' element was dropped",
+    "'learning curve' replaced by 'initial steps'"
+   ],
+   "notes": "Rewrite is looser and more colloquial than the original."
+  },
+  {
+   "id": "fe-094",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [],
+   "other": [
+    "moor -> field",
+    "sheaf of paper letters -> pile of paper notes",
+    "gray muzzle -> faded muzzle",
+    "slobber danced freely -> jumped wildly"
+   ],
+   "notes": "Mostly synonym-level, but moor/field, letters/notes and gray/faded are different referents or attributes."
+  },
+  {
+   "id": "fe-095",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [],
+   "other": [
+    "'understanding where I fit within the company structure' became 'aligning myself with the broader organizational framework'",
+    "'heightened pride in making a contribution' became 'enhanced self-assurance'; the contribution element was dropped",
+    "'even if unknown roles may emerge later' became 'despite potential new assignments to come'"
+   ],
+   "notes": "The rewrite is a sentence fragment, and the relief/pride pairing is softened to comfort/self-assurance."
+  },
+  {
+   "id": "fe-096",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [
+    "often fails -> may fail"
+   ],
+   "other": [
+    "'opportunities for compounding returns' became 'maximize returns'; compounding dropped",
+    "'found online' dropped from the simplistic-advice sentence",
+    "'needs and aspirations' of an individualized approach added with 'complex'",
+    "'compounded wealth' -> 'accumulated wealth'"
+   ],
+   "notes": "RRSP/RRSPs and Tax Free/Tax-Free Savings Accounts treated as the same names."
+  },
+  {
+   "id": "fe-097",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [],
+   "other": [
+    "Submissions come from 'citizens' became Inputs come from 'members'",
+    "bill -> act",
+    "'amendments or additions' -> 'amendments or changes'",
+    "transparently -> clearly",
+    "'can be better reviewed' became 'interpreted assessed', so the 'better' element is lost",
+    "Committee Stage -> Panel Stage"
+   ],
+   "notes": "The rewrite is partly ungrammatical. 'usually' is kept. 'Committee Stage' is a heading and not counted as a name."
+  },
+  {
+   "id": "fe-098",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": true,
+   "quantifiers": [
+    "daily inspections -> dropped",
+    "as yet -> dropped",
+    "more subtle issue than expected -> added"
+   ],
+   "other": [
+    "stethoscope dropped",
+    "hives replaced by 'internal structures'",
+    "'no urgent concern as yet' replaced by 'indicates a more subtle issue'",
+    "ironic situation not carried over",
+    "'outer hulls' became 'exterior surfaces'"
+   ],
+   "notes": "The original says there is no urgent concern. The rewrite says the inspection points to a subtle issue. I counted that as a polarity flip."
+  },
+  {
+   "id": "fe-099",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [],
+   "other": [],
+   "notes": "The rewrite is an English translation. 'hotel de los líos' became 'hotel of troubles', treated as the same name. The negations (sin nombre / without a name, etc.) are preserved. Meaning is unchanged."
+  },
+  {
+   "id": "fe-100",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [
+    "a general clearer insight -> a broad, clear view"
+   ],
+   "other": [
+    "'the weeks' became 'the periods', so the specific time unit is lost",
+    "'past experiences' -> 'earlier recollections'",
+    "'reflections provided invaluable advice' -> 'thoughts and feelings revealed a helpful understanding' (weaker, no advice)",
+    "'professionally' -> 'in my career'"
+   ],
+   "notes": "'all', 'quite' and 'fully/completely' are preserved."
+  }
+ ]
+}

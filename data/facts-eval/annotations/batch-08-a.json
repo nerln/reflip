@@ -1,0 +1,188 @@
+{
+ "annotator": "a",
+ "model": "claude-sonnet (workflow agent)",
+ "pairs": [
+  {
+   "id": "fe-071",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [],
+   "other": [
+    "last year -> past (the time reference is lost)",
+    "this summer -> this season (less specific)",
+    "cooking classes -> sessions (cooking dropped); thoughts on cooking -> on preparation",
+    "new friends joined us -> fellowships arrived us (people turned into an abstract noun)",
+    "went back home -> came back (home dropped)",
+    "something has rippled through me -> a has spread through me (the subject is missing)",
+    "it won't be pretty -> it won't look (the adjective is lost)"
+   ],
+   "notes": "The rewrite is ungrammatical and partly unreadable. Negations are kept everywhere (wasn't, won't, never), so no flip. I only listed shifts I could pin to specific phrases."
+  },
+  {
+   "id": "fe-072",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [],
+   "other": [],
+   "notes": "The rewrite is a faithful English translation of the Italian original. Spesso -> often and piu veloci -> faster are equivalent. Salute -> well-being and rapide -> hasty are close enough that I left them out."
+  },
+  {
+   "id": "fe-073",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [],
+   "other": [],
+   "notes": "The rewrite is a faithful English translation of the Spanish original. Thomas is in both. Al caer la tarde -> as the day winds down is a reasonable equivalent, so I left it out."
+  },
+  {
+   "id": "fe-074",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [],
+   "other": [
+    "concepito dall'ingegnere Giuseppe Faccini (designed by him) -> Ereditato dall'ingegnere Giuseppe Faccini (inherited from him): the role of Faccini changes from designer to previous owner"
+   ],
+   "notes": "The years 1887 and 1889 and all the names (Mulino della Marchesa, Val d'Anna, Vercelli, Giuseppe Faccini, Torino) are in both texts. Principalmente -> soprattutto is equivalent. I left out the small shifts: industria panificatoria -> fabbriche di pane, favori -> permise, destinato -> utilizzato."
+  },
+  {
+   "id": "fe-075",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [],
+   "other": [
+    "candidata al Senato degli Stati Uniti (candidate for the US Senate) -> senatorial candidate: the specific body, the US Senate, is not stated"
+   ],
+   "notes": "The rewrite is a translation into English. 2004 and Sweeney are in both. I did not list Stati Uniti / Senate under names, because American and senatorial leave a loose trace of them. Attivamente -> fervently is a shift in intensity, not a quantifier, so I left it out. In particolare -> especially is equivalent."
+  },
+  {
+   "id": "fe-076",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [],
+   "other": [
+    "making its parent company worthless overnight -> leading to the collapse of its parent company, which now stands as a mere shadow of its former self: 'overnight' is dropped and 'worthless' is softened to a surviving shadow",
+    "Lehman sought rescue from international investors -> dropped; the rewrite instead adds that the investors withdrew their support",
+    "confidence evaporated -> trust was severely undermined (weaker), plus a new claim of withdrawal of support"
+   ],
+   "notes": "$6 billion and Bear Stearns are in both. Lehman's -> Lehman Brothers is the same company, so I did not count it as a name change. No negation is added or lost."
+  },
+  {
+   "id": "fe-077",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [],
+   "other": [
+    "egg chambers below (under the branches) -> egg nests high in the branches: the location is reversed"
+   ],
+   "notes": "Two trunks is in both. Each/Every, often/often and excess/surplus pupae are equivalent. Morning walks -> ascends early, nurturing workforce -> strong colony growth, and gently -> carefully are close enough that I left them out."
+  },
+  {
+   "id": "fe-078",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [
+    "all reflections provided invaluable advice -> I've gained invaluable insights (the 'all' is dropped)",
+    "all daunting tasks -> complex challenges (the 'all' is dropped)",
+    "quite vital -> pivotal (hedge dropped, strength raised)"
+   ],
+   "other": [
+    "the reflections as the source of the advice are dropped; the rewrite only says the writer gained insights",
+    "professionally is dropped: whatever comes next professionally -> any future endeavors, so the scope widens beyond the professional sphere"
+   ],
+   "notes": "There are no numbers or names in either text. Fully prepared and well-equipped -> fully equipped and ready are equivalent. Daunting -> complex is a style shift, so I left it out."
+  },
+  {
+   "id": "fe-079",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [],
+   "other": [
+    "committees may also participate -> groups may also join: committees becomes the generic 'groups'"
+   ],
+   "notes": "The rewrite is partly ungrammatical. Both chambers/both houses, often/often and certain types/certain categories are equivalent, and Parliament is in both. A numbered list item '2.' is in both. I left bills -> laws and one chamber -> one room out as borderline."
+  },
+  {
+   "id": "fe-080",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [],
+   "other": [
+    "computer science -> computer field (the discipline becomes vague)",
+    "programming languages -> programming tools",
+    "databases -> systems (the specific term is lost)",
+    "large-scale computations -> large-scale tasks"
+   ],
+   "notes": "Two, SQL and Python are in both texts, and 'two of the most widely used' -> 'two top most commonly used' keeps the same strength. The rewrite is partly ungrammatical (computer field, carry large-scale tasks, big information technologies), so I only listed the specific term changes."
+  }
+ ]
+}

@@ -1,0 +1,238 @@
+{
+ "annotator": "a",
+ "model": "claude-sonnet-5-5 (claude -p, no tools; first run's agent could not read its file)",
+ "pairs": [
+  {
+   "id": "fe-091",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [
+    "no moment feels less significant -> every moment feels more meaningful and significant"
+   ],
+   "other": [
+    "'casual lunch trade or celebratory evenings' -> 'casual dining to memorable celebrations' (lunch dropped, evenings dropped)"
+   ],
+   "notes": "Original double-negative-ish 'no moment feels less significant' is roughly equivalent to 'every moment feels significant'; treated as a mild strengthening, not a flip."
+  },
+  {
+   "id": "fe-092",
+   "numbers": {
+    "missing": [
+     "XIX"
+    ],
+    "added": [
+     "19"
+    ]
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [
+    "escasas exploraciones -> limited investigations (same)",
+    "pocas referencias -> rare mentions (same)"
+   ],
+   "other": [
+    "Rewrite is in English while original is Spanish (translation)",
+    "'su uso por parte de la humanidad ha sido limitado' -> 'minimal' (slightly stronger)"
+   ],
+   "notes": "XIX and 19th are the same number. Names Isla San Rafael / Argentine unchanged. Quantifiers equivalent so not listed as changes."
+  },
+  {
+   "id": "fe-093",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [
+    "gradually developed -> began to create",
+    "helped me adapt efficiently -> much better at handling things"
+   ],
+   "other": [
+    "First person singular 'I/me' -> collective 'we/our'",
+    "Original: learning curve 'steep yet encouraging' -> rewrite 'significant hurdle' (encouraging dropped)",
+    "Original past tense ('was a trial') -> rewrite present tense ('It's a bit of a struggle'), and 'a bit of' softens",
+    "Added 'we found a helpful path' not in original"
+   ],
+   "notes": "Subject and tense shifted; the rest is paraphrase."
+  },
+  {
+   "id": "fe-094",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [
+    "a lone dog -> a single dog (same)",
+    "a sheaf of letters -> a pile of notes (same)"
+   ],
+   "other": [
+    "'moor' -> 'field' (different place)",
+    "'letters' -> 'notes'",
+    "'gray muzzle' -> 'faded muzzle' (colour changed)",
+    "'danced freely' -> 'jumped wildly'",
+    "'No sooner...than' -> 'No later...than' (idiom altered, meaning approximately kept)"
+   ],
+   "notes": "Mostly synonym changes; moor/field and gray/faded are the objectionable ones."
+  },
+  {
+   "id": "fe-095",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [
+    "even if unknown roles may emerge later -> despite potential new assignments to come"
+   ],
+   "other": [
+    "Original: understanding where I fit; rewrite: aligning myself with the framework (a different act)",
+    "'pride in making a contribution' -> 'enhanced self-assurance' (pride/contribution dropped)",
+    "'relief' -> 'comfort'",
+    "'even if' (concession) -> 'despite' (different logic)"
+   ],
+   "notes": "Rewrite is also a sentence fragment."
+  },
+  {
+   "id": "fe-096",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [
+    "often fails -> may fail"
+   ],
+   "other": [
+    "'Simplistic finance advice found online' -> 'simplified financial advice' (online dropped)",
+    "'fails in matching up with individualized advice' -> 'fail to reflect complex needs and aspirations' (claim changed/expanded)",
+    "'investments... offering opportunities for compounding returns' -> 'designed to maximize returns' (compounding dropped, 'maximize' added)",
+    "'smart financial management opens doors' -> 'individuals can unlock doors' (subject shifted)",
+    "'compounded wealth enhances greatly' -> 'accumulated wealth significantly enhances' (same)"
+   ],
+   "notes": "RRSP / Tax Free Savings Accounts kept (treated as same names)."
+  },
+  {
+   "id": "fe-097",
+   "numbers": {
+    "missing": [
+     "3"
+    ],
+    "added": [
+     "3"
+    ]
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [],
+   "other": [
+    "'Committee Stage' -> 'Panel Stage' (term changed)",
+    "'bill' -> 'act' (a bill is not yet law)",
+    "'Submissions usually come from citizens' -> 'Inputs usually come members' (citizens replaced by 'members', garbled)",
+    "'political alignment' -> 'partisan alignment'",
+    "'so it can be better reviewed' -> 'so it interpreted assessed' (garbled)",
+    "'amendments or additions' -> 'amendments or changes'"
+   ],
+   "notes": "The number 3 appears in both, so number lists should be empty; leaving it in both lists is a mistake. Correct reading: no number change. Rewrite is partly ungrammatical."
+  },
+  {
+   "id": "fe-098",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": true,
+   "quantifiers": [
+    "any telltale sounds or noises -> any unusual vibrations or sounds (same)",
+    "daily -> dropped"
+   ],
+   "other": [
+    "Stethoscope and hives dropped; 'outer hulls' -> 'exterior surfaces'; 'internal structures' replace hives",
+    "Dropped the claim that there is no urgent concern as yet",
+    "'ironic situation' -> 'more subtle issue than expected' (different claim: concerns an issue found vs no urgent concern)",
+    "Dropped that she inspects them daily",
+    "Subject 'her keen sense informs her' dropped"
+   ],
+   "notes": "Original says no urgent concern; rewrite says an issue exists (subtle). I flagged this as a polarity flip. The pair is heavily altered."
+  },
+  {
+   "id": "fe-099",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [
+    "Solo -> Only (same)"
+   ],
+   "other": [
+    "Language changed from Spanish to English (translation)",
+    "'hotel de los líos' -> 'hotel of troubles' (translation of a name-like phrase)",
+    "'A escribir sin palabras' -> 'To compose without words'"
+   ],
+   "notes": "Negations (sin, no) are all preserved. The title of the hotel is translated, not changed in meaning."
+  },
+  {
+   "id": "fe-100",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [
+    "the weeks -> the periods (same)",
+    "all reflections -> all the thoughts and feelings (same)",
+    "all daunting tasks -> all difficult challenges (same)",
+    "fully prepared -> completely ready (same)"
+   ],
+   "other": [
+    "'past experiences' -> 'earlier recollections' (experiences vs memories)",
+    "'aligning them under a common goal-oriented framework' -> 'organizing them into a structured, goal-driven structure' ('common' dropped)",
+    "'reflections provided invaluable advice' -> 'revealed a helpful understanding' (advice -> understanding; 'invaluable' weakened to 'helpful')",
+    "'professionally' -> 'in my career'"
+   ],
+   "notes": "Largely paraphrase; small shifts of meaning."
+  }
+ ]
+}

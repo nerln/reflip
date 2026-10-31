@@ -1,0 +1,185 @@
+{
+ "annotator": "a",
+ "model": "claude-sonnet (workflow agent)",
+ "pairs": [
+  {
+   "id": "fe-061",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [],
+   "other": [
+    "'sugiere una cierta complacencia' (suggests) became 'reveal a certain indulgence': a hedged inference became a flat assertion"
+   ],
+   "notes": "Language changed from Spanish to English; Pyongyang is in both. 'los principales motores' (the main drivers) became plain 'drive', so the primacy is lost, but I judged it too minor to list. 'wild guessing' for 'especular' is a harsher tone, left out as style. 'alarmante' to 'concerning' is a softer word, left out as a synonym."
+  },
+  {
+   "id": "fe-062",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [
+    "spesso (often) -> usually"
+   ],
+   "other": [
+    "'prepararli' (preparing them, i.e. the produce) became 'getting ready', so the object of the preparation is lost"
+   ],
+   "notes": "Original is garbled Italian. 'cinque secondi' and 'five seconds' match (5). 'sempre maturi' and 'always ripe' are the same. 'formaggio liquido' to 'creamy cheese' is a loose synonym, left out."
+  },
+  {
+   "id": "fe-063",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [
+    "every (Every task assigned) -> dropped, plain 'The assignments'"
+   ],
+   "other": [
+    "'felt like setbacks' (perception) became 'hindered progress' (actual effect)",
+    "'taught valuable insights on better strategies' became 'yielded significant improvements in how we approach tasks': learning turned into an achieved improvement",
+    "'rigorous but ready for its execution' became 'a considerable challenge ... diligently undertaken', a different description of the tasks"
+   ],
+   "notes": "'sometimes' to 'occasionally' and 'each mistake' to 'each mistake' are unchanged, so not listed. The first two 'other' items are borderline but I kept them because the sense shifted from perceived to factual."
+  },
+  {
+   "id": "fe-064",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [],
+   "other": [],
+   "notes": "Language changed from Italian to English; Amazon is in both. Alcuni/Some and Altri/Others match. 'reazioni contrastanti' (opposing reactions) became 'varied responses', which is a slight softening, but the two groups described afterwards are kept, so I left it out as style. 'possibilità di risparmiare' to 'savings' is also left out as a minor wording shift."
+  },
+  {
+   "id": "fe-065",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [],
+   "other": [
+    "'my first job in the corporate world' became 'my career path': the first-job and corporate-setting details are dropped"
+   ],
+   "notes": "I did not list 'first' as a missing number because I was unsure an ordinal counts; it is reported under other instead. 'overwhelmed with mixed feelings' to 'felt both excited ... yet apprehensive' loses 'overwhelmed', left out as minor. 'eye-opening' to 'exhilarating' is a tone change, left out as style."
+  },
+  {
+   "id": "fe-066",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [],
+   "other": [],
+   "notes": "'quattro decenni' and 'quattro decadi' are both 4, with 'quasi' kept. Cunningham and New York are in both. 'senza pause' to 'senza interruzioni' is the same. 'spesso' to 'molte volte' and 'ogni angolo' to 'ogni strada' keep equivalent strength. 'dedizione' to 'passione', 'ufficio' to 'studio', 'trovati per terra' to 'recuperati dal pavimento', 'archivio vivente' to 'archivio in movimento' and 'moda di strada' to 'moda urbana' are close wordings or metaphors, left out as style."
+  },
+  {
+   "id": "fe-067",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [],
+   "other": [],
+   "notes": "Language changed from Italian to English. 'nessuno li ha guardati' and 'no one has stared at them' keep the same polarity; 'stared' is more intense than 'guardato' but I treated it as a poetic wording choice. 'fatto scorrere le notizie' (scrolled through) to 'swept the news aside' is a metaphor shift, left out. 'I numeri' to 'figures' is the same sense, not a number in the sense of the task."
+  },
+  {
+   "id": "fe-068",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [
+    "(none) -> generally (proponents avoid vetoing -> supporters generally refrain from using the veto)"
+   ],
+   "other": [
+    "Original says the failed bill leads to re-filing 'that year'; the rewrite says it 'must be reintroduced later', which changes the timing",
+    "'Legislative Proposals' / 'Veto Power' headings became 'Drafting Initiatives' / 'Authority to Block'; the first changes the topic label slightly"
+   ],
+   "notes": "'at least one' and 'a minimum one' are the same. 'unless all alternatives fail' and 'unless no viable alternatives remain' are equivalent in polarity, so no negation flip. 'explicitly provided for' to 'established' and 'necessary alternative legislation' to 'a new legislative option' lose small qualifiers, left out as minor. The heading changes are borderline; kept only as a brief line. UK/Canada and the capitalised parliamentary terms appear in both."
+  },
+  {
+   "id": "fe-069",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [
+    "(none) -> few ('the weeks' -> 'the past few weeks')"
+   ],
+   "other": [],
+   "notes": "'all reflections' to 'each thought' and 'all daunting tasks' to 'any challenging work' keep the same strength. 'quite vital' to 'essential' and 'invaluable advice' to 'meaningful guidance' shift the degree a little (the second weakens), left out as style. 'fully prepared' to 'both ready and armed' drops 'fully', minor. 'whatever comes next professionally' to 'any professional challenge' narrows slightly, left out."
+  },
+  {
+   "id": "fe-070",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [
+    "enough (enough game) -> ample (ample sustenance)",
+    "(none) -> everyone (kept everyone awake)"
+   ],
+   "other": [
+    "'The final star faded during the fruit of the evening meal' became 'The concluding stars dimmed after the fruit': singular to plural, and during to after",
+    "'bring down enough game' (hunting) became 'sustenance for a game of hide-and-seek': different meaning of 'game'",
+    "Original says the night 'ended peacefully, only faint rattle muted alarms'; the rewrite says the quiet was 'broken by the steady beeping of alarm systems': the opposite sense (muted/peaceful vs loud/disturbing)",
+    "Claims added that are not in the original: ticking of clocks, a silent vigil, the safety of the group; 'under these clear skies' is dropped"
+   ],
+   "notes": "Original is word-salad, so I compared only what can be read as a claim. No explicit negation was lost or added, so negation_flip is false; the muted-vs-beeping reversal is reported under other. 'first' inside 'first-bringing-joined' is not reported as a missing number because it is part of a garbled compound."
+  }
+ ]
+}

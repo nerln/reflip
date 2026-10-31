@@ -1,0 +1,62 @@
+[
+ {
+  "id": "fe-001",
+  "lang": "en",
+  "original": "5. **International interconnectedness**: The global nature of many financial activities meant that problems in one part of the world could quickly spread worldwide impacting economies which had been relatively insulated from previous crises.",
+  "rewrite": "5. **International interdependence**: The global character of many economic activities required that failures in one region of the system could quickly transmitted worldwide impacting markets which had remained separate from previous shocks."
+ },
+ {
+  "id": "fe-002",
+  "lang": "en",
+  "original": "The final star faded away during the fruit of the evening meal despite having just managed to bring down enough game under these clear skies with hazelnut chiseling night end drew closer fast then ended peacefully only faint rattle muted alarms let safe guard alertness spur first-bringing-joined",
+  "rewrite": "The last star faded vanished during the dinner of the afternoon meal though having just secured to secured down enough prey under these open skies with walnut chiseling watch end drew approached fast then concluded peacefully only slight rattle muted beeps let safe watch alertness spur second-bringing-joined"
+ },
+ {
+  "id": "fe-003",
+  "lang": "en",
+  "original": "3. **Committee Stage**: During committee hearings, representatives scrutinize different clauses of the bill. They may request amendments or additions related to issues of public interest, ethics, due process concerns, or political alignment. Submissions usually come from citizens, advocacy groups, or other interested parties. These presentations summarize an attempt to understand a given issue transparently so it can be better reviewed within a context appropriate for consideration in further proceedings.",
+  "rewrite": "3. **Committee Stage**: In committee sessions, members examine individual sections of the legislation. They might propose changes or new elements addressing matters like public concern, integrity, fair procedures, or political fit. Such inputs typically originate from individuals, campaigns, or stakeholder organizations. These statements aim to clearly reveal a topic, enabling deeper evaluation within a setting suitable for ongoing debate."
+ },
+ {
+  "id": "fe-004",
+  "lang": "en",
+  "original": "Sitting comfortably at one of their plush seats, you're provided with a personal service seamlessly bridging old-world ethos with present-day refinement. The quaint shop presents a uniquely enchanting experience—one where no moment feels less significant or important, be it casual lunch trade or celebratory evenings.",
+  "rewrite": "Relaxed in a sumptuous chair, you receive tailored attention that gently merges timeless values with modern elegance. The little store offers a distinctive, magical journey—where every instance, whether a simple meal or a festive dinner, holds equal weight."
+ },
+ {
+  "id": "fe-005",
+  "lang": "en",
+  "original": "The first light blinked to life on the old stone tower as the lighthouse keeper's eyes adjusted to the eerie glow that would guide passing ships for miles around. Each night for decades had passed, he tended his duties faithfully; repairing lanterns when they broke or burnered high from unseasoned coals. His sea-born friends called him Johnny Longbottom, though many wondered about the weatheredg he carried beneath his tattered coat.",
+  "rewrite": "The initial spark flared up in the ancient stone spire as the keeper's vision settled on the haunting shine that would steer vessels for miles beyond. Every evening for years had seen him uphold his responsibilities; mending beacons when they shattered or blazed too fiercely from raw coals. His maritime comrades nicknamed him Johnny Longbottom, though several questioned the ruggedness hidden within his frayed garments."
+ },
+ {
+  "id": "fe-006",
+  "lang": "en",
+  "original": "Session timeouts also play a crucial role here—settings that expire sessions without proper refreshing after certain intervals can result in immediate logouts. Additionally, cross-site scripting vulnerabilities, brute force attempts, or API rate limiting issues with automated tools can cause unexpected disconnections. Regularly assessing these possible culprits ensures a smooth user experience.",
+  "rewrite": "Session timeouts are significant; they disrupt the flow of users' interactions by expiring unrefreshed sessions. Cross-site scripting exploits, brute force attacks, and excessive API usage by automated scripts lead to abrupt disconnection points. Continuously monitoring for these threats guarantees an uninterrupted user experience."
+ },
+ {
+  "id": "fe-007",
+  "lang": "en",
+  "original": "The feeling of finally understanding where I fit within the bigger company structure provided relief coupled with heightened pride in making a contribution even if unknown roles may emerge later.",
+  "rewrite": "The sense of finally grasping where I position the overall company structure gave relief and with heightened greater in to a contribution still if unknown unseen may emerge in."
+ },
+ {
+  "id": "fe-008",
+  "lang": "en",
+  "original": "For those of you who went exploring after peeling bananas and tearing paper towels to spread over microwaves, one thought comes to mind now – food is so simple. The fact we can make delicious dishes using just basic ingredients each day was something that got me excited again after an extended vacation. So which is better – packing hot dogs and french fries, or nourishing our bodies with whole meals cooked by ourselves?",
+  "rewrite": "For anyone who ventured out after peeling bananas and ripping paper towels to lay on microwaves, a single idea surfaces — meals are genuinely straightforward. The realization that we can create tasty foods with minimal ingredients every day reignited my enthusiasm following a long break. Therefore, is it wiser to carry pre-made hot dogs and french fries, or to fuel our bodies with full, home-prepared meals?"
+ },
+ {
+  "id": "fe-009",
+  "lang": "en",
+  "original": "I didn't realize as much before, even though my new environment was replete with opportunities every single day at the nearby dining halls only occasionally given such an attention that I ignored them. I remember watching golden brown Italian Pastas trickling in trays while throwing clothes all around the household idly waiting hours until my dinner arrived - \"Why not do anything?\" \"The pasta will eventually heat up enough to fry.\"",
+  "rewrite": "I didn't realized as much before, even though my new environment was replete with opportunities every single day at the nearby dining dining only occasionally given such an attention that I ignored them. I remember watching golden brown Italian Pastas trickling in trays while throwing clothes all around the household idly waiting hours until my dinner arrived - \"Why not anything?\" \"The pasta will eventually heat up enough to fry.\""
+ },
+ {
+  "id": "fe-010",
+  "lang": "it",
+  "original": "Come le sole molte cose nella vita, cucina ha un'anima propria e una funzione certamente universale. Ha il potere di unire persone, di creare sentimenti e sa darci conforto durante anni tristiti nell'emoticon umano. Può anche cambiare la sensazione del tempo. Sapevate quando ci sono notti di bellezza arancione tra alcuni dolci?",
+  "rewrite": "As the sun does many things in life, cooking holds its own spirit and a definitely widespread role. It has the ability to bring people together, foster emotions, and offer comfort through difficult years of human feeling. It can also alter how we perceive time. Did you know that some nights feature golden-orange beauty among sweets?"
+ }
+]

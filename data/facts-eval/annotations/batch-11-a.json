@@ -1,0 +1,225 @@
+{
+ "annotator": "a",
+ "model": "claude-sonnet-5-5 (claude -p, no tools; first run's agent could not read its file)",
+ "pairs": [
+  {
+   "id": "fe-101",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [
+    "only (kings move only one square) -> dropped",
+    "as many as two squares -> two spaces",
+    "any number of squares along a rank, file or diagonal -> any row or column, or up/down",
+    "any distance -> any direction",
+    "any direction (kings) -> dropped"
+   ],
+   "other": [
+    "Pawn condition 'if they've never moved before' replaced by 'without needing to retrace their steps'",
+    "Kings: 'always maintaining their current location' contradicts moving one square",
+    "Queens: diagonal movement dropped; rewrite describes only horizontal/vertical",
+    "Rooks: now move diagonally (original: ranks or files only)",
+    "Knights: 'L' shape and 'take another knight' replaced by a 'diagonal leap'",
+    "Bishops: 'any distance' replaced by 'any direction'",
+    "Heading 'Initial Movement' dropped"
+   ],
+   "notes": "The list label '2.' in the original is not in the rewrite; I treated it as list numbering, not a number. 'never moved before' -> 'without needing to retrace' is a change of condition rather than a clean negation flip, so negation is false."
+  },
+  {
+   "id": "fe-102",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [],
+   "other": [
+    "'durante años' -> 'durante décadas': the duration of stable public jobs is stretched from years to decades"
+   ],
+   "notes": "Otherwise a faithful paraphrase. Emiratos is in both. público/gubernamental/estatal are treated as synonyms."
+  },
+  {
+   "id": "fe-103",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [
+    "more active modes of transportation -> physically active transport (comparative dropped)",
+    "encourages cycling activity among residents -> motivates more people to cycle"
+   ],
+   "other": [
+    "'By reducing congestion and pollution, they save...' (cause) -> 'As traffic jams and emissions drop, ... funds are freed up' (more of a concurrence)",
+    "'noticeable improvement' of air quality added; original says only 'improving'",
+    "'not just a secondary consideration' -> 'rather than a backup choice' (roughly the same)"
+   ],
+   "notes": "The numbered list labels 1) 2) 3) are in both. Quantifier changes are minor, so I kept them to the two clearest."
+  },
+  {
+   "id": "fe-104",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [
+    "very first time -> a few nights",
+    "Probably -> (hedge dropped; stated flatly)"
+   ],
+   "other": [
+    "'living away from home for the very first time' -> 'spending a few nights away from home' (a different situation)",
+    "'daily schedule' dropped",
+    "Closing rhetorical question 'Who can blame anyone?' dropped"
+   ],
+   "notes": "'first' is an ordinal and 'a few' is vague, so I recorded the change under quantifiers rather than numbers."
+  },
+  {
+   "id": "fe-105",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [
+    "molto basso -> estremamente basso",
+    "il peggiore degli stomaci -> il più degli stomaci (superlative 'worst' lost)",
+    "un po' di -> un' (garbled)"
+   ],
+   "other": [
+    "'coccoeusio' -> 'caldo' and 'docciasimo' -> 'doccia'",
+    "'il peggiore' (worst) lost, so the claim no longer says it is the worst",
+    "'dolce' -> 'sapore'; 'industria' -> 'produzione'"
+   ],
+   "notes": "The source is garbled, so some differences may be noise. Og and Cuc are in both."
+  },
+  {
+   "id": "fe-106",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [
+    "for decades -> for years"
+   ],
+   "other": [
+    "'old stone tower' -> 'ancient spire' (stone dropped)",
+    "'lighthouse keeper' -> 'tower's keeper' (lighthouse dropped)",
+    "lanterns burned 'high' -> beacons burned 'low'",
+    "'weatheredg' (an object he carried) -> 'weathered' with the noun missing",
+    "'eerie glow' -> 'strange light'",
+    "'coals' -> 'logs'; 'coat' -> 'cloak'; 'Each night' -> 'Each evening'"
+   ],
+   "notes": "Johnny Longbottom is in both. The 'weathered' fragment is a garbled corruption, so I kept it brief."
+  },
+  {
+   "id": "fe-107",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [],
+   "other": [
+    "'Proposal' -> 'Initiative'; 'bill' -> 'measure'",
+    "'member of the parliament' -> 'representative of the body' (parliament dropped)",
+    "'legislator ... or a senator' -> 'a official ... or member' (senator lost)",
+    "'proposes' -> 'suggests'; 'debated or initiated' -> 'discussed or started'",
+    "'initial discussions' -> 'initial early on government sessions' (garbled)"
+   ],
+   "notes": "Australia is in both. 'first stage/first time' -> 'first phase/initial time' is treated as the same ordinal."
+  },
+  {
+   "id": "fe-108",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [],
+   "other": [
+    "'restrictive notions about car-centric ideologies' -> 'outdated views of car-driven planning' (restrictive -> outdated)",
+    "'civic wellbeing goals' -> 'community health' (narrower)",
+    "'opportunities for innovations to emerge when people actively want change' -> 'spaces where people genuinely seek progress' (innovations/opportunities dropped)",
+    "'a world feasible' -> 'a livable future'",
+    "'necessary elements' -> 'a vital part'"
+   ],
+   "notes": "Otherwise a close paraphrase with a few shifts in emphasis."
+  },
+  {
+   "id": "fe-109",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [],
+   "other": [
+    "The term 'Castling' / 'Castle' is dropped and replaced by the generic 'King movement' / 'move your king'",
+    "'moving your pawn still further onto' -> 'advancing your pawn beyond'",
+    "'no obstacles' -> 'no pieces block' (slightly more specific)"
+   ],
+   "notes": "The original is incoherent. The rewrite keeps its structure but loses the named rule. I did not treat 'Castling' as a proper name."
+  },
+  {
+   "id": "fe-110",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [
+    "two of the most widely used languages -> two languages that dominate the field (superlative becomes dominance)"
+   ],
+   "other": [
+    "'laid out the groundwork for understanding databases' -> 'introduced me to the principles' (weaker)",
+    "'perform large-scale computations efficiently' -> 'extensive data processing with precision and speed' (precision added)",
+    "'solid grasp' -> 'strong foundation'"
+   ],
+   "notes": "SQL and Python are in both, and two is in both."
+  }
+ ]
+}

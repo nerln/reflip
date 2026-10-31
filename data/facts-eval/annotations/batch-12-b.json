@@ -1,0 +1,204 @@
+{
+ "annotator": "b",
+ "model": "claude-sonnet-5-5 (claude -p, no tools; first run's agent could not read its file)",
+ "pairs": [
+  {
+   "id": "fe-111",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [
+    "(none) -> at least some (added in the closing clause)"
+   ],
+   "other": [
+    "Subject changed from one specific keyboard ('This ... keyboard') to keyboards in general",
+    "'optical mechanical' dropped",
+    "Added claim that these features set the keyboards apart from others"
+   ],
+   "notes": "Feature list otherwise identical."
+  },
+  {
+   "id": "fe-112",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [
+    "many operations -> operations (many dropped)",
+    "making frequent searches unnecessary -> reducing the need for frequent lookups"
+   ],
+   "other": [
+    "'size' of keys became 'length' of keys",
+    "'determine' became 'predict'"
+   ],
+   "notes": "The '4.' list marker is in both. 'size' to 'length' and 'determine' to 'predict' are close, so I left them as minor. The original's 'unnecessary' is a stronger claim than 'reducing the need'."
+  },
+  {
+   "id": "fe-113",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [],
+   "other": [],
+   "notes": "Faithful paraphrase. FIBA is in both. Only synonyms changed (sanción/medida, consumo/uso, gravedad/severidad)."
+  },
+  {
+   "id": "fe-114",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [
+    "typically -> often"
+   ],
+   "other": [],
+   "notes": "Australia is in both. 'government business meetings' became 'official parliamentary sessions', and 'proposals' became 'new ideas'. I treated both as paraphrase."
+  },
+  {
+   "id": "fe-115",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [],
+   "other": [],
+   "notes": "The rewrite adds a 'we' subject, 'familiar expectations' became 'old habits', and 'time and effort' became 'patience and work'. The link between better communication and the speed-up is vaguer. I left these out as possible paraphrase."
+  },
+  {
+   "id": "fe-116",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [],
+   "other": [
+    "'unparalleled value' became 'exceptional balance' (different claim)",
+    "'long typing sessions' added as the context for reduced fatigue",
+    "'tailored for' became 'designed exclusively for' (exclusivity added)",
+    "'performance on par with' became 'speed matching'"
+   ],
+   "notes": "'one of only a few' and 'one of just a handful' are the same strength. The negation 'without sacrificing' is kept."
+  },
+  {
+   "id": "fe-117",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [
+    "più che possibile -> più che at (truncated)"
+   ],
+   "other": [
+    "The rewrite is garbled Italian/English code-mixing, not a faithful rewrite",
+    "'arti aperte' became 'open aperte' (the word 'arti' is lost)",
+    "'eccome se sapete' became 'sure se sapete', and 'insomma' became 'in' (truncated)"
+   ],
+   "notes": "The sense is mostly kept despite the mixed languages. 'Non è' is kept, so there is no negation flip."
+  },
+  {
+   "id": "fe-118",
+   "numbers": {
+    "missing": [
+     "20s (twenties)"
+    ],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [
+    "many years -> many long (garbled)",
+    "even millions -> also millions"
+   ],
+   "other": [
+    "Currency changed from dollars to pounds",
+    "The age group 'in their twenties' is reduced to 'in their late' (dropped)",
+    "'compound interest' became 'compound returns'",
+    "'retire' became 'exit'",
+    "The text is partly broken ('many long of growth')"
+   ],
+   "notes": "Reported the age 'twenties' as the missing number."
+  },
+  {
+   "id": "fe-119",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [
+     "Japan"
+    ],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [],
+   "other": [
+    "Claim about Japan's own custom-crafted craftsmanship dropped",
+    "'dedication and passion adorning every stroke' became 'dedication and excitement of the cooks' (cooks added)",
+    "'hints of sesame' became 'smells' of sesame"
+   ],
+   "notes": "Phoenixville is in both."
+  },
+  {
+   "id": "fe-120",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [
+    "Cities must -> Urban areas should (obligation weakened)"
+   ],
+   "other": [
+    "'inclusion' became 'equity'",
+    "'resilience design principles' became 'adaptable design'",
+    "'beneficial advocacy' became 'broad support for sustainable actions'"
+   ],
+   "notes": "'governments must' became 'authorities need to', which is the same strength. 'all new developments' and 'every fresh project' are the same. 'separated paths' became 'dedicated lanes', which I treated as a synonym."
+  }
+ ]
+}

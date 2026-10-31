@@ -1,0 +1,197 @@
+{
+ "annotator": "b",
+ "model": "claude-sonnet-5-5 (claude -p, no tools; first run's agent could not read its file)",
+ "pairs": [
+  {
+   "id": "fe-071",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [],
+   "other": [
+    "'last year' replaced by garbled 'past'; time reference lost",
+    "'cooking classes' reduced to 'sessions'; cooking context dropped",
+    "'this summer' became 'this season'",
+    "'new friends joined us' became 'fellowships arrived us'; meaning garbled",
+    "'won't be pretty' became 'won't look'; 'pretty' dropped",
+    "rewrite is largely ungrammatical, so several claims are unclear"
+   ],
+   "notes": "Rewrite is garbled. Negations ('wasn't', 'won't', 'never should've') are kept, so no flip."
+  },
+  {
+   "id": "fe-072",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [],
+   "other": [],
+   "notes": "Rewrite is in English while the original is Italian. Meaning matches; 'spesso' -> 'often' is unchanged. 'salute' -> 'well-being' counted as a synonym."
+  },
+  {
+   "id": "fe-073",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [],
+   "other": [],
+   "notes": "Rewrite is in English while the original is Spanish. Meaning matches."
+  },
+  {
+   "id": "fe-074",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [],
+   "other": [
+    "Faccini 'conceived/designed' the plant ('concepito') became 'Ereditato dall'ingegnere' (inherited from the engineer); his role changes",
+    "'ubicazione strategica' became 'posizione ottimale' and 'favorì' became 'permise'; slight, not counted"
+   ],
+   "notes": "Years 1887 and 1889 and all place names are kept."
+  },
+  {
+   "id": "fe-075",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [],
+   "other": [
+    "'Senato degli Stati Uniti' became 'senatorial candidate'; the US Senate is no longer named",
+    "Italian original became an English rewrite; 'campagna' -> 'movement', not counted"
+   ],
+   "notes": "2004 is kept. I did not list the US Senate as a missing name because 'American' appears later, but I flagged it in 'other'."
+  },
+  {
+   "id": "fe-076",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [
+    "'overnight' dropped"
+   ],
+   "other": [
+    "'worthless overnight' became 'collapse ... mere shadow of its former self'; this is weaker and not the same claim",
+    "Lehman 'sought rescue from international investors' is dropped",
+    "investors' confidence 'evaporated' became 'severely undermined, resulting in their withdrawal of support'; withdrawal is a new claim",
+    "'Lehman' became 'Lehman Brothers' (same entity)"
+   ],
+   "notes": "$6 billion is kept."
+  },
+  {
+   "id": "fe-077",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [],
+   "other": [
+    "egg chambers 'below' became 'high in the branches'; location changes",
+    "'Morning walks' (habitual) became a single 'ascends early'",
+    "'queen and worker development, productive and optimal' became 'healthy queen production and strong colony growth'; slight shift"
+   ],
+   "notes": "'two trunks' is kept. 'often' is kept. 'Each' -> 'Every' is the same strength."
+  },
+  {
+   "id": "fe-078",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [
+    "all reflections -> dropped",
+    "all daunting tasks -> complex challenges (no 'all')",
+    "whatever comes next -> any future endeavors"
+   ],
+   "other": [
+    "The reflections as the source of the advice are dropped; the rewrite says 'I've gained insights'",
+    "'professionally' is dropped from the last sentence",
+    "'daunting' -> 'complex' is weaker"
+   ],
+   "notes": "No numbers or names in either text."
+  },
+  {
+   "id": "fe-079",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [],
+   "other": [
+    "Heading 'Introduction of Bill' became 'Submission of Bill'",
+    "'committees' became the vaguer 'groups'",
+    "'scrutiny' and 'debate' became 'examination' and 'discussion'; no change in meaning",
+    "grammar is broken ('has presents', 'must then examination'), so the claim is partly unclear"
+   ],
+   "notes": "The '2.' list marker is kept. 'often' is kept. 'chamber' -> 'room' and 'houses' for 'chambers' read as synonyms."
+  },
+  {
+   "id": "fe-080",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [],
+   "other": [
+    "'computer science' became 'computer field'",
+    "'databases' became 'systems'; 'big data' became 'big information'",
+    "'large-scale computations' became 'large-scale tasks'"
+   ],
+   "notes": "'two' (languages) is kept. 'most widely used' -> 'top most commonly used' is the same strength."
+  }
+ ]
+}

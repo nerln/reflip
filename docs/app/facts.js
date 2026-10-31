@@ -7,7 +7,8 @@
 import LEXICON from "./facts-lexicon.js";
 
 const WORD = /[0-9]+(?:[.,'  ][0-9]{3})*(?:[.,][0-9]+)?%?|\p{L}+(?:['’-]\p{L}+)*/gu;
-const SENTENCE_END = /[.!?…]+["'”»)\]]*\s+|\n/g;
+// a colon followed by a space opens a clause too: "Tip 3: Putting the lid on" has no name in it
+const SENTENCE_END = /[.!?…:]+["'”»)\]]*\s+|\n/g;
 const OPENERS = new Set(" \t\r\n\"'“‘«([-–—*#>•");
 const NEGATIVE_CONTRACTION = /n['’]t\b/gi;
 
@@ -38,6 +39,16 @@ export function tokens(text) {
 
 const LIST_MARKER = /[.)](\s|$)/y;
 const TITLE_WORD = /\p{L}{4,}/gu;
+const BOLD = /\*\*[^*\n]+\*\*/g;
+
+// How a name is compared: case, a possessive and a plural s do not make another name.
+export function nameKey(word) {
+  const k = word.toLowerCase().replace(/'s?$/, "");
+  return k.length > 3 && k.endsWith("s") && !k.endsWith("ss") ? k.slice(0, -1) : k;
+}
+
+// A hyphenated capitalised token is read part by part: "Tax-Free" is "Tax" and "Free".
+const nameParts = (token) => token.split("-").filter(Boolean);
 
 // Lines that are headings: markdown '#', a line in bold, or a short Title Case line without
 // closing punctuation. Their capitals are style, not names.
@@ -54,6 +65,8 @@ export function headingSpans(text) {
     }
     pos += line.length + 1;
   }
+  // a label in bold inside a line ("- **Drafting Proposals:** the committee...") is a heading too
+  for (const m of text.matchAll(BOLD)) spans.push([m.index, m.index + m[0].length]);
   return spans;
 }
 
@@ -179,10 +192,15 @@ export function facts(text, lang) {
   const split = words.filter((w) => !isDigit(w)).flatMap((w) => w.split("-"));
   for (const v of wordNumbers(split, lang)) f.numbers.add(v);
   const heads = headingSpans(text);
+  const fn = new Set(LEXICON.function_words[lang]);
   for (const [t, opening, start] of toks) {
-    f.lowered.add(t.toLowerCase());
-    if (isUpper(t[0]) && t.length > 1 && !opening && !(lang === "en" && t.startsWith("I'"))
-      && !heads.some(([x, y]) => x <= start && start < y)) f.names.add(t);
+    for (const part of nameParts(t)) f.lowered.add(nameKey(part));
+    if (!isUpper(t[0]) || t.length < 2 || opening || heads.some(([x, y]) => x <= start && start < y)) continue;
+    // "I'm"; a gerund opening a clause ("Putting", "Following")
+    if (lang === "en" && (t.startsWith("I'") || (t.endsWith("ing") && t.length > 5))) continue;
+    for (const part of nameParts(t)) {
+      if (isUpper(part[0]) && part.length > 1 && !fn.has(part.toLowerCase())) f.names.add(part);
+    }
   }
   const neg = new Set(LEXICON.negations[lang]);
   f.negations = split.filter((w) => neg.has(w)).length;
@@ -209,14 +227,16 @@ export function diff(original, rewritten, lang) {
   const b = facts(rewritten, lang);
   const missingNum = a.numbers.minus(b.numbers);
   const addedNum = b.numbers.minus(a.numbers);
-  // a name is kept if the word appears anywhere in the other text, in any case: moved to the
-  // start of a sentence, or written in capitals, it is the same name
-  const missingNames = new Bag([...a.names.minus(b.names)].filter(([k]) => !b.lowered.has(k.toLowerCase())));
-  const addedNames = new Bag([...b.names.minus(a.names)].filter(([k]) => !a.lowered.has(k.toLowerCase())));
+  // a name is kept if the word appears anywhere in the other text, in any case, with or
+  // without a possessive or a plural s: moved to the start of a sentence, it is the same name
+  const missingNames = new Bag([...a.names.minus(b.names)].filter(([k]) => !b.lowered.has(nameKey(k))));
+  const addedNames = new Bag([...b.names.minus(a.names)].filter(([k]) => !a.lowered.has(nameKey(k))));
   const missingQ = a.quantifiers.minus(b.quantifiers);
   const addedQ = b.quantifiers.minus(a.quantifiers);
+  // Negation words are reported and not counted: on 120 annotated rewrites their count changed
+  // in 22 pairs and a statement's polarity flipped in one (docs/facts/PROTOCOL.md).
   const altered = missingNum.total() + addedNum.total() + missingNames.total() + addedNames.total()
-    + Math.abs(a.negations - b.negations) + missingQ.total() + addedQ.total();
+    + missingQ.total() + addedQ.total();
   return {
     lang,
     words: a.words,

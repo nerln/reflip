@@ -1,0 +1,206 @@
+{
+ "annotator": "b",
+ "model": "claude-sonnet (workflow agent)",
+ "pairs": [
+  {
+   "id": "fe-031",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [],
+   "other": [],
+   "notes": "Rewrite is an English translation of the Spanish original, same content. 'lista creciente' -> 'ever-growing list' and 'mayor colaboracion' -> 'stronger cooperation' judged equivalent; left out."
+  },
+  {
+   "id": "fe-032",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [
+    "only occasionally -> often"
+   ],
+   "other": [
+    "'heat up enough to fry' -> 'warm enough to burn': different outcome (fry vs burn)"
+   ],
+   "notes": "'didn't realize as much before' -> 'never truly grasped it earlier' kept as same polarity. 'every single day' -> 'each day' judged equivalent. The original sentence is garbled, so the quantifier change is a best reading. 'dinner' -> 'food' and 'dining halls' -> 'meal rooms' treated as synonyms."
+  },
+  {
+   "id": "fe-033",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [
+     "Eternal Noodle Dream"
+    ],
+    "added": [
+     "Timeless Noodle Dream"
+    ]
+   },
+   "negation_flip": false,
+   "quantifiers": [],
+   "other": [
+    "'omnipresent' dropped from 'omnipresent cultural phenomenon'; 'cultural' -> 'social'",
+    "'igniting an age-old longing' -> 'sparking an age-ancient a': the word 'longing' is lost",
+    "'slightly longer' -> 'a longer': 'slightly' dropped"
+   ],
+   "notes": "Both texts are garbled. The original says 'is not merely a stall ... but a phenomenon'. The rewrite says 'not merely stand ... not just social phenomenon'. The 'but' is lost and a second 'not just' is added, but 'not just X' still affirms X, so I did not mark a negation flip. The name 'Eternal Noodle Dream' became 'Timeless Noodle Dream', listed as a changed name. Phoenixville and Japanese are in both."
+  },
+  {
+   "id": "fe-034",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [
+    "without fail -> without ever (truncated; the 'always' sense is weakened)"
+   ],
+   "other": [
+    "'nectar resources' -> 'sugar resources': nectar replaced by sugar",
+    "'eager hands' -> 'welcoming hands': slight change in who the hands are"
+   ],
+   "notes": "'without ever' is a truncated phrase with no negation of anything, so no polarity flip. 'protective' -> 'defensive', 'brood floors' -> 'brood levels', 'baby' -> 'infant' treated as synonyms."
+  },
+  {
+   "id": "fe-035",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [],
+   "other": [],
+   "notes": "English translation of the Spanish original. 'no solo ... sino tambien' -> 'isn't just ... but also' keeps the same polarity. Left out as unsure: 'preguntas importantes' -> 'serious concerns', 'vulnerabilidad al dopaje' -> 'risk of doping', 'intensa' -> 'extreme' (slight intensification), 'incluyendo' -> 'such as'. 'en los ultimos anos' -> 'recently' judged equivalent."
+  },
+  {
+   "id": "fe-036",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [
+    "even small amounts -> any small sums"
+   ],
+   "other": [
+    "'until later in life' -> 'until mid in life': different point in life",
+    "'to smooth future streams' -> 'ensures future income': the smoothing idea is replaced by a guarantee",
+    "'into budget' -> 'into plan': budget replaced by plan"
+   ],
+   "notes": "Both texts are heavily garbled, so other-category items are a best reading. 'Sheridan Yvitore' appears in both. 'slows down accumulation' -> 'reduces down growth', 'rest periods' -> 'lulls periods', 'shopping' -> 'purchases' treated as wording changes."
+  },
+  {
+   "id": "fe-037",
+   "numbers": {
+    "missing": [
+     "thousands",
+     "millions"
+    ],
+    "added": [
+     "decades"
+    ]
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [
+    "can be extremely beneficial -> proves immensely advantageous (hedge 'can be' lost, now stated as fact)",
+    "many years -> decades",
+    "thousands, even millions of dollars -> significant sums / astronomical amounts"
+   ],
+   "other": [
+    "'understanding and actively managing' -> 'mastering': a different claim",
+    "'during these formative years' -> 'over time ... by adulthood': different time frame",
+    "the stated amount 'thousands, even millions of dollars' becomes 'astronomical amounts', a different claim"
+   ],
+   "notes": "'twenties' is in both. 'decades' counted as an added number-like quantity replacing 'many years'. 'if saved and invested wisely' -> 'by prudent saving and investment' judged equivalent."
+  },
+  {
+   "id": "fe-038",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [],
+   "other": [
+    "'potatura alfa-beta' (alpha-beta pruning) -> 'pratica alfa-beta': the pruning term is lost, and 'tecnica di ottimizzazione' -> 'metodo di accelerazione' changes optimization to speed-up",
+    "'non puo migliorare la decisione gia trovata' -> 'non puo alterare la scelta gia fatta': improve vs alter",
+    "'elemento standard' -> 'elemento essenziale': standard vs essential",
+    "'condizioni favorevoli' -> 'casi ottimali': favourable vs optimal",
+    "'determinano l'efficienza' -> 'influiscono direttamente sull'efficacia': determine vs influence"
+   ],
+   "notes": "Years 'Cinquanta e Sessanta' and the 'due' counts (two values, two players, two factors) are all kept. Names alfa-beta, minimax, scacchi, dama are kept. 'soprattutto' -> 'principalmente' and 'in modo sensibile' -> 'notevolmente' judged equivalent. The alfa/beta definition ('miglior punteggio garantito' -> 'massimo/minimo punteggio assicurato/garantito') is a reasonable paraphrase, so I left it out."
+  },
+  {
+   "id": "fe-039",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [],
+   "other": [
+    "'defilee sfarzosi' (lavish fashion shows) -> 'flashy celebrities': shows replaced by people"
+   ],
+   "notes": "1981, New York Times, Cunningham and New York are all kept. 'non si interessava' -> 'showed no interest' is the same polarity. 'spesso' -> 'often' and 'ogni genere' -> 'all sorts' are equivalent. 'La sua attivita' -> 'The work' is a minor wording change."
+  },
+  {
+   "id": "fe-040",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [
+    "escasas -> muy pocas (slightly stronger)"
+   ],
+   "other": [
+    "'matorrales y gramineas endemicas' (shrubs and endemic grasses) -> 'helechos y hierbas originales' (ferns and native herbs): the plant types are changed",
+    "'promedios anuales' (annual averages) -> 'valores anuales': 'averages' lost",
+    "'oceano Atlantico' -> 'mar Atlantico': ocean vs sea"
+   ],
+   "notes": "The temperature range -2 C to 5 C is kept. Atlantico is kept. 'durante todo el ano' -> 'en todo periodo' and 'en muchos puntos' -> 'en numerosos lugares' judged equivalent. 'sequia prolongada' -> 'sequia continua' and 'sedimentos sedimentarios' -> 'sedimentos depositados' treated as wording changes. 'contribuye' -> 'fomenta' left out as unsure."
+  }
+ ]
+}

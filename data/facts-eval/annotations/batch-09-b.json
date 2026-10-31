@@ -1,0 +1,202 @@
+{
+ "annotator": "b",
+ "model": "claude-sonnet-5-5 (claude -p, no tools; first run's agent could not read its file)",
+ "pairs": [
+  {
+   "id": "fe-081",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [],
+   "other": [
+    "dropped the detail that file-system access requires random location indices"
+   ],
+   "notes": "The list number 2 is in both. 'hash tables' -> 'hash maps', 'generally' -> 'typically' and 'much faster' -> 'significantly quicker' are equivalent, so they are left out. 'every file or page' matches 'all files/pages'."
+  },
+  {
+   "id": "fe-082",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [],
+   "other": [],
+   "notes": "Only paraphrase: 'corporate world' -> 'business setting', 'eye-opening' -> 'transformative', 'overwhelmed' -> 'felt a mix'. Left out because none of these clearly changes the facts."
+  },
+  {
+   "id": "fe-083",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [
+    "a goodly amount -> dropped",
+    "bees have long taken their flights -> bees are about to migrate"
+   ],
+   "other": [
+    "direction flipped: flights south to warmer climates -> migration northward towards cooler regions",
+    "time changed: close to noon -> afternoon, sun beginning to set",
+    "flights already long taken (today) -> flights about to begin, described as annual",
+    "added claim that the measure is essential to biodiversity and ecosystem health"
+   ],
+   "notes": "The original is garbled. The rewrite reverses direction and climate and adds a new claim. There is no negation."
+  },
+  {
+   "id": "fe-084",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [],
+   "other": [
+    "'contener' (contain) the most dangerous fires -> 'evitar' (avoid/prevent) them"
+   ],
+   "notes": "2013 is in both. 'servicios de protección civil' -> 'servicios de emergencias' is a generic wording, not a clear change of organisation, so it is left out. 'datos definitivos' -> 'resultados oficiales', 'imprudencias' -> 'errores' and 'negligencias' -> 'omisiones' are close synonyms. 'casi exclusivamente' -> 'casi toda' is about the same strength."
+  },
+  {
+   "id": "fe-085",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [
+    "difficile da dimenticare -> quasi impossibile da dimenticare",
+    "prova di stile -> assoluto prova di stile (intensifier added)"
+   ],
+   "other": [
+    "'libro' (book) -> 'manuale' (manual), a different kind of work, in the opening and in the first sentence",
+    "critica 'insolita e divertente' -> 'straordinaria e piacevole' (stronger praise)",
+    "critica di lingua inglese -> critica inglese (English-language critics -> English critics)",
+    "'sorpresa' (surprise) -> 'emozione' (emotion)",
+    "'ironia' -> 'scherzo' (irony -> joke)"
+   ],
+   "notes": "Interrogative Mood, Padgett Powell and Guanda are in both. 'quasi ossessiva' -> 'pressoché ossessiva' and 'soltanto' -> 'esclusivamente' are equivalent. Some of the lexical drift (emozione, scherzo) is borderline."
+  },
+  {
+   "id": "fe-086",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [
+     "Eternal Noodle Dream"
+    ],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [],
+   "other": [
+    "the stall's name 'Eternal Noodle Dream' became a generic 'enduring noodle fantasy'",
+    "'distant childhood sunsets' -> 'far-off, beautiful sunsets' (childhood dropped, 'beautiful' added)",
+    "'between tables' dropped"
+   ],
+   "notes": "Phoenixville is in both. 'not merely' -> 'isn't just' is the same polarity. The original ends abruptly ('only hint') and the rewrite completes it as 'a gentle, subtle suggestion'; I treated that as equivalent."
+  },
+  {
+   "id": "fe-087",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [],
+   "other": [
+    "the rewrite is in English, but the original is in Spanish (translation, not a rewrite)"
+   ],
+   "notes": "The content matches: protection systems, preventing the spread of faults, faster response than circuit breakers, manual replacement needed. Only the language changed."
+  },
+  {
+   "id": "fe-088",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [
+    "new friends -> a friend"
+   ],
+   "other": [
+    "added claim: the shift brought a new level of appreciation and creativity to the kitchen",
+    "added claim: a friend introduced a new flavor to the table",
+    "dropped that the speaker 'went back home' for the classes and that 'new friends joined us'",
+    "'lack of seasoning or skill' -> 'lack of preparation skills' (seasoning dropped)",
+    "'it won't be pretty' (future or hypothetical) -> 'it didn't go as planned' (stated as past fact)",
+    "'something has rippled through me' -> 'a profound change occurred within the realm of cooking classes'"
+   ],
+   "notes": "'It wasn't me but last year' -> 'It was not I; it was last year' is the same meaning, so no flip. 'never should've happened' and 'shouldn't have been the case' keep the same polarity."
+  },
+  {
+   "id": "fe-089",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [],
+   "other": [
+    "the rewrite is in English, but the original is in Spanish (translation, not a rewrite)",
+    "'equipos mejor clasificados enfrentándose en cuartos...' -> 'top teams advancing to the quarterfinals...' (slightly different framing)"
+   ],
+   "notes": "16 teams, Japan, Australia, the group stage in the first week and the two-leg knockout phase are all in both. Japan and Australia are translated names, not changes."
+  },
+  {
+   "id": "fe-090",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [],
+   "other": [
+    "subject changed: the keys' size -> the values' length",
+    "'hash functions' -> 'mapping functions' (technical term lost)",
+    "'bucket' -> 'group slot'",
+    "'Memory Efficiency' -> 'Space Efficiency'"
+   ],
+   "notes": "The list number 4 is in both. 'does not determine' -> 'does not affects' keeps the negation. 'many' and 'most' are unchanged. The grammar of the rewrite is broken, but the meaning is roughly the same apart from the key/value swap."
+  }
+ ]
+}

@@ -1,0 +1,201 @@
+{
+ "annotator": "b",
+ "model": "claude-sonnet (workflow agent)",
+ "pairs": [
+  {
+   "id": "fe-001",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [
+    "relatively insulated -> remained separate (hedge 'relatively' dropped)"
+   ],
+   "other": [
+    "'meant that' (consequence) -> 'required that' (necessity): the causal relation is changed"
+   ],
+   "notes": "The '5.' is only a list marker and is in both texts. 'financial activities' -> 'economic activities', 'problems' -> 'failures', 'part of the world' -> 'region of the system', 'economies' -> 'markets' and 'crises' -> 'shocks' are close or ungrammatical wording shifts, left out as borderline. 'many' is unchanged."
+  },
+  {
+   "id": "fe-002",
+   "numbers": {
+    "missing": [
+     "1"
+    ],
+    "added": [
+     "2"
+    ]
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [],
+   "other": [
+    "'evening meal' -> 'afternoon meal': time of day changed",
+    "'hazelnut' -> 'walnut': a different item",
+    "'night end' -> 'watch end': 'night' replaced by 'watch'"
+   ],
+   "notes": "Numbers: 'first-bringing-joined' -> 'second-bringing-joined' changes the ordinal 1 to 2. I counted ordinals as number words, but this is a garbled hyphenated compound, so the call is a little uncertain. 'final' -> 'last', 'game' -> 'prey', 'clear' -> 'open', 'faint' -> 'slight' and 'guard' -> 'watch' are synonyms. 'alarms' -> 'beeps' is borderline and left out. 'only' is unchanged. The text is word salad, so most differences are garble rather than clean fact changes."
+  },
+  {
+   "id": "fe-003",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [],
+   "other": [
+    "'advocacy groups' -> 'campaigns': a campaign is not a group of people"
+   ],
+   "notes": "The '3.' list marker and the heading 'Committee Stage' are in both texts. 'usually' -> 'typically' and 'may' -> 'might' keep their strength. 'citizens' -> 'individuals', 'representatives' -> 'members', 'ethics' -> 'integrity' and 'due process' -> 'fair procedures' are near-synonyms. 'other interested parties' -> 'stakeholder organizations' is borderline. 'attempt to understand an issue' -> 'aim to reveal a topic' is also borderline. 'further proceedings' -> 'ongoing debate' was left out as too vague to judge. The original is itself garbled."
+  },
+  {
+   "id": "fe-004",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [],
+   "other": [],
+   "notes": "'no moment feels less significant or important' -> 'every instance ... holds equal weight' is the same meaning in different words, so it is not a negation flip and not a quantifier change. 'one of their plush seats' -> 'a sumptuous chair' loses the 'one of' wording, but I did not count it as a number because it is idiomatic. 'lunch trade' -> 'simple meal', 'celebratory evenings' -> 'festive dinner', 'old-world ethos' -> 'timeless values' and 'seamlessly' -> 'gently' are mild wording shifts and left out."
+  },
+  {
+   "id": "fe-005",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [
+    "many -> several (many wondered -> several questioned)"
+   ],
+   "other": [
+    "'for decades' -> 'for years': the span of service is shortened"
+   ],
+   "notes": "'Johnny Longbottom' is in both texts. 'first light' -> 'initial spark' keeps the same ordinal meaning, so it is not a number change. 'Each night' -> 'Every evening' is the same strength. 'faithfully' is dropped but 'uphold his responsibilities' implies it, so it was left out. 'carried beneath his coat' -> 'hidden within his garments' is a small shift and left out. 'eerie glow' -> 'haunting shine' and 'old' -> 'ancient' are synonyms."
+  },
+  {
+   "id": "fe-006",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [
+    "can result in -> disrupt (possibility became certainty)",
+    "can cause -> lead to (possibility became certainty)",
+    "Regularly assessing -> Continuously monitoring",
+    "ensures -> guarantees (smooth -> uninterrupted also stronger)",
+    "'possible culprits' -> 'these threats' ('possible' dropped)",
+    "'vulnerabilities, attempts, or issues' -> 'exploits, attacks, and excessive usage' (or -> and)"
+   ],
+   "other": [
+    "'immediate logouts' -> 'disrupt the flow of users' interactions': the stated consequence is changed",
+    "'guarantees an uninterrupted user experience' is a stronger claim than 'ensures a smooth user experience'"
+   ],
+   "notes": "'without proper refreshing' -> 'unrefreshed' is a negation reworded with the same meaning, so no flip. 'vulnerabilities' -> 'exploits' and 'rate limiting issues' -> 'excessive usage' are borderline and left out. 'after certain intervals' is dropped, which is minor."
+  },
+  {
+   "id": "fe-007",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [],
+   "other": [
+    "'pride' is dropped ('heightened pride' -> 'heightened greater')",
+    "'making a contribution' -> 'to a contribution': the act of making it is lost",
+    "'unknown roles' -> 'unknown unseen': 'roles' is dropped",
+    "'later' is dropped ('may emerge later' -> 'may emerge in')"
+   ],
+   "notes": "The rewrite is badly garbled, and most of its differences are lost words rather than clean meaning changes. 'even if' -> 'still if', 'fit within' -> 'position' and 'bigger' -> 'overall' are left out as wording or garble."
+  },
+  {
+   "id": "fe-008",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [],
+   "other": [
+    "'pre-made' is added to 'hot dogs and french fries'"
+   ],
+   "notes": "'one thought' -> 'a single idea' is the same number (1). 'each day' -> 'every day' and 'just basic ingredients' -> 'minimal ingredients' keep their strength. 'those of you' -> 'anyone' widens the addressee slightly but was left out as style. 'food' -> 'meals', 'dishes' -> 'foods', 'which is better' -> 'is it wiser' and 'extended vacation' -> 'long break' are near-synonyms."
+  },
+  {
+   "id": "fe-009",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [],
+   "other": [
+    "'dining halls' -> 'dining dining': the place noun 'halls' is lost"
+   ],
+   "notes": "'Why not do anything?' -> 'Why not anything?' drops the verb 'do', but the negation is still there and the meaning is unchanged, so no flip. 'didn't realize' -> 'didn't realized' is a typo. 'every single day' and 'only occasionally' are unchanged. 'Italian' and 'Pastas' are in both texts."
+  },
+  {
+   "id": "fe-010",
+   "numbers": {
+    "missing": [],
+    "added": []
+   },
+   "names": {
+    "missing": [],
+    "added": []
+   },
+   "negation_flip": false,
+   "quantifiers": [
+    "sole (only) -> dropped: 'le sole molte cose' became 'many things'",
+    "universale -> widespread (weaker than 'universal')",
+    "alcuni dolci -> sweets ('some' dropped from the sweets)",
+    "notti -> some nights ('some' added to the nights)"
+   ],
+   "other": [
+    "'le sole' (only/sole) is read as 'the sun': 'the sun' is added as a new subject",
+    "The text switches from Italian to English"
+   ],
+   "notes": "The rewrite is an English translation of an Italian original, so the language difference was not counted against the content. The original is garbled ('anni tristiti', 'emoticon umano'). 'tristiti' -> 'difficult' and 'emoticon umano' -> 'human feeling' are loose renderings and left out. 'molte' -> 'many' is unchanged. 'sun' is an ordinary noun, not a name."
+  }
+ ]
+}

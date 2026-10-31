@@ -45,11 +45,11 @@
   }
  },
  {
-  "name": "a lost negation",
+  "name": "a lost negation is shown, not counted",
   "lang": "en",
   "a": "The effect did not survive the correction, and the authors don't claim it.",
   "b": "The effect survived the correction, and the authors don't claim it.",
-  "altered": 1,
+  "altered": 0,
   "negations": {
    "before": 2,
    "after": 1
@@ -93,11 +93,11 @@
   "altered": 0
  },
  {
-  "name": "Italian: a lost non and a lost name",
+  "name": "Italian: a lost name counts, a lost non is shown",
   "lang": "it",
   "a": "Secondo Ferraris il modello non funziona sui testi brevi.",
   "b": "Secondo gli autori il modello funziona sui testi brevi.",
-  "altered": 2,
+  "altered": 1,
   "names": {
    "missing": [
     "Ferraris"
@@ -199,5 +199,40 @@
     "Mensah"
    ]
   }
+ },
+ {
+  "name": "a colon opens a clause",
+  "lang": "en",
+  "a": "Tip 3: Putting the lid on keeps the soup warm for 20 minutes.",
+  "b": "Tip 3: Closing the lid keeps the soup warm for 20 minutes.",
+  "altered": 0
+ },
+ {
+  "name": "a bold label is a heading",
+  "lang": "en",
+  "a": "- **Drafting Proposals:** the committee met in Rome twice.",
+  "b": "- **Writing Ideas:** the committee met in Rome twice.",
+  "altered": 0
+ },
+ {
+  "name": "possessives, plurals and hyphens are the same name",
+  "lang": "en",
+  "a": "Amazon's sales rose, and the RRSP rules for a Tax Free account changed.",
+  "b": "Sales at Amazon rose, and the RRSPs rules for a Tax-Free account changed.",
+  "altered": 0
+ },
+ {
+  "name": "a capitalised function word is not a name",
+  "lang": "en",
+  "a": "We met them (During the summer) in Lisbon.",
+  "b": "We met them in Lisbon in the summer.",
+  "altered": 0
+ },
+ {
+  "name": "Spanish escasas and muy pocas are both few",
+  "lang": "es",
+  "a": "Las lluvias fueron escasas en el norte.",
+  "b": "Las lluvias fueron muy pocas en el norte.",
+  "altered": 0
  }
 ]

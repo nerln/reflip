@@ -1,0 +1,56 @@
+name: tests
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  python:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install (CPU torch, then the package with every extra the tests read)
+        run: |
+          pip install torch --index-url https://download.pytorch.org/whl/cpu
+          pip install -e ".[bench,detect,dev]"
+      - name: Tests
+        run: pytest -q
+
+  package:
+    # A plain install, not an editable one: catches data files the package forgot to ship.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install from a wheel
+        run: pip install .
+      - name: The facts check works from the installed package
+        working-directory: /tmp
+        run: |
+          printf 'The trial enrolled 412 patients over 18 months.\n' > before.md
+          printf 'The trial enrolled patients over 16 months.\n' > after.md
+          reflip diff before.md after.md --json > out.json || true
+          python -c "import json; d = json.load(open('out.json')); assert d['altered'] == 3, d; print(d['numbers'])"
+
+  web:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Install the test package and a headless Chrome
+        run: |
+          npm ci --prefix web
+          npx --yes @puppeteer/browsers@2.10.5 install chrome-headless-shell@stable --path ~/.cache/puppeteer
+      - name: Browser tests (facts parity, reply cleaning, SHA-256, the privacy promise)
+        run: npm test --prefix web
+        env:
+          CI: "1"
+      - name: Counter tests
+        run: node --test stats/test/index.test.js

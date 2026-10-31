@@ -13,6 +13,8 @@ dependencies = ["requests>=2.28"]
 
 [project.optional-dependencies]
 bench = ["torch>=2.1", "transformers>=4.46", "numpy"]
+# the detection benchmark: intervals, the logistic baseline, and the browser's ONNX files
+detect = ["scipy", "scikit-learn", "onnxruntime", "huggingface_hub"]
 dev = ["pytest"]
 
 [project.scripts]
@@ -22,6 +24,7 @@ reflip = "reflip.cli:main"
 include = ["reflip*"]
 
 # The detectors' calibration ships with the code: without it `reflip detect` can
-# score a text but has nothing to compare the score to.
+# score a text but has nothing to compare the score to. The facts lexicon is what
+# `reflip diff` and the facts guard read; without it every rewrite fails to import.
 [tool.setuptools.package-data]
-reflip = ["detect_calibration.json"]
+reflip = ["detect_calibration.json", "facts_lexicon.json"]

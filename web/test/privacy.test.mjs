@@ -38,13 +38,17 @@ const TYPES = { ".html": "text/html", ".js": "text/javascript", ".mjs": "text/ja
   ".json": "application/json", ".svg": "image/svg+xml", ".wasm": "application/wasm" };
 
 function chromePath() {
+  if (process.env.CHROME_PATH) return process.env.CHROME_PATH;
+  // puppeteer's cache: <version>/chrome-headless-shell-<platform>/chrome-headless-shell
   const base = join(homedir(), ".cache/puppeteer/chrome-headless-shell");
-  const versions = existsSync(base) ? readdirSync(base).sort() : [];
-  for (const v of versions.reverse()) {
-    const p = join(base, v, "chrome-headless-shell-mac-arm64", "chrome-headless-shell");
-    if (existsSync(p)) return p;
+  const versions = existsSync(base) ? readdirSync(base).sort().reverse() : [];
+  for (const v of versions) {
+    for (const platform of readdirSync(join(base, v))) {
+      const p = join(base, v, platform, "chrome-headless-shell");
+      if (existsSync(p)) return p;
+    }
   }
-  return process.env.CHROME_PATH;
+  return undefined;
 }
 
 let server, browser, origin;
@@ -89,7 +93,7 @@ before(async () => {
   browser = await puppeteer.launch({
     executablePath: chromePath(),
     headless: true,
-    args: ["--use-mock-keychain", "--disable-features=MacAppCodeSignClone",
+    args: [...(process.env.CI ? ["--no-sandbox"] : []), "--use-mock-keychain", "--disable-features=MacAppCodeSignClone",
       `--user-data-dir=${process.env.REFLIP_CHROME_PROFILE || mkdtempSync(join(tmpdir(), "reflip-chrome-"))}`],
   });
 });

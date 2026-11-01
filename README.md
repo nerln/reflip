@@ -19,24 +19,24 @@ Since 2 August 2026 Claude's text carries a statistical watermark, "a version of
 |---|---|---|---|---|---|---|---|---|---|
 | none | 17.6 | 17.5 | 25.3 | 0 of 24 | 0.99 | 0.0 | 0% | 0 | 0 |
 | unicode strip | 17.6 | 17.5 | 25.3 | 0 of 24 | 0.99 | 0.0 | 0% | 0 | 0 |
-| rules, no model | 17.6 | 15.8 | 24.8 | 0 of 24 | 0.90 | 0.5 | 2% | 0 | 0 |
-| infill, stride 4 | 17.6 | 1.3 | 13.5 | 22 of 24 | 0.11 | 3.3 | 28% | 9,140 | 22 |
-| infill, stride 3 | 17.6 | 1.3 | 7.8 | 22 of 24 | 0.07 | 5.0 | 39% | 12,534 | 31 |
-| infill, stride 2 | 17.6 | 0.8 | 6.1 | 22 of 24 | 0.06 | 8.5 | 62% | 17,343 | 44 |
-| rules, then infill (stride 3) | 17.6 | 1.5 | 9.0 | 21 of 24 | 0.08 | 4.9 | 42% | 12,430 | 30 |
-| paraphrase | 17.6 | 0.5 | 5.6 | 22 of 24 | 0.05 | 24.9 | 67% | 14,478 | 28 |
-| paraphrase, coverage-checked (default with `--tokenizer`) | 17.6 | 0.5 | 5.6 | 22 of 24 | 0.05 | 25.2 | 68% | 15,142 | 29 |
+| rules, no model | 17.6 | 15.8 | 24.8 | 0 of 24 | 0.90 | 0.3 | 2% | 0 | 0 |
+| infill, stride 4 | 17.6 | 1.3 | 13.5 | 22 of 24 | 0.11 | 3.0 | 28% | 9,140 | 22 |
+| infill, stride 3 | 17.6 | 1.3 | 7.8 | 22 of 24 | 0.07 | 3.8 | 39% | 12,534 | 31 |
+| infill, stride 2 | 17.6 | 0.8 | 6.1 | 22 of 24 | 0.06 | 6.5 | 62% | 17,343 | 44 |
+| rules, then infill (stride 3) | 17.6 | 1.5 | 9.0 | 21 of 24 | 0.08 | 4.1 | 42% | 12,430 | 30 |
+| paraphrase | 17.6 | 0.5 | 5.6 | 22 of 24 | 0.05 | 17.0 | 67% | 14,478 | 28 |
+| paraphrase, coverage-checked (default with `--tokenizer`) | 17.6 | 0.5 | 5.6 | 22 of 24 | 0.05 | 17.0 | 68% | 15,142 | 29 |
 | unwatermarked controls (23) | 0.0 | -0.1 | 1.2 | 23 of 23 | 0.99 | 0.0 | 0% | 0 | 0 |
 
-Rewriter: `qwen3:4b-instruct-2507-q4_K_M` under Ollama on a 16 GB Apple Silicon laptop, temperature 0.7. Watermarked texts: Qwen2.5-1.5B-Instruct with the open SynthID-Text processor (context 4 tokens, 9 keys). "Positions intact" is measured on the re-tokenised edited text and is the quantity the theory is about: 0.05 means 95% of the detector's coins were re-flipped. The identity row sits at 0.99 rather than 1.00 because two texts do not survive a decode/encode round trip byte for byte; that is the floor for every row. "Facts changed" is `reflip diff` between the original and the rewrite (see below).
+Rewriter: `qwen3:4b-instruct-2507-q4_K_M` under Ollama on a 16 GB Apple Silicon laptop, temperature 0.7. Watermarked texts: Qwen2.5-1.5B-Instruct with the open SynthID-Text processor (context 4 tokens, 9 keys). "Positions intact" is measured on the re-tokenised edited text and is the quantity the theory is about: 0.05 means 95% of the detector's coins were re-flipped. The identity row sits at 0.99 rather than 1.00 because two texts do not survive a decode/encode round trip byte for byte; that is the floor for every row. "Facts changed" is `reflip diff` between the original and the rewrite, as corrected on 1 November (see below, with how often it is right). The guarded runs were made with the October version of the guard, which also re-asked over negation words.
 
 What the table settles:
 
 1. **Stripping invisible characters does nothing.** Same score to the second decimal. This is what most "remover" sites do.
 2. **Rules without a model do not get there.** Contractions, spelling variants, dashes and stock phrases change 2% of the words and take a tenth off the score. Removal needs an edit in every window of five tokens, and rules cannot supply that density.
 3. **One edit per window is enough, on real text.** Every model-driven row re-randomises 89 to 95% of the detector's positions, and the mean score drops from 17.6 to between 0.5 and 1.5, inside the range of unwatermarked text. The theory that predicted this is in `tests/test_synthid.py`, without any language model.
-4. **If the facts matter, use `infill`.** With numbers, names, negations and quantifiers kept out of its slots, slot filling changes 5.0 facts per thousand words at stride 3, against 24.9 for the paraphrase, and gets as many texts below 4 (22 of 24) for fewer tokens. Before the guard it changed 22.3, and the paraphrase 32.7. The paraphrase still reads better: slot filling leaves grammar slips a reader notices, which is why `paraphrase` stays the default.
-5. **The guard has a price on the paraphrase.** Asking again for every paragraph that changed a fact took it from 5,100 to 14,478 tokens per thousand words and from 15 to 28 seconds, for 32.7 down to 24.9 facts changed. It also costs removal in Italian: when the model cannot rewrite a paragraph without changing a fact, the attempt that kept the facts wins, and the two Italian texts stay at z 5.6 and 4.9. Before the guard, the coverage-checked paraphrase brought all 24 texts below 4 (maximum 2.4); now 22, and all 22 English ones. A rewriter more fluent in Italian is the fix, not a looser guard.
+4. **If the facts matter, use `infill`.** With numbers, names, negations and quantifiers kept out of its slots, slot filling changes 3.8 facts per thousand words at stride 3, against 17.0 for the paraphrase, and gets as many texts below 4 (22 of 24) for fewer tokens. Before the guard it changed 15.3, and the paraphrase 19.4. The paraphrase still reads better: slot filling leaves grammar slips a reader notices, which is why `paraphrase` stays the default.
+5. **The guard has a price on the paraphrase.** Asking again for every paragraph that changed a fact took it from 5,100 to 14,478 tokens per thousand words and from 15 to 28 seconds, for 19.4 down to 17.0 facts changed. It also costs removal in Italian: when the model cannot rewrite a paragraph without changing a fact, the attempt that kept the facts wins, and the two Italian texts stay at z 5.6 and 4.9. Before the guard, the coverage-checked paraphrase brought all 24 texts below 4 (maximum 2.4); now 22, and all 22 English ones. A rewriter more fluent in Italian is the fix, not a looser guard.
 
 ## Why the "watermark remover" websites do nothing
 
@@ -77,7 +77,7 @@ The coverage figure needs a tokenizer to count windows. Claude's is not public; 
 
 ## Checking the facts
 
-A paraphrase that reads well can still say something else: a figure dropped, a name gone, a "not" lost, "most" turned into "all". On the October benchmark the model-driven rewrites changed 20 to 34 such facts per thousand words. `reflip diff` counts them without a model:
+A paraphrase that reads well can still say something else: a figure dropped, a name gone, a "not" lost, "most" turned into "all". Before the guard existed, the model-driven rewrites of the benchmark changed 15 to 23 such facts per thousand words. `reflip diff` counts them without a model:
 
 ```bash
 reflip diff before.md after.md          # exit 1 if anything changed
@@ -92,7 +92,9 @@ Numbers: gone 18, 412; new 16.
 Quantifiers: gone most; new all.
 ```
 
-It reads numbers written as digits or as words in English, Italian and Spanish ("three million" and "3 million" are the same number, so is "trecentoquarantacinque" and 345), names (capitalised words that do not open a sentence, a line or a heading), negations and quantifiers. Every rewrite runs through it: `paraphrase` asks again for any paragraph that changed one of them, `infill` never offers one of those words to the model, and `reflip rewrite` reports `"ok": false` with exit code 3 if any are still changed at the end, keeping the text so you can look. It is a check, not a proof: a claim reworded with every number and name in place is invisible to it.
+It reads numbers written as digits or as words in English, Italian and Spanish ("three million" and "3 million" are the same number, so is "trecentoquarantacinque" and 345), names (capitalised words that do not open a sentence, a clause, a line or a heading) and quantifiers. Negation words are counted and shown, and not added to the facts changed: their count moves whenever a rewrite says "failed to" for "did not". Every rewrite runs through it: `paraphrase` asks again for any paragraph that changed one of them, `infill` never offers one of those words to the model, and `reflip rewrite` reports `"ok": false` with exit code 3 if any are still changed at the end, keeping the text so you can look.
+
+**How often it is right**, measured against readers who never saw its output (`docs/facts/PROTOCOL.md`, written before the sample was drawn): 120 paragraph pairs from four kinds of rewrite, in English, Italian and Spanish, each read by two Claude Sonnet annotators and a third where they disagreed. As first built, it said "something changed" correctly 55% of the time and caught 69% of the pairs where the readers found a changed number, name, negation or quantifier; it flagged a name wrongly 23 times and a negation 21 times, against one real flip of polarity in all 120. Corrected on half the pairs and measured once on the other half, it is right 58% of the time and catches 60%. And in 38% of the pairs the meaning changed in a way none of these words show: a claim added or dropped, a hedge turned into a fact. It is a check, not a proof, and the numbers above are what it counts.
 
 ## Telling machine text from human text
 
@@ -140,10 +142,10 @@ What the measurements decided:
 
 | browser model | download | z after (mean) | z after (max) | z below 4 | positions intact | facts changed per 1,000 words | words changed | seconds per text |
 |---|---|---|---|---|---|---|---|---|
-| Qwen2.5 0.5B Instruct | 786 MB | 2.0 | 18.1 | 22 of 24 | 0.12 | 22.8 | 61% | 27 |
-| Gemma 3 1B | 859 MB | 1.2 | 10.6 | 21 of 24 | 0.08 | 25.7 | 59% | 35 |
+| Qwen2.5 0.5B Instruct | 786 MB | 2.0 | 18.1 | 22 of 24 | 0.12 | 14.0 | 61% | 27 |
+| Gemma 3 1B | 859 MB | 1.2 | 10.6 | 21 of 24 | 0.08 | 16.7 | 59% | 35 |
 
-  Both are weaker than the command line's 4B model. Qwen2.5 1.5B, the next size up, does not fit: its single 1.8 GB file stops with `std::bad_alloc`. Llama 3.2 1B loads, and was left out after it wrote up to eight times the length of the original and changed 112 facts per thousand words. The replies are cleaned of the announcements small models put around a rewrite ("Okay, here's a revised version:"), which Gemma did in 14 of 24 texts before the cleaning existed.
+  Both are weaker than the command line's 4B model. Qwen2.5 1.5B, the next size up, does not fit: its single 1.8 GB file stops with `std::bad_alloc`. Llama 3.2 1B loads, and was left out after it wrote up to eight times the length of the original and changed 64 facts per thousand words. The replies are cleaned of the announcements small models put around a rewrite ("Okay, here's a revised version:"), which Gemma did in 14 of 24 texts before the cleaning existed.
 
 ## The window
 
@@ -263,7 +265,7 @@ Reproduce: `reflip corpus --attn eager` (generates the watermarked and control t
 - **Corpus.** 24 prompts (22 English, 2 Italian: essays, emails, explanations, a story, a memo, a review) completed at temperature 0.9, top-p 0.95, with the watermark, and 23 completions of the same prompts without it as controls. Watermarked completions score between 8.6 and 25.3; controls between -1.6 and +1.2.
 - **Detector.** Mean g-value, the paper's simplest score, and the weighted-mean score DeepMind's reference code recommends, both as z-scores against the unwatermarked null.
 - **Intact.** The fraction of positions whose g-value the detector recomputes unchanged, measured on the re-tokenised edited text.
-- **Facts.** Numbers (digits and words, in English, Italian and Spanish), names, negations and quantifiers that the rewrite dropped or added, per thousand words of the original (`reflip/facts.py`, the same check `reflip diff` runs). It replaced the cosine similarity of sentence embeddings as the headline quality number: on the October benchmark every model-driven row kept a cosine between 0.955 and 0.972 while changing 20 to 34 facts per thousand words (the coverage-checked paraphrase: 34).
+- **Facts.** Numbers (digits and words, in English, Italian and Spanish), names and quantifiers that the rewrite dropped or added, per thousand words of the original (`reflip/facts.py`, the same check `reflip diff` runs). It replaced the cosine similarity of sentence embeddings as the headline quality number: on the October benchmark every model-driven row kept a cosine between 0.955 and 0.972 while changing 15 to 23 facts per thousand words (the coverage-checked paraphrase: 20.5).
 - **Cost.** Share of words changed, LLM tokens per thousand input words, wall time. The cosine similarity of multilingual-e5-small embeddings is still in `summary.md`.
 
 ## What the other tools do

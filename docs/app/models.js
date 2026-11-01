@@ -14,7 +14,7 @@ export const FILES = { q4f16: "onnx/model_q4f16.onnx", q4: "onnx/model_q4.onnx" 
 // without copying it into WebAssembly memory, which is why a 1.7 GB Llama 3.2 1B in that
 // form loaded where a 1.8 GB single-file Qwen2.5 1.5B stopped with std::bad_alloc. Llama
 // was measured and left out: on the 24 benchmark texts it wrote up to eight times the
-// length of the original and changed 112 facts per 1,000 words.
+// length of the original and changed 64 facts per 1,000 words.
 export const DATA = (dtype) => `${FILES[dtype]}_data`;
 // What transformers.js reads besides the weights. Small, and pinned by the commit.
 export const SMALL_FILES = ["config.json", "generation_config.json", "tokenizer.json", "tokenizer_config.json"];

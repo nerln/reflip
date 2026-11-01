@@ -12,7 +12,7 @@
    "below_threshold": 22,
    "intact": 0.119,
    "edit_ratio": 0.614,
-   "facts_per_1000_words": 22.8,
+   "facts_per_1000_words": 14.0,
    "seconds_per_text": 26.8
   },
   "gemma-3-1b": {
@@ -23,7 +23,7 @@
    "below_threshold": 21,
    "intact": 0.075,
    "edit_ratio": 0.59,
-   "facts_per_1000_words": 25.7,
+   "facts_per_1000_words": 16.7,
    "seconds_per_text": 35.4
   },
   "llama-3.2-1b": {
@@ -34,7 +34,7 @@
    "below_threshold": 16,
    "intact": 0.107,
    "edit_ratio": 0.349,
-   "facts_per_1000_words": 112.3,
+   "facts_per_1000_words": 63.5,
    "seconds_per_text": 99.8
   }
  }
